@@ -4,11 +4,28 @@
   
     
     <entry>
+      <title><![CDATA[试试图片]]></title>
+      <url>http://yoursite.com/2017/02/26/%E8%AF%95%E8%AF%95%E5%9B%BE%E7%89%87/</url>
+      <content type="html"><![CDATA[<p>#试试图片的插入情况</p>
+<p><img src="试试图片/let.jpg" alt="let it go"></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> hexo </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[Final]]></title>
       <url>http://yoursite.com/2017/02/21/Final/</url>
       <content type="html"><![CDATA[<p>#第一天的总结<br>差不多先折腾到这里吧，大概已有的功能呢，有添加博客和归档的标签，以后还会完成自己的个人简历 Q^Q</p>
-<p>说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书：<a href="“https://volc1605.github.io/2016/10/03/Hexo%E4%B9%8BNexT%E4%B8%BB%E9%A2%98%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B/”">搭建个人网站</a></p>
+<p>说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书：<a href="“https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程”">搭建个人网站</a></p>
 <p>暂时的尝试先到此为止，明后天看看能不能再去抢个腾讯的服务器吧，fightting！骚年</p>
+<p><img src="E:\Blog\source\img\let.jpg" alt="辣鸡">​:arrow_heading_down:​</p>
 ]]></content>
       
         
