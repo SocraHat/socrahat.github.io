@@ -868,8 +868,17 @@ ps:没有大腿抱确实一个人折腾好累pss:折腾完又有种莫名的兴�
 
 <div class="theme-info">
   QvQ
+<span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+<span id="showDays"></span>
 </div>
 
+<script>
+	var birthDay = new Date('2/21/2017');
+	var now = new Date();
+	var duration = now.getTime() - birthDay.getTime();
+	var total= Math.floor(duration / (1000 * 60 * 60 * 24));
+	document.getElementById('showDays').innerHTML='now ever ' + total + ' days';
+</script>
 
         
 
