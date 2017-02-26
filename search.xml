@@ -4,10 +4,24 @@
   
     
     <entry>
-      <title><![CDATA[试试图片]]></title>
-      <url>http://yoursite.com/2017/02/26/%E8%AF%95%E8%AF%95%E5%9B%BE%E7%89%87/</url>
-      <content type="html"><![CDATA[<p>#试试图片的插入情况</p>
-<p><img src="试试图片/let.jpg" alt="let it go"></p>
+      <title><![CDATA[hexo生成博文插入图片]]></title>
+      <url>http://yoursite.com/2017/02/26/hexo%E7%94%9F%E6%88%90%E5%8D%9A%E6%96%87%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/</url>
+      <content type="html"><![CDATA[<p>#RT<br>十分痛苦，是因为突然发现上传的博客里面的图片居然显示不来，excuse me???<br><img src="/2017/02/26/hexo生成博文插入图片/juewang.jpg" alt="juewang.jpg"><br>笋干shabi了<br>怎么办2，上网google解决之道，然后又试了很多坑…….<br><img src="/2017/02/26/hexo生成博文插入图片/zenmeban.jpg" alt="zenmeban.jpg"><br>更加绝望了…..<br>然后，看到了这个：<a href="http://www.jianshu.com/p/c2ba9533088a" target="_blank" rel="external">dalao指导</a><br>hhhh，再试一次…..<img src="/2017/02/26/hexo生成博文插入图片/meibanfa.jpg" alt="更加juewang"></p>
+<p>然而，居然可以了….excuse me??</p>
+<p>好吧，总结一下这个牛批的解决办法：</p>
+<h2 id="First"><a href="#First" class="headerlink" title="First"></a>First</h2><p>1 把主页配置文件<code>_config.yml</code> 里的<code>post_asset_folder:</code>这个选项设置为<code>true</code></p>
+<p>2 在你的hexo目录下执行这样一句话<code>npm install hexo-asset-image --save</code>，这是下载安装一个可以上传本地图片的插件，来自dalao：<a href="https://github.com/CodeFalling/hexo-asset-image" target="_blank" rel="external">dalao的git</a></p>
+<p>3 等待一小段时间后，再运行<code>hexo n &quot;xxxx&quot;</code>来生成md博文时，<code>/source/_posts</code>文件夹内除了<code>xxxx.md</code>文件还有一个<strong>同名的文件夹</strong></p>
+<h2 id="Second"><a href="#Second" class="headerlink" title="Second"></a>Second</h2><p>4 最后在<code>xxxx.md</code>中想引入图片时，先把图片复制到xxxx这个文件夹中，然后只需要在xxxx.md中按照markdown的格式引入图片：</p>
+<p><code>![你想输入的替代文字](xxxx/图片名.jpg)</code></p>
+<p><strong>注意：</strong>xxxx是这个md文件的名字，也是同名文件夹的名字，你想引入的图片就只需要放入xxxx这个文件夹内就好了，很像引用相对路径。</p>
+<p>5 最后检查一下，<code>hexo g</code>生成页面后，进入<code>public\2017\02\26\index.html</code>文件中查看相关字段，可以发现，html标签内的语句是<code>&lt;img src=&quot;2017/02/26/xxxx/图片名.jpg&quot;&gt;</code>，而不是<code>&lt;img src=&quot;xxxx/图片名.jpg&gt;</code>。这很重要，关乎你的网页是否可以真正加载你想插入的图片。</p>
+<h2 id="总结一下这个跳（试）坑的过程"><a href="#总结一下这个跳（试）坑的过程" class="headerlink" title="总结一下这个跳（试）坑的过程"></a>总结一下这个跳（试）坑的过程</h2><p>首先是有句mmp想讲，实在是有点坑</p>
+<p><img src="/2017/02/26/hexo生成博文插入图片/haoqi.jpg" alt="haoqi"></p>
+<p>但是，似乎又多了一项学（zhuang）习（bi）技巧<img src="/2017/02/26/hexo生成博文插入图片/bang.jpg" alt="bang"></p>
+<p>hhh，先到这里，后面还有一个坑就是，想引入某些dalao 的链接时，如果链接里包含中文，那么再写入md文件里生成网页后这个链接就打不开了…..</p>
+<p>待老夫研究后再填坑，后面如果有时间，就把自己搭建网站的过程码一下。</p>
+<p><img src="/2017/02/26/hexo生成博文插入图片/xiexie.jpg" alt="xiexie"></p>
 ]]></content>
       
         
@@ -25,7 +39,6 @@
       <content type="html"><![CDATA[<p>#第一天的总结<br>差不多先折腾到这里吧，大概已有的功能呢，有添加博客和归档的标签，以后还会完成自己的个人简历 Q^Q</p>
 <p>说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书：<a href="“https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程”">搭建个人网站</a></p>
 <p>暂时的尝试先到此为止，明后天看看能不能再去抢个腾讯的服务器吧，fightting！骚年</p>
-<p><img src="E:\Blog\source\img\let.jpg" alt="辣鸡">​:arrow_heading_down:​</p>
 ]]></content>
       
         
