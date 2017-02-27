@@ -4,6 +4,151 @@
   
     
     <entry>
+      <title><![CDATA[Eclipse编写jsp自动导入包]]></title>
+      <url>http://yoursite.com/2017/02/27/Eclipse%E7%BC%96%E5%86%99jsp%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5%E5%8C%85/</url>
+      <content type="html"><![CDATA[<h1 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h1><p>使用eclipse我们会需要一个自动补全剩余代码的功能，这使得我们可以在输完一些变量或者方法甚至是包的时候，可以方便快捷的选择我们想要输入的内容。very convenient！~</p>
+<p>这个关键性的组合按键就是：<br><code>alt + /</code></p>
+<p>当然了，这个在写java程序的时候可以使用，在写jsp程序的时候，依然是这个组合键 QvQ</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> eclipse </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[java中几个获取长度的方法区别]]></title>
+      <url>http://yoursite.com/2017/02/27/java%E4%B8%AD%E5%87%A0%E4%B8%AA%E8%8E%B7%E5%8F%96%E9%95%BF%E5%BA%A6%E7%9A%84%E6%96%B9%E6%B3%95%E5%8C%BA%E5%88%AB/</url>
+      <content type="html"><![CDATA[<h1 id="length和length-和size"><a href="#length和length-和size" class="headerlink" title="length和length()和size()"></a>length和length()和size()</h1><h2 id="length"><a href="#length" class="headerlink" title="length"></a>length</h2><p>length是数组的属性，直接使用<code>.</code>来进行访问，用来获取数组的长度。</p>
+<h2 id="length-1"><a href="#length-1" class="headerlink" title="length()"></a>length()</h2><p>length()是一个方法，针对的是String类型，用来获取字符串的长度。</p>
+<h2 id="size"><a href="#size" class="headerlink" title="size()"></a>size()</h2><p>size()是方法，用于获取泛型集合的大小，以便了解其中的元素个数。</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[java线程]]></title>
+      <url>http://yoursite.com/2017/02/27/java%E7%BA%BF%E7%A8%8B/</url>
+      <content type="html"><![CDATA[<h1 id="java线程体会"><a href="#java线程体会" class="headerlink" title="java线程体会"></a>java线程体会</h1><h2 id="为什么需要使用线程："><a href="#为什么需要使用线程：" class="headerlink" title="为什么需要使用线程："></a>为什么需要使用线程：</h2><p>​    我们知道，一般程序都是以一个由上至下的运行方式运行的，不完成上一步的时候，是无法进入下一步的执行的。可是我们有时候需要在一个程序同时去做两个不同的任务，各自之间互不干涉，那么根据程序的执行过程，该如何解决呢？</p>
+<p>​    答案就是使用<strong>线程</strong>，所谓线程，就是一个程序中最小的执行单元，一个程序在运行时就是一个进程，一个进程可以包含多个线程，这样就允许了一个程序同时去做不同的任务。所以总结的说，我们<strong>需要使用线程来让程序在同一时间做不同的事情，并且互不干涉。</strong></p>
+<p>注：</p>
+<ul>
+<li><strong>程序</strong>是包含了所有执行文件、数据文件、图像文件以及各种文档的资源集合，存储在电脑磁盘里</li>
+<li><strong>进程</strong>是一个程序在运行时所需要的所有资源集合，包含了代码、数据、堆栈、变量等，就像一台电脑。</li>
+<li><strong>线程</strong>是进程的子集，每一个线程可以看作是进程中的一个执行单元，就像CPU。</li>
+</ul>
+<hr>
+<h2 id="线程的基本特点："><a href="#线程的基本特点：" class="headerlink" title="线程的基本特点："></a>线程的基本特点：</h2><p>​    在不同的语言中，线程有不同的实现方式，但都有共同的基本特征：</p>
+<ul>
+<li>没有属于自己的内存空间，所有使用的空间都是由进程统一安排分配</li>
+<li>​在线程中使用的数据会存放到属于自己的栈中，但栈中的数据我们是知道的，是不会保留下来的 :cry:</li>
+<li>线程的上下文切换是比进程要快很多倍的，而且新建一个线锁需要的时间开销也是少于进程的；但有优点就一定会有缺点，线程的开销是很大的，每创建一个线程都至少要分配512KB甚至是1MB字节的内存，还有的线程及进程的区别可以去看有关操作系统的书</li>
+</ul>
+<hr>
+<h2 id="使用线程的方法："><a href="#使用线程的方法：" class="headerlink" title="使用线程的方法："></a>使用线程的方法：</h2><ul>
+<li>继承Thread类</li>
+<li>实现Runnable接口</li>
+</ul>
+<p>虽然都可以实现线程的控制，但是我们在实际中却用到第二种方法比较多，原因就是<strong>我们有时候需要继承不止一个类</strong>，这时如果我们不去实现Runnable接口，我们该如何使这个类编程线程类呢？:happy:</p>
+<hr>
+<h2 id="实现线程类需要注意的地方："><a href="#实现线程类需要注意的地方：" class="headerlink" title="实现线程类需要注意的地方："></a>实现线程类需要注意的地方：</h2><ul>
+<li><p>我们想让线程去做的任务都写在run方法里</p>
+</li>
+<li><p>线程类创建后我们需要去启动线程，而不是调用run方法，不然就仍旧还是方法调用</p>
+</li>
+<li><p>启动线程的方法</p>
+<p>   实现Runnable接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ball</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</div><div class="line">    System.out.println(<span class="string">"hello thread"</span>);</div><div class="line">    <span class="comment">//我们想使用多线程实现的内容</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">UseBall</span> </span>&#123;</div><div class="line">  Ball ball = <span class="keyword">new</span> Ball();</div><div class="line">  <span class="keyword">new</span> Thread(ball).start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>   继承Thrad类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ball</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</div><div class="line">    System.out.println(<span class="string">"hello thread"</span>);</div><div class="line">    <span class="comment">//我们想使用多线程实现的内容</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">UseBall</span> </span>&#123;</div><div class="line">  Ball ball = <span class="keyword">new</span> Ball();</div><div class="line">  ball.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用线程进行操作的时候注意添加异常操作</p>
+</li>
+</ul>
+<hr>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>​    综上所述，线程的使用方法以及一些特点就在这里了。<strong>个人理解其使用的条件就是想让程序同时完成不同的任务时，使用多线程实现。</strong></p>
+<p>​    多线程是java重要的的特点之一，利用多线程我们可以完成很多特殊的功能，比如：弹球游戏、坦克大战和聊天室等等。</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[writeUTF学习]]></title>
+      <url>http://yoursite.com/2017/02/27/writeUTF%E5%AD%A6%E4%B9%A0/</url>
+      <content type="html"><![CDATA[<h1 id="流式输出对象的writeUTF-方法"><a href="#流式输出对象的writeUTF-方法" class="headerlink" title="流式输出对象的writeUTF()方法"></a>流式输出对象的writeUTF()方法</h1><p>记录如何使用字节数组来进行数据的传输</p>
+<h2 id="InputStream-OutputStream"><a href="#InputStream-OutputStream" class="headerlink" title="InputStream / OutputStream"></a>InputStream / OutputStream</h2><p>作为所有输入输出流的父类，其方法read和write</p>
+<h2 id="DataInputStream-DataOutputStream"><a href="#DataInputStream-DataOutputStream" class="headerlink" title="DataInputStream / DataOutputStream"></a>DataInputStream / DataOutputStream</h2><p>处理流，包含了很多对数据的处理方法readInt，readFully和writeInt，write。另外因为是处理流，需要套在节点流上使用，故构造方法需要一个参数InputStream / OutputStream</p>
+<h2 id="InputStraemReader"><a href="#InputStraemReader" class="headerlink" title="InputStraemReader"></a>InputStraemReader</h2><p>该类一个接收System.in输入的内容</p>
+<h2 id="BufferedReader"><a href="#BufferedReader" class="headerlink" title="BufferedReader"></a>BufferedReader</h2><p>可以将InputStreamReader流中的内容当成字符串整行的读取出来</p>
+<h2 id="flush-close"><a href="#flush-close" class="headerlink" title="flush() / close()"></a>flush() / close()</h2><p>所有的输出流在写完后最好都强制刷新一下缓冲flush，程序接收后把整个输入输出流关掉</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[socket通信字节流or字符流]]></title>
+      <url>http://yoursite.com/2017/02/27/socket%E9%80%9A%E4%BF%A1%E5%AD%97%E8%8A%82%E6%B5%81or%E5%AD%97%E7%AC%A6%E6%B5%81/</url>
+      <content type="html"><![CDATA[<h1 id="socket通信选择字节流还是字符流？"><a href="#socket通信选择字节流还是字符流？" class="headerlink" title="socket通信选择字节流还是字符流？"></a>socket通信选择字节流还是字符流？</h1><p>字符流处理的单元为2个字节的Unicode字符，分别操作字符、字符数组或字符串，而字节流处理单元为1个字节，操作字节和字节数组。所以字符流是由Java虚拟机将字节转化为2个字节的Unicode字符为单位的字符而成的，所以它对多国语言支持性比较好！如果是音频文件、图片、歌曲，就用字节流好点，如果是关系到中文（文本）的，用字符流好点。</p>
+<p> 所有文件的储存是都是字节（byte）的储存，在磁盘上保留的并不是文件的字符而是先把字符编码成字节，再储存这些字节到磁盘。在读取文件（特别是文本文件）时，也是一个字节一个字节地读取以形成字节序列</p>
+<p>1.字节流可用于任何类型的对象，包括二进制对象，而字符流只能处理字符或者字符串；<br>2.字节流提供了处理任何类型的IO操作的功能，但它不能直接处理Unicode字符，而字符流就可以</p>
+<hr>
+<p>字节流是最基本的，所有的InputStrem和OutputStream的子类都是,主要用在处理二进制数据，它是按字节来处理的 但实际中很多的数据是文本，又提出了字符流的概念，它是按虚拟机的encode来处理，也就是要进行字符集的转化。这两个之间通过 InputStreamReader,OutputStreamWriter来关联，实际上是通过byte[]和String来关联，在实际开发中出现的汉字问题实际上都是在字符流和字节流之间转化不统一而造成的 </p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[linux终端配色方案]]></title>
+      <url>http://yoursite.com/2017/02/27/linux%E7%BB%88%E7%AB%AF%E9%85%8D%E8%89%B2%E6%96%B9%E6%A1%88/</url>
+      <content type="html"><![CDATA[<h1 id="Ubuntu终端配色"><a href="#Ubuntu终端配色" class="headerlink" title="Ubuntu终端配色"></a>Ubuntu终端配色</h1><p>骚年，看到单调的黑色背景的终端是不是感觉很乏味？<br>试试这个教程吧，可以使终端变的beautiful~</p>
+<h2 id="First"><a href="#First" class="headerlink" title="First"></a>First</h2><p>使用快捷键<code>ctrl + alt + T</code>打开终端<br>键入<code>gedit ~/.bashrc</code><br>会弹出一个编辑文本，复制粘贴下面的代码到<strong>文件的最后部分</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">PS1=&apos;$&#123;debian_chroot:+($debian_chroot)&#125;\[\033[01;35;01m\]\u\[\033[00;00;01m\]@\[\033[01;35;01m\]\h\[\033[00;31;01m\]:\[\033[00;00;01m\]\w \[\033[01;32;01m\]\$ \[\033[01;01;01m\]&apos;</div></pre></td></tr></table></figure></p>
+<p><strong>注意代码两边的冒号<code>‘</code></strong>。<br>保存后退出即可。</p>
+<h2 id="Second"><a href="#Second" class="headerlink" title="Second"></a>Second</h2><p>关闭终端后重新打开终端，可以看到，终端的配色方案已经有了变化。<br>然后，在终端中点击鼠标右键，选择下面的选项<br><img src="/2017/02/27/linux终端配色方案/caidan.png" alt="caidan"><br>然后选择<code>Background</code>标签，勾选上<code>Transparent background</code>选项，这是打开终端背景透明的选项。<br><img src="/2017/02/27/linux终端配色方案/caidan2.png" alt="caidan2"></p>
+<h2 id="Final"><a href="#Final" class="headerlink" title="Final"></a>Final</h2><p>设置后透明度之后，点击close即可，这时你的终端就会变的很好(炫)看(闪)了。<br><img src="/2017/02/27/linux终端配色方案/zhongduan.png" alt="zhongduan"></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> ubuntu </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[github上传项目]]></title>
       <url>http://yoursite.com/2017/02/27/github%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE/</url>
       <content type="html"><![CDATA[<h1 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h1><p>今天下午突发奇想，打开了小站，然后顺便打开了github，于是想上传曾经做过的项目，本来想按照之前传博客的方法去传项目，然后发现，好像哪里不太对劲，仔细一看教程，确实不太一样。<br>于是乎就去找github上传本地项目的方法，下面总结一下自己的试坑过程。</p>
@@ -60,7 +205,8 @@
       <title><![CDATA[Final]]></title>
       <url>http://yoursite.com/2017/02/21/Final/</url>
       <content type="html"><![CDATA[<h1 id="第一天的总结"><a href="#第一天的总结" class="headerlink" title="第一天的总结"></a>第一天的总结</h1><p>差不多先折腾到这里吧，大概已有的功能呢，有添加博客和归档的标签，以后还会完成自己的个人简历 Q^Q</p>
-<p>说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书：<a href="“https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程”">搭建个人网站</a></p>
+<p>说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书：</p>
+<p><code>https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程</code></p>
 <p>暂时的尝试先到此为止，明后天看看能不能再去抢个腾讯的服务器吧，fightting！骚年</p>
 ]]></content>
       
