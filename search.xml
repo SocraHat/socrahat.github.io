@@ -29,7 +29,7 @@
     <entry>
       <title><![CDATA[hexo生成博文插入图片]]></title>
       <url>http://yoursite.com/2017/02/26/hexo%E7%94%9F%E6%88%90%E5%8D%9A%E6%96%87%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/</url>
-      <content type="html"><![CDATA[<p>#RT<br>十分痛苦，是因为突然发现上传的博客里面的图片居然显示不来，excuse me???<br><img src="/2017/02/26/hexo生成博文插入图片/juewang.jpg" alt="juewang.jpg"><br>笋干shabi了<br>怎么办2，上网google解决之道，然后又试了很多坑…….<br><img src="/2017/02/26/hexo生成博文插入图片/zenmeban.jpg" alt="zenmeban.jpg"><br>更加绝望了…..<br>然后，看到了这个：<a href="http://www.jianshu.com/p/c2ba9533088a" target="_blank" rel="external">dalao指导</a><br>hhhh，再试一次…..<img src="/2017/02/26/hexo生成博文插入图片/meibanfa.jpg" alt="更加juewang"></p>
+      <content type="html"><![CDATA[<h1 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h1><p>十分痛苦，是因为突然发现上传的博客里面的图片居然显示不来，excuse me???<br><img src="/2017/02/26/hexo生成博文插入图片/juewang.jpg" alt="juewang.jpg"><br>笋干shabi了<br>怎么办2，上网google解决之道，然后又试了很多坑…….<br><img src="/2017/02/26/hexo生成博文插入图片/zenmeban.jpg" alt="zenmeban.jpg"><br>更加绝望了…..<br>然后，看到了这个：<a href="http://www.jianshu.com/p/c2ba9533088a" target="_blank" rel="external">dalao指导</a><br>hhhh，再试一次…..<img src="/2017/02/26/hexo生成博文插入图片/meibanfa.jpg" alt="更加juewang"></p>
 <p>然而，居然可以了….excuse me??</p>
 <p>好吧，总结一下这个牛批的解决办法：</p>
 <h2 id="First"><a href="#First" class="headerlink" title="First"></a>First</h2><p>1 把主页配置文件<code>_config.yml</code> 里的<code>post_asset_folder:</code>这个选项设置为<code>true</code></p>
@@ -59,7 +59,7 @@
     <entry>
       <title><![CDATA[Final]]></title>
       <url>http://yoursite.com/2017/02/21/Final/</url>
-      <content type="html"><![CDATA[<p>#第一天的总结<br>差不多先折腾到这里吧，大概已有的功能呢，有添加博客和归档的标签，以后还会完成自己的个人简历 Q^Q</p>
+      <content type="html"><![CDATA[<h1 id="第一天的总结"><a href="#第一天的总结" class="headerlink" title="第一天的总结"></a>第一天的总结</h1><p>差不多先折腾到这里吧，大概已有的功能呢，有添加博客和归档的标签，以后还会完成自己的个人简历 Q^Q</p>
 <p>说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书：<a href="“https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程”">搭建个人网站</a></p>
 <p>暂时的尝试先到此为止，明后天看看能不能再去抢个腾讯的服务器吧，fightting！骚年</p>
 ]]></content>
