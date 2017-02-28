@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="java," />
+  <meta name="keywords" content="MySQL," />
 
 
 
@@ -87,22 +87,28 @@
 
 
 
-<meta name="description" content="length和length()和size()lengthlength是数组的属性，直接使用.来进行访问，用来获取数组的长度。
-length()length()是一个方法，针对的是String类型，用来获取字符串的长度。
-size()size()是方法，用于获取泛型集合的大小，以便了解其中的元素个数。">
+<meta name="description" content="MySQL语法总结MySQL结构：数据库中存放数据都是依托与一张张的数据表存在的，我们通过数据库可以高效的利用数据；而我们对数据的操作就是对数据库中的表的操作。
+MySQL基本操作（格式）：登陆mysql -u root -p默认没有密码，直接回车，也可以自行修改密码。操作数据库中的表单时，一定要先use &amp;lt;数据库名&amp;gt;来进入该数据库
+查看
+查看数据库：show databases;
+查">
 <meta property="og:type" content="article">
-<meta property="og:title" content="java中几个获取长度的方法区别">
-<meta property="og:url" content="http://yoursite.com/2017/02/27/java中几个获取长度的方法区别/index.html">
+<meta property="og:title" content="MySQL使用手册">
+<meta property="og:url" content="http://yoursite.com/2017/02/28/MySQL使用手册/index.html">
 <meta property="og:site_name" content="Socra">
-<meta property="og:description" content="length和length()和size()lengthlength是数组的属性，直接使用.来进行访问，用来获取数组的长度。
-length()length()是一个方法，针对的是String类型，用来获取字符串的长度。
-size()size()是方法，用于获取泛型集合的大小，以便了解其中的元素个数。">
-<meta property="og:updated_time" content="2017-02-27T15:46:13.608Z">
+<meta property="og:description" content="MySQL语法总结MySQL结构：数据库中存放数据都是依托与一张张的数据表存在的，我们通过数据库可以高效的利用数据；而我们对数据的操作就是对数据库中的表的操作。
+MySQL基本操作（格式）：登陆mysql -u root -p默认没有密码，直接回车，也可以自行修改密码。操作数据库中的表单时，一定要先use &amp;lt;数据库名&amp;gt;来进入该数据库
+查看
+查看数据库：show databases;
+查">
+<meta property="og:updated_time" content="2017-02-28T13:17:15.419Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="java中几个获取长度的方法区别">
-<meta name="twitter:description" content="length和length()和size()lengthlength是数组的属性，直接使用.来进行访问，用来获取数组的长度。
-length()length()是一个方法，针对的是String类型，用来获取字符串的长度。
-size()size()是方法，用于获取泛型集合的大小，以便了解其中的元素个数。">
+<meta name="twitter:title" content="MySQL使用手册">
+<meta name="twitter:description" content="MySQL语法总结MySQL结构：数据库中存放数据都是依托与一张张的数据表存在的，我们通过数据库可以高效的利用数据；而我们对数据的操作就是对数据库中的表的操作。
+MySQL基本操作（格式）：登陆mysql -u root -p默认没有密码，直接回车，也可以自行修改密码。操作数据库中的表单时，一定要先use &amp;lt;数据库名&amp;gt;来进入该数据库
+查看
+查看数据库：show databases;
+查">
 
 
 
@@ -130,13 +136,13 @@ size()size()是方法，用于获取泛型集合的大小，以便了解其中�
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/02/27/java中几个获取长度的方法区别/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/02/28/MySQL使用手册/"/>
 
 
 
 
 
-  <title> java中几个获取长度的方法区别 | Socra </title>
+  <title> MySQL使用手册 | Socra </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -265,7 +271,7 @@ size()size()是方法，用于获取泛型集合的大小，以便了解其中�
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/27/java中几个获取长度的方法区别/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/28/MySQL使用手册/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Socra">
@@ -289,7 +295,7 @@ size()size()是方法，用于获取泛型集合的大小，以便了解其中�
             
             
               
-                java中几个获取长度的方法区别
+                MySQL使用手册
               
             
           </h1>
@@ -304,8 +310,8 @@ size()size()是方法，用于获取泛型集合的大小，以便了解其中�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-27T19:53:13+08:00">
-                2017-02-27
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-28T19:51:59+08:00">
+                2017-02-28
               </time>
             
 
@@ -320,8 +326,8 @@ size()size()是方法，用于获取泛型集合的大小，以便了解其中�
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-02-27T23:46:13+08:00">
-                2017-02-27
+              <time title="更新于" itemprop="dateModified" datetime="2017-02-28T21:17:15+08:00">
+                2017-02-28
               </time>
             
           </span>
@@ -334,7 +340,7 @@ size()size()是方法，用于获取泛型集合的大小，以便了解其中�
 
           
           
-             <span id="/2017/02/27/java中几个获取长度的方法区别/" class="leancloud_visitors" data-flag-title="java中几个获取长度的方法区别">
+             <span id="/2017/02/28/MySQL使用手册/" class="leancloud_visitors" data-flag-title="MySQL使用手册">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -363,9 +369,49 @@ size()size()是方法，用于获取泛型集合的大小，以便了解其中�
       
 
       
-        <h1 id="length和length-和size"><a href="#length和length-和size" class="headerlink" title="length和length()和size()"></a>length和length()和size()</h1><h2 id="length"><a href="#length" class="headerlink" title="length"></a>length</h2><p>length是数组的属性，直接使用<code>.</code>来进行访问，用来获取数组的长度。</p>
-<h2 id="length-1"><a href="#length-1" class="headerlink" title="length()"></a>length()</h2><p>length()是一个方法，针对的是String类型，用来获取字符串的长度。</p>
-<h2 id="size"><a href="#size" class="headerlink" title="size()"></a>size()</h2><p>size()是方法，用于获取泛型集合的大小，以便了解其中的元素个数。</p>
+        <h1 id="MySQL语法总结"><a href="#MySQL语法总结" class="headerlink" title="MySQL语法总结"></a>MySQL语法总结</h1><h2 id="MySQL结构："><a href="#MySQL结构：" class="headerlink" title="MySQL结构："></a>MySQL结构：</h2><p>数据库中存放数据都是依托与一张张的数据表存在的，我们通过数据库可以高效的利用数据；而我们对数据的操作就是对数据库中的表的操作。</p>
+<h2 id="MySQL基本操作（格式）："><a href="#MySQL基本操作（格式）：" class="headerlink" title="MySQL基本操作（格式）："></a>MySQL基本操作（格式）：</h2><h3 id="登陆"><a href="#登陆" class="headerlink" title="登陆"></a>登陆</h3><p><code>mysql -u root -p</code><br>默认没有密码，直接回车，也可以自行修改密码。<br>操作数据库中的表单时，一定要先<code>use &lt;数据库名&gt;</code>来进入该数据库</p>
+<h3 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h3><ul>
+<li>查看数据库：<code>show databases;</code></li>
+<li>查看表中全部记录：<code>show tables;</code></li>
+<li>查看表中某字段的数据：<code>show &lt;字段名一,字段名二....&gt; from &lt;表名&gt;;</code></li>
+<li>查看某记录：<code>select &lt;字段一,字段二...&gt; from &lt;表名&gt; where &lt;查询条件&gt;;</code></li>
+</ul>
+<h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><ul>
+<li>创建数据库：<code>create databases &lt;数据库名&gt;;</code></li>
+<li>创建表单：<code>create table &lt;表名&gt;;</code></li>
+</ul>
+<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><ul>
+<li>按照某字段升序排列：<code>select * from &lt;表名&gt; order by &lt;字段名&gt; limit &lt;待排列的记录数&gt;;</code></li>
+<li>降序排列：<code>select * from &lt;表名&gt; order by &lt;字段名&gt; desc limit &lt;待排列的记录数&gt;;</code></li>
+</ul>
+<h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><ul>
+<li>插入记录：<code>insert into &lt;表名&gt; values(&#39;&#39;,&#39;&#39;,&#39;&#39;,....);</code></li>
+<li>插入某一字段：<code>insert into &lt;表名&gt; &lt;字段名&gt;;</code></li>
+</ul>
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><ul>
+<li>删除未被外键关联的表：<code>drop table if exists &lt;表名&gt;;</code></li>
+<li>删除已经外键关联的表：先删除子表再删除父表</li>
+<li>删除表中的某一条记录：<code>delete from &lt;表名&gt; where &lt;字段=值&gt;;</code></li>
+<li>删除表中的某一字段：<code>alter table &lt;表名&gt; drop &lt;字段名&gt;;</code></li>
+<li>删除外键约束：<code>alter table &lt;表名&gt; drop foreign key &lt;外键名&gt;</code></li>
+</ul>
+<h3 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h3><ul>
+<li>修改表名：<code>alter table &lt;旧表名&gt; rename to &lt;新表名&gt;;</code></li>
+<li>修改表中的字段名：<code>alter table &lt;表名&gt; modify &lt;旧字段名&gt; &lt;新字段名&gt; &lt;数据类型&gt;;</code></li>
+<li>修改表中字段的数据类型：<code>alter table &lt;表名&gt; modify &lt;字段名&gt; &lt;新数据类型&gt;;</code></li>
+<li>修改表中字段的顺序：<code>alter table &lt;表名&gt; modify &lt;字段名&gt; &lt;数据类型&gt; first/after &lt;字段名&gt;;</code></li>
+<li>修改表中某一记录某一字段的值：<code>update &lt;表名&gt; set &lt;字段名&gt;=&lt;新值&gt; where &lt;查询条件&gt;;</code></li>
+</ul>
+<h3 id="设置约束关系"><a href="#设置约束关系" class="headerlink" title="设置约束关系"></a>设置约束关系</h3><p><strong>主键</strong>，又称主码，主键约束就是作为主键的字段在记录中是唯一存在的，不可重复，并且也不许为空。就像我们每个人都有自己唯一的身份ID一样，唯一标识。利用这个特性，我们可以在数据库中快速的查询定位到一条记录。</p>
+<ul>
+<li>设置主键：创建表的时候，在定义字段以及数据类型的后面直接加上<code>primary key (默认值)</code>；或者在定义完所有的字段以及数据类型后，加上<code>primary key (&lt;字段名一,....&gt;)</code></li>
+</ul>
+<p><strong>外键</strong>，表中的一个或多个字段，可以不是本表的主键，但<strong>必须是另一个表的主键</strong>。外键用来在两个表中建立连接关系，对于有关联关系的两个表而言，相关联字段中主键所在的表为父表，外键所在的表为子表。</p>
+<ul>
+<li>设置外键：在表中所有字段都定义后，加上<code>constraint &lt;外键名&gt; foreign key &lt;本表中的字段名&gt; references &lt;关联的外表名(外表的字段名)&gt;;</code></li>
+</ul>
+<h2 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h2><p><strong>约束关系</strong>：<br>在两个相关联的表中，一个表的主键是另一个表的非主键字段，这个字段中的值可能有很多。就拿学生选课来说，某一个课程可能有很多学生选，学生的主键是学号，那么该课程的表中，学号这一外键就会有很多值，同时，也把课程的数据表和学生的数据表关联了起来。<br>呐，在这个例子中，课程的表就是子表，学生的数据表就是父表。倘若，父表的值改变了，那么一定需要修改子表的值，而子表想去修改外键的值是没有权限的；但是，子表可以删除带有外键值的记录。这之中就有一种很明显的约束关系。</p>
 
       
     </div>
@@ -389,7 +435,7 @@ size()size()是方法，用于获取泛型集合的大小，以便了解其中�
       
         <div class="post-tags">
           
-            <a href="/tags/java/" rel="tag"># java</a>
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
           
         </div>
       
@@ -402,8 +448,8 @@ size()size()是方法，用于获取泛型集合的大小，以便了解其中�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/27/java线程/" rel="next" title="java线程">
-                <i class="fa fa-chevron-left"></i> java线程
+              <a href="/2017/02/27/Eclipse编写jsp自动导入包/" rel="next" title="Eclipse编写jsp自动导入包">
+                <i class="fa fa-chevron-left"></i> Eclipse编写jsp自动导入包
               </a>
             
           </div>
@@ -411,10 +457,6 @@ size()size()是方法，用于获取泛型集合的大小，以便了解其中�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/27/Eclipse编写jsp自动导入包/" rel="prev" title="Eclipse编写jsp自动导入包">
-                Eclipse编写jsp自动导入包 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -584,7 +626,7 @@ size()size()是方法，用于获取泛型集合的大小，以便了解其中�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#length和length-和size"><span class="nav-number">1.</span> <span class="nav-text">length和length()和size()</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#length"><span class="nav-number">1.1.</span> <span class="nav-text">length</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#length-1"><span class="nav-number">1.2.</span> <span class="nav-text">length()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#size"><span class="nav-number">1.3.</span> <span class="nav-text">size()</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL语法总结"><span class="nav-number">1.</span> <span class="nav-text">MySQL语法总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL结构："><span class="nav-number">1.1.</span> <span class="nav-text">MySQL结构：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL基本操作（格式）："><span class="nav-number">1.2.</span> <span class="nav-text">MySQL基本操作（格式）：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#登陆"><span class="nav-number">1.2.1.</span> <span class="nav-text">登陆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看"><span class="nav-number">1.2.2.</span> <span class="nav-text">查看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建"><span class="nav-number">1.2.3.</span> <span class="nav-text">创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排序"><span class="nav-number">1.2.4.</span> <span class="nav-text">排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入"><span class="nav-number">1.2.5.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除"><span class="nav-number">1.2.6.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改"><span class="nav-number">1.2.7.</span> <span class="nav-text">修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置约束关系"><span class="nav-number">1.2.8.</span> <span class="nav-text">设置约束关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#心得"><span class="nav-number">1.3.</span> <span class="nav-text">心得</span></a></li></ol></li></ol></div>
             
 
           </div>
