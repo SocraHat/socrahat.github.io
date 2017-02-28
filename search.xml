@@ -4,6 +4,30 @@
   
     
     <entry>
+      <title><![CDATA[alter和update以及drop和delete区别]]></title>
+      <url>http://yoursite.com/2017/02/28/alter%E5%92%8Cupdate%E4%BB%A5%E5%8F%8Adrop%E5%92%8Cdelete%E5%8C%BA%E5%88%AB/</url>
+      <content type="html"><![CDATA[<h1 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h1><p>使用MySQL时，很多语法相似，容易记浑，比如alter和update，比如drop和delete。</p>
+<h1 id="alter和update区别"><a href="#alter和update区别" class="headerlink" title="alter和update区别"></a>alter和update区别</h1><ul>
+<li>alter是对表的结构进行的操作，比如增加删除表的字段，或者是修改字段的顺序</li>
+<li>update是对表中的数据进行的操作，比如依据某个字段修改当前记录中另一个字段的值</li>
+</ul>
+<h1 id="drop和delete区别"><a href="#drop和delete区别" class="headerlink" title="drop和delete区别"></a>drop和delete区别</h1><ul>
+<li>drop是对表本体进行的操作，比如删除整张表。如果需要对表的结构进行增删，使用alter</li>
+<li>delete是对表的数据进行的操作，比如删除某一条记录</li>
+</ul>
+<p>总的来说，如果你不想要这张表了，用drop，如果你还想用这张表，只是删除一些数据，用delete</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> MySQL </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[MySQL使用手册]]></title>
       <url>http://yoursite.com/2017/02/28/MySQL%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url>
       <content type="html"><![CDATA[<h1 id="MySQL语法总结"><a href="#MySQL语法总结" class="headerlink" title="MySQL语法总结"></a>MySQL语法总结</h1><h2 id="MySQL结构："><a href="#MySQL结构：" class="headerlink" title="MySQL结构："></a>MySQL结构：</h2><p>数据库中存放数据都是依托与一张张的数据表存在的，我们通过数据库可以高效的利用数据；而我们对数据的操作就是对数据库中的表的操作。</p>
