@@ -99,7 +99,7 @@
 </ul>
 <p><strong>外键</strong>，表中的一个或多个字段，可以不是本表的主键，但<strong>必须是另一个表的主键</strong>。外键用来在两个表中建立连接关系，对于有关联关系的两个表而言，相关联字段中主键所在的表为父表，外键所在的表为子表。</p>
 <ul>
-<li>设置外键：在表中所有字段都定义后，加上<code>constraint &lt;外键约束名&gt; foreign key &lt;外键名&gt; references &lt;关联的外表名(外表的字段名)&gt;;</code></li>
+<li>设置外键：在表中所有字段都定义后（包括外键名），加上<code>constraint &lt;外键约束名&gt; foreign key(外键名) references&lt;关联的外表名(外表的字段名)&gt;;</code></li>
 </ul>
 <p><strong>注意的是，这里的外键约束名与外键约束名是不同的意思</strong></p>
 <h3 id="添加注释-备注"><a href="#添加注释-备注" class="headerlink" title="添加注释/备注"></a>添加注释/备注</h3><ul>
