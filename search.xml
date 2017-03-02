@@ -6,7 +6,17 @@
     <entry>
       <title><![CDATA[Servlet重定向与转发区别]]></title>
       <url>http://yoursite.com/2017/03/02/Servlet%E9%87%8D%E5%AE%9A%E5%90%91%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%8C%BA%E5%88%AB/</url>
-      <content type="html"></content>
+      <content type="html"><![CDATA[<h1 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h1><p>servlet在对客户端请求的数据处理之后，会向客户端返回相应的响应结果。这个响应结果可以是由当前servlet对象的PrintWriter输出流直接输出到页面上的信息，也可以是一个新的URL地址对应的信息。<br>在servlet中通过两种方式完成对新URL地址的转向：重定向和请求转发。</p>
+<h2 id="URL与URI区别"><a href="#URL与URI区别" class="headerlink" title="URL与URI区别"></a>URL与URI区别</h2><p>一图胜千言系列  ↓↓↓<br><img src="/2017/03/02/Servlet重定向与转发区别/url.png" alt="url"></p>
+<h1 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h1><p>由原请求地址重新定位到某个新地址，原有的请求失效，客户端看到的是新的请求返回的响应结果，客户端浏览器地址栏变为新的请求地址。其中第二次请求是由客户端浏览器自动发出。<br><img src="/2017/03/02/Servlet重定向与转发区别/redirect.png" alt="redirect"></p>
+<h1 id="请求转发"><a href="#请求转发" class="headerlink" title="请求转发"></a>请求转发</h1><p>请求转发是将请求再转发到其他地址，转发过程中使用的是同一个请求，转发后浏览器地址栏内容不变。<br><img src="/2017/03/02/Servlet重定向与转发区别/dispatcher.png" alt="dispatcher"></p>
+<h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><ul>
+<li>转发只能将请求转发给同一个web应用（项目工程）中的其他组件（servlet程序）；重定向可以重定向到任意的地址，网络地址或是文件地址（跨项目文件夹）</li>
+<li>重定向访问结束后，浏览器地址栏URL发生变化，变成了重定向后的URL；转发则不变</li>
+<li>重定向对浏览器的请求直接做出响应，结果就是告诉浏览器去重新发出另一个新的URL访问请求；请求转发在服务器端内部将请求转发给另一个资源，浏览器不知道服务器程序内部发生了转发过程</li>
+<li>请求转发调用者与被调用者之间共享相同的请求对象，属于同一个请求和响应过程；重定向则是不同的请求和响应过程</li>
+</ul>
+]]></content>
       
         
         <tags>
