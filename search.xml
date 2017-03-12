@@ -4,6 +4,20 @@
   
     
     <entry>
+      <title><![CDATA[java反射机制]]></title>
+      <url>http://yoursite.com/2017/03/11/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/</url>
+      <content type="html"><![CDATA[<h1 id="反射机制是什么？"><a href="#反射机制是什么？" class="headerlink" title="反射机制是什么？"></a>反射机制是什么？</h1><h1 id="反射机制有什么用？"><a href="#反射机制有什么用？" class="headerlink" title="反射机制有什么用？"></a>反射机制有什么用？</h1><h1 id="反射机制的原理"><a href="#反射机制的原理" class="headerlink" title="反射机制的原理"></a>反射机制的原理</h1><h1 id="反射机制的常规用法"><a href="#反射机制的常规用法" class="headerlink" title="反射机制的常规用法"></a>反射机制的常规用法</h1>]]></content>
+      
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[java反射之Class初级用法]]></title>
       <url>http://yoursite.com/2017/03/10/java%E5%8F%8D%E5%B0%84%E4%B9%8BClass%E5%88%9D%E7%BA%A7%E7%94%A8%E6%B3%95/</url>
       <content type="html"><![CDATA[<h1 id="Class类"><a href="#Class类" class="headerlink" title="Class类"></a>Class类</h1><p>Class类的实例表示java应用运行时的类或接口（每个java类在运行的时候都会在JVM里表现为一个Class对象，可以通过<code>类名.Class</code>，<code>类型.getClass()</code>，<code>Class.forName(&quot;包.类名&quot;)</code>等方法获取Class对象）</p>
