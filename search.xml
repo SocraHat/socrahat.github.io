@@ -4,6 +4,32 @@
   
     
     <entry>
+      <title><![CDATA[HashMap和HashTable的区别]]></title>
+      <url>http://yoursite.com/2017/03/16/HashMap%E5%92%8CHashTable%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+      <content type="html"><![CDATA[<h1 id="日常"><a href="#日常" class="headerlink" title="日常"></a>日常</h1><p>昨天听说了这么一道题，往HashMap中读写10w条字符串，如何处理可以消耗更少的cpu资源。后面感觉有点蹊跷，不知所以<br><img src="/2017/03/16/HashMap和HashTable的区别/1.jpg" alt="HashMap和HashTable的区别"><br>后面问了dalao黄一下，问题是没有解决，但是言语之间似乎有这么一个信息，<strong>HashMap和HashTable在存储数据时是有区别的</strong><br><img src="/2017/03/16/HashMap和HashTable的区别/2.jpg" alt="HashMap和HashTable的区别"><br>我是想啊，要么HashTable对数据量大的情况下有更好的存储性能？？？，要么是HashTable有更好的并行<br>性？？？</p>
+<p>of cause，查一下嘛</p>
+<h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><p>大概主要的意思是有这么几点区别：<br>两者继承自不同的类，HashMap是HashTable的轻量级实现（非线程安全的实现），但都完成了Map接口</p>
+<blockquote>
+<ul>
+<li>​HashMap去掉了HashTable中的contains方法，但是加上了containsValue()和containKey()方法</li>
+<li>HashTable是同步的，而HashMap是非同步的，由于非线程安全，效率上比HashTable要高</li>
+<li>​HashMap允许空键值，而HashTable不允许</li>
+</ul>
+</blockquote>
+<p>HashMap和HashTable采用的hash/rehash算法大致一样，性能不会差很多</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>好吧，虽然看起来差别不大，但是真的要并行式去存储会不会可以呢？（不晓得啊，其实也不是很懂并行 0.0 ），问题过两天解决了再继续更好了<br><img src="/2017/03/16/HashMap和HashTable的区别/3.jpg" alt="HashMap和HashTable的区别"></p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[三月中]]></title>
       <url>http://yoursite.com/2017/03/12/%E4%B8%89%E6%9C%88%E4%B8%AD/</url>
       <content type="html"><![CDATA[<h1 id="几句随谈"><a href="#几句随谈" class="headerlink" title="几句随谈"></a>几句随谈</h1><p>前几天听胡哥讲课（正经课），理所当然的提到了鸡汤（这不是日常吗），本着我就静静的看着的心态<br><img src="/2017/03/12/三月中/show.jpg" alt="show"><br>突然某些话还是触动了什么…<br>遇到不会的解决不了的怎么办？看书上网查资料，还是不会呢？问有经验的人，要还是解决不了呢？</p>
