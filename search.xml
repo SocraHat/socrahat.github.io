@@ -4,6 +4,61 @@
   
     
     <entry>
+      <title><![CDATA[指针常量和常量指针]]></title>
+      <url>http://yoursite.com/2017/03/18/%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F%E6%8C%87%E9%92%88/</url>
+      <content type="html"><![CDATA[<h1 id="翻看笔试题绕晕了"><a href="#翻看笔试题绕晕了" class="headerlink" title="翻看笔试题绕晕了"></a>翻看笔试题绕晕了</h1><p>本来翻看着各种笔试题，一切顺利的进行，不会的查一查，记不起来的查一查，直到在看<code>C/C++</code>有关的题目时遇到了</p>
+<blockquote>
+<p>指针常量和常量指针的区别</p>
+</blockquote>
+<p>手动黑人问号懵逼</p>
+<p>然后，法式懵逼……一种不祥的预感</p>
+<p>然后查了一下，世界懵逼……</p>
+<h1 id="有这么一种通俗易懂的说法"><a href="#有这么一种通俗易懂的说法" class="headerlink" title="有这么一种通俗易懂的说法"></a>有这么一种通俗易懂的说法</h1><p>查看了好几篇博客，直到看到了这么一种说法：<br><strong>三句箴言：</strong></p>
+<ul>
+<li>常量 const ，指针 <code>*</code>，谁排在前先读谁</li>
+<li><code>*</code> 是指针本身，是地址，<code>const</code>是常量本身</li>
+<li><code>const</code>和 <code>*</code> 谁排在前，谁代表的内容就不可以改变<br>举个栗子吧：<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> a = <span class="number">3</span>;</div><div class="line"><span class="keyword">int</span> b = <span class="number">4</span>;</div><div class="line"><span class="keyword">int</span> <span class="keyword">const</span> *ptr = &amp;a;</div><div class="line"><span class="keyword">int</span>* <span class="keyword">const</span> ptr2 = &amp;b;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在上面的代码中，ptr就是常量指针，ptr2是指针常量；<br><strong>ptr所指向的地址中的内容是常量</strong>，所以指向内容不可以改变，但是指向的地址可以改变，比如可以<code>ptr = &amp;b</code>，但是不可以<code>*ptr = b</code><br><strong>ptr2所指向的地址不可以改变，但该地址中的内容可以改变</strong>，比如可以<code>*ptr2 = a</code>，但是不可以<code>ptr = &amp;a</code></p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>指针常量因为指向的地址不可更改的原因，在定义时一定要初始化（不能为NULL）</p>
+<h1 id="指针常量的用处"><a href="#指针常量的用处" class="headerlink" title="指针常量的用处"></a>指针常量的用处</h1><p>指针常量有这么两个可靠性方面的优点：</p>
+<ul>
+<li>指针不可修改指向，且不能赋值为null</li>
+<li>在调用函数时，对于传入的参数可以起到保护的作用，同时还不需要考虑指针为null时的情况</li>
+</ul>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>其实这是翻译的锅，我们在学习的时候大多用的是翻译过来的说法，如果有心去看一下原文《C Primer plus》，可以看到对于指针常量和常量指针的写法是：</p>
+<ul>
+<li>常量指针<code>const pointer</code></li>
+<li>指针常量<code>pointer to const</code></li>
+</ul>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> C/C++ </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Java中的优先队列]]></title>
+      <url>http://yoursite.com/2017/03/17/Java%E4%B8%AD%E7%9A%84%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/</url>
+      <content type="html"><![CDATA[<h1 id="Form一个问题"><a href="#Form一个问题" class="headerlink" title="Form一个问题"></a>Form一个问题</h1><p>假设百度搜索引擎一天会搜索出<strong>M亿条URL</strong>，如何根据URL被搜索的次数来找出点击量最高的N个URL呢？</p>
+<h1 id="优先队列和层次树"><a href="#优先队列和层次树" class="headerlink" title="优先队列和层次树"></a>优先队列和层次树</h1><h1 id="又回到了HashMap高性能读写方法？"><a href="#又回到了HashMap高性能读写方法？" class="headerlink" title="又回到了HashMap高性能读写方法？"></a>又回到了HashMap高性能读写方法？</h1><h1 id="日常总结"><a href="#日常总结" class="headerlink" title="日常总结"></a>日常总结</h1>]]></content>
+      
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[HashMap和HashTable的区别]]></title>
       <url>http://yoursite.com/2017/03/16/HashMap%E5%92%8CHashTable%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
       <content type="html"><![CDATA[<h1 id="日常"><a href="#日常" class="headerlink" title="日常"></a>日常</h1><p>昨天听说了这么一道题，往HashMap中读写10w条字符串，如何处理可以消耗更少的cpu资源。后面感觉有点蹊跷，不知所以<br><img src="/2017/03/16/HashMap和HashTable的区别/1.jpg" alt="HashMap和HashTable的区别"><br>后面问了dalao黄一下，问题是没有解决，但是言语之间似乎有这么一个信息，<strong>HashMap和HashTable在存储数据时是有区别的</strong><br><img src="/2017/03/16/HashMap和HashTable的区别/2.jpg" alt="HashMap和HashTable的区别"><br>我是想啊，要么HashTable对数据量大的情况下有更好的存储性能？？？，要么是HashTable有更好的并行<br>性？？？</p>
