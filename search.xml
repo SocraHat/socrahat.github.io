@@ -4,6 +4,58 @@
   
     
     <entry>
+      <title><![CDATA[Java中的volaitle关键字]]></title>
+      <url>http://yoursite.com/2017/03/18/Java%E4%B8%AD%E7%9A%84volaitle%E5%85%B3%E9%94%AE%E5%AD%97/</url>
+      <content type="html"></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Java序列化]]></title>
+      <url>http://yoursite.com/2017/03/18/Java%E5%BA%8F%E5%88%97%E5%8C%96/</url>
+      <content type="html"><![CDATA[<h1 id="什么是序列化？"><a href="#什么是序列化？" class="headerlink" title="什么是序列化？"></a>什么是序列化？</h1><p>Java序列化是指把Java对象转换为字节序列的过程；反序列化就是把字节序列再恢复成Java对象的过程</p>
+<h1 id="序列化的作用是什么？"><a href="#序列化的作用是什么？" class="headerlink" title="序列化的作用是什么？"></a>序列化的作用是什么？</h1><p>一般序列化的作用有两方面：</p>
+<ul>
+<li>把对象转换成字节序列永久的保存到硬盘上（保存到文件中），在MVC中很好用</li>
+<li>在网络上传送对象的字节序列</li>
+</ul>
+<p>简单的说，就是<strong>把数据（对象）换个时间或者是换个地方，继续使用</strong></p>
+<ul>
+<li>换个时间，比如说把数据存盘</li>
+<li>换个地方，比如网络间数据的传输</li>
+</ul>
+<h2 id="网络间对象的传输"><a href="#网络间对象的传输" class="headerlink" title="网络间对象的传输"></a>网络间对象的传输</h2><p>我们可以通过网络传输图片、文子、音像、视频等资料，同样也可以传对象，这样两个Java程序间通信就可以交换数据。（云服务，把用户数据从服务器传输给用户等）</p>
+<h1 id="如何实现序列化和反序列化？"><a href="#如何实现序列化和反序列化？" class="headerlink" title="如何实现序列化和反序列化？"></a>如何实现序列化和反序列化？</h1><p>一个不是很难理解的过程，很像是一个处理流</p>
+<h2 id="对象流：ObjectOutputStream和ObjectInputStream"><a href="#对象流：ObjectOutputStream和ObjectInputStream" class="headerlink" title="对象流：ObjectOutputStream和ObjectInputStream"></a>对象流：ObjectOutputStream和ObjectInputStream</h2><p>ObjectOutputStream对象输出流，在实例化时<code>new ObjectOutputStream(OutputStream os)</code>获取输出流，然后<code>writeObject(Object obj)</code>方法可以对参数指定的obj对象进行序列化，然后可以把序列化的的字节序列写到这个os流中；<br><strong>序列化操作</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">File file = <span class="keyword">new</span> File(file_name);</div><div class="line">FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(file);</div><div class="line">ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(fos);</div><div class="line"><span class="comment">// ......</span></div><div class="line">Object obj  = <span class="keyword">new</span> Object();</div><div class="line">oos.writeObject(obj);</div><div class="line"><span class="comment">// ......</span></div></pre></td></tr></table></figure></p>
+<hr>
+<p><strong>反序列化操作</strong><br>ObjectInputStream对象输出流，在实例化时<code>new ObjectOutputStream(OutputStream os)</code>获取输入流，然后<code>(Object)readObject()</code>方法可以把读取到的字节序列强制转换成某个类的对象，并赋值；<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">File file = <span class="keyword">new</span> File(file_name);</div><div class="line">FileInputStream fis = <span class="keyword">new</span> FileInputStream(file);</div><div class="line">ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(fis);</div><div class="line"><span class="comment">// ......</span></div><div class="line"><span class="comment">// 所需的对象字节序列都在流中</span></div><div class="line">Object obj  = (Object)ois.readObject();</div><div class="line"><span class="comment">// ......</span></div></pre></td></tr></table></figure></p>
+<h2 id="必备条件"><a href="#必备条件" class="headerlink" title="必备条件"></a>必备条件</h2><p>只有实现了<code>Serializable或Externalizable接口的类</code>的对象才能被序列化，否则会抛出异常</p>
+<ul>
+<li>实现Serializable接口<br>使用默认的序列化/反序列化的方式，对类的非transient的实例对象进行序列化和反序列化</li>
+<li>实现Serializable接口并重写了writeObjetct和readObject方法<br>该类对象就可以调用重写后的读写方法</li>
+<li>实现Externalizable接口并重写了writeExternal和readExternal方法<br>该类对象可以调用读写方法</li>
+<li>直接使用JDK类库<br>上述代码段的使用方式，不再赘述<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><strong>对象序列化写入到对象流中的顺序应该与读取对象反序列化时的顺序一致</strong></li>
+</ul>
+<h2 id="对于transient关键字的补充"><a href="#对于transient关键字的补充" class="headerlink" title="对于transient关键字的补充"></a>对于transient关键字的补充</h2><ul>
+<li>transient只能修饰变量，不能修饰方法和类</li>
+<li>被transient修饰的变量不能被序列化；同时，static静态变量不管是否被transient修饰，都不会被序列化</li>
+<li>一旦变量被transient修饰，变量将不会被作为持久化对象中的一部分，该变量<strong>内容</strong>在序列化后不能被访问（变量还在，但变量中的值不在了）</li>
+</ul>
+<h1 id="日常总结"><a href="#日常总结" class="headerlink" title="日常总结"></a>日常总结</h1><p>被虐了……直到现在还在心塞，原理还是不懂，这些Java的小细节可以说是知之甚少，虽然听说过，但怎么用，为什么这么用，实现的原理是什么，一句话都说不出来……<br>关键是还知道这是各种面试笔试都会被提到的高频知识点……讲真的，该去买书看了，JVM、设计模式……</p>
+<p>PS：没错，我又开始挖坑了…….剩下的慢慢写好了</p>
+]]></content>
+      
+        
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[指针常量和常量指针]]></title>
       <url>http://yoursite.com/2017/03/18/%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F%E6%8C%87%E9%92%88/</url>
       <content type="html"><![CDATA[<h1 id="翻看笔试题绕晕了"><a href="#翻看笔试题绕晕了" class="headerlink" title="翻看笔试题绕晕了"></a>翻看笔试题绕晕了</h1><p>本来翻看着各种笔试题，一切顺利的进行，不会的查一查，记不起来的查一查，直到在看<code>C/C++</code>有关的题目时遇到了</p>
