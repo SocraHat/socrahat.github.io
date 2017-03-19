@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="java," />
+  <meta name="keywords" content="Hexo, Socra" />
 
 
 
@@ -87,49 +87,13 @@
 
 
 
-<meta name="description" content="什么是序列化？Java序列化是指把Java对象转换为字节序列的过程；反序列化就是把字节序列再恢复成Java对象的过程
-序列化的作用是什么？一般序列化的作用有两方面：
-
-把对象转换成字节序列永久的保存到硬盘上（保存到文件中），在MVC中很好用
-在网络上传送对象的字节序列
-
-简单的说，就是把数据（对象）换个时间或者是换个地方，继续使用
-
-换个时间，比如说把数据存盘
-换个地方，比如网络间数据的传输
-
-网">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java序列化">
-<meta property="og:url" content="http://yoursite.com/2017/03/18/Java序列化/index.html">
+<meta property="og:title" content="Java中的volatile关键字">
+<meta property="og:url" content="http://yoursite.com/2017/03/18/Java中的volatile关键字/index.html">
 <meta property="og:site_name" content="Socra">
-<meta property="og:description" content="什么是序列化？Java序列化是指把Java对象转换为字节序列的过程；反序列化就是把字节序列再恢复成Java对象的过程
-序列化的作用是什么？一般序列化的作用有两方面：
-
-把对象转换成字节序列永久的保存到硬盘上（保存到文件中），在MVC中很好用
-在网络上传送对象的字节序列
-
-简单的说，就是把数据（对象）换个时间或者是换个地方，继续使用
-
-换个时间，比如说把数据存盘
-换个地方，比如网络间数据的传输
-
-网">
-<meta property="og:updated_time" content="2017-03-18T17:14:07.935Z">
+<meta property="og:updated_time" content="2017-03-19T04:14:05.227Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java序列化">
-<meta name="twitter:description" content="什么是序列化？Java序列化是指把Java对象转换为字节序列的过程；反序列化就是把字节序列再恢复成Java对象的过程
-序列化的作用是什么？一般序列化的作用有两方面：
-
-把对象转换成字节序列永久的保存到硬盘上（保存到文件中），在MVC中很好用
-在网络上传送对象的字节序列
-
-简单的说，就是把数据（对象）换个时间或者是换个地方，继续使用
-
-换个时间，比如说把数据存盘
-换个地方，比如网络间数据的传输
-
-网">
+<meta name="twitter:title" content="Java中的volatile关键字">
 
 
 
@@ -157,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/03/18/Java序列化/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/03/18/Java中的volatile关键字/"/>
 
 
 
 
 
-  <title> Java序列化 | Socra </title>
+  <title> Java中的volatile关键字 | Socra </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -292,7 +256,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/18/Java序列化/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/18/Java中的volatile关键字/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Socra">
@@ -316,7 +280,7 @@
             
             
               
-                Java序列化
+                Java中的volatile关键字
               
             
           </h1>
@@ -331,7 +295,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-18T22:37:00+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-18T22:42:03+08:00">
                 2017-03-18
               </time>
             
@@ -347,7 +311,7 @@
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-03-19T01:14:07+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2017-03-19T12:14:05+08:00">
                 2017-03-19
               </time>
             
@@ -361,7 +325,7 @@
 
           
           
-             <span id="/2017/03/18/Java序列化/" class="leancloud_visitors" data-flag-title="Java序列化">
+             <span id="/2017/03/18/Java中的volatile关键字/" class="leancloud_visitors" data-flag-title="Java中的volatile关键字">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -390,37 +354,7 @@
       
 
       
-        <h1 id="什么是序列化？"><a href="#什么是序列化？" class="headerlink" title="什么是序列化？"></a>什么是序列化？</h1><p>Java序列化是指把Java对象转换为字节序列的过程；反序列化就是把字节序列再恢复成Java对象的过程</p>
-<h1 id="序列化的作用是什么？"><a href="#序列化的作用是什么？" class="headerlink" title="序列化的作用是什么？"></a>序列化的作用是什么？</h1><p>一般序列化的作用有两方面：</p>
-<ul>
-<li>把对象转换成字节序列永久的保存到硬盘上（保存到文件中），在MVC中很好用</li>
-<li>在网络上传送对象的字节序列</li>
-</ul>
-<p>简单的说，就是<strong>把数据（对象）换个时间或者是换个地方，继续使用</strong></p>
-<ul>
-<li>换个时间，比如说把数据存盘</li>
-<li>换个地方，比如网络间数据的传输</li>
-</ul>
-<h2 id="网络间对象的传输"><a href="#网络间对象的传输" class="headerlink" title="网络间对象的传输"></a>网络间对象的传输</h2><p>我们可以通过网络传输图片、文子、音像、视频等资料，同样也可以传对象，这样两个Java程序间通信就可以交换数据。（云服务，把用户数据从服务器传输给用户等）</p>
-<h1 id="如何实现序列化和反序列化？"><a href="#如何实现序列化和反序列化？" class="headerlink" title="如何实现序列化和反序列化？"></a>如何实现序列化和反序列化？</h1><p>一个不是很难理解的过程，很像是一个处理流</p>
-<h2 id="对象流：ObjectOutputStream和ObjectInputStream"><a href="#对象流：ObjectOutputStream和ObjectInputStream" class="headerlink" title="对象流：ObjectOutputStream和ObjectInputStream"></a>对象流：ObjectOutputStream和ObjectInputStream</h2><p>ObjectOutputStream对象输出流，在实例化时<code>new ObjectOutputStream(OutputStream os)</code>获取输出流，然后<code>writeObject(Object obj)</code>方法可以对参数指定的obj对象进行序列化，然后可以把序列化的的字节序列写到这个os流中；<br><strong>序列化操作</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">File file = <span class="keyword">new</span> File(file_name);</div><div class="line">FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(file);</div><div class="line">ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(fos);</div><div class="line"><span class="comment">// ......</span></div><div class="line">Object obj  = <span class="keyword">new</span> Object();</div><div class="line">oos.writeObject(obj);</div><div class="line"><span class="comment">// ......</span></div></pre></td></tr></table></figure></p>
-<hr>
-<p><strong>反序列化操作</strong><br>ObjectInputStream对象输出流，在实例化时<code>new ObjectOutputStream(OutputStream os)</code>获取输入流，然后<code>(Object)readObject()</code>方法可以把读取到的字节序列强制转换成某个类的对象，并赋值；<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">File file = <span class="keyword">new</span> File(file_name);</div><div class="line">FileInputStream fis = <span class="keyword">new</span> FileInputStream(file);</div><div class="line">ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(fis);</div><div class="line"><span class="comment">// ......</span></div><div class="line"><span class="comment">// 所需的对象字节序列都在流中</span></div><div class="line">Object obj  = (Object)ois.readObject();</div><div class="line"><span class="comment">// ......</span></div></pre></td></tr></table></figure></p>
-<h2 id="必备条件"><a href="#必备条件" class="headerlink" title="必备条件"></a>必备条件</h2><p>只有实现了<code>Serializable或Externalizable接口的类</code>的对象才能被序列化，否则会抛出异常</p>
-<ul>
-<li>实现Serializable接口<br>使用默认的序列化/反序列化的方式，对类的非transient的实例对象进行序列化和反序列化</li>
-<li>实现Serializable接口并重写了writeObjetct和readObject方法<br>该类对象就可以调用重写后的读写方法</li>
-<li>实现Externalizable接口并重写了writeExternal和readExternal方法<br>该类对象可以调用读写方法</li>
-<li>直接使用JDK类库<br>上述代码段的使用方式，不再赘述<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><strong>对象序列化写入到对象流中的顺序应该与读取对象反序列化时的顺序一致</strong></li>
-</ul>
-<h2 id="对于transient关键字的补充"><a href="#对于transient关键字的补充" class="headerlink" title="对于transient关键字的补充"></a>对于transient关键字的补充</h2><ul>
-<li>transient只能修饰变量，不能修饰方法和类</li>
-<li>被transient修饰的变量不能被序列化；同时，static静态变量不管是否被transient修饰，都不会被序列化</li>
-<li>一旦变量被transient修饰，变量将不会被作为持久化对象中的一部分，该变量<strong>内容</strong>在序列化后不能被访问（变量还在，但变量中的值不在了）</li>
-</ul>
-<h1 id="日常总结"><a href="#日常总结" class="headerlink" title="日常总结"></a>日常总结</h1><p>被虐了……直到现在还在心塞，原理还是不懂，这些Java的小细节可以说是知之甚少，虽然听说过，但怎么用，为什么这么用，实现的原理是什么，一句话都说不出来……<br>关键是还知道这是各种面试笔试都会被提到的高频知识点……讲真的，该去买书看了，JVM、设计模式……</p>
-<p>PS：没错，我又开始挖坑了…….剩下的慢慢写好了</p>
-
+        
       
     </div>
 
@@ -441,12 +375,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/java/" rel="tag"># java</a>
-          
-        </div>
-      
 
       
         
@@ -456,8 +384,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/18/指针常量和常量指针/" rel="next" title="指针常量和常量指针">
-                <i class="fa fa-chevron-left"></i> 指针常量和常量指针
+              <a href="/2017/03/18/Java序列化/" rel="next" title="Java序列化">
+                <i class="fa fa-chevron-left"></i> Java序列化
               </a>
             
           </div>
@@ -465,10 +393,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/03/18/Java中的volatile关键字/" rel="prev" title="Java中的volatile关键字">
-                Java中的volatile关键字 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -515,17 +439,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/coffee.jpg"
@@ -628,22 +543,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是序列化？"><span class="nav-number">1.</span> <span class="nav-text">什么是序列化？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#序列化的作用是什么？"><span class="nav-number">2.</span> <span class="nav-text">序列化的作用是什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#网络间对象的传输"><span class="nav-number">2.1.</span> <span class="nav-text">网络间对象的传输</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何实现序列化和反序列化？"><span class="nav-number">3.</span> <span class="nav-text">如何实现序列化和反序列化？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#对象流：ObjectOutputStream和ObjectInputStream"><span class="nav-number">3.1.</span> <span class="nav-text">对象流：ObjectOutputStream和ObjectInputStream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#必备条件"><span class="nav-number">3.2.</span> <span class="nav-text">必备条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">3.3.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对于transient关键字的补充"><span class="nav-number">3.4.</span> <span class="nav-text">对于transient关键字的补充</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日常总结"><span class="nav-number">4.</span> <span class="nav-text">日常总结</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
