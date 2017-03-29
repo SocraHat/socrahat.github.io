@@ -98,7 +98,7 @@
 <meta property="og:image" content="http://yoursite.com/2017/03/29/深入理解HashSet/set.png">
 <meta property="og:image" content="http://yoursite.com/2017/03/29/深入理解HashSet/cai.png">
 <meta property="og:image" content="http://yoursite.com/2017/03/29/深入理解HashSet/ji.jpg">
-<meta property="og:updated_time" content="2017-03-29T14:44:27.736Z">
+<meta property="og:updated_time" content="2017-03-29T15:46:04.558Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解HashSet">
 <meta name="twitter:description" content="首先是有一个悲伤的故事讲道理，这是面试时遇到的第一个卡壳以至于转移面试官注意力的地方（……），还好之前有被人指点一下加确实已经仔细研究过HashMap，才不至于无法补救
@@ -239,41 +239,9 @@
       
 
       
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
-            
-            搜索
-          </a>
-        </li>
-      
     </ul>
   
 
-  
-    <div class="site-search">
-      
-  <div class="popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
-</div>
-
-
-
-    </div>
   
 </nav>
 
@@ -353,7 +321,7 @@
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-03-29T22:44:27+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2017-03-29T23:46:04+08:00">
                 2017-03-29
               </time>
             
@@ -409,7 +377,14 @@
 <li>虽说时Set是对于重复的元素不放入，倒不如直接说是底层的Map直接把原值替代了（这个Set的put方法的返回值真有意思）</li>
 <li>HashSet没有提供get()方法，愿意是同HashMap一样，Set内部是无序的，只能通过迭代的方式获得</li>
 </ul>
-<h1 id="小总结"><a href="#小总结" class="headerlink" title="小总结"></a>小总结</h1><p>经历这么一次滑稽的经历，看来真的有必要把几个常用的集合框架的底层实现都看一遍，以免再次搞出这样的尴尬（手动滑稽）</p>
+<h1 id="说起来你可能不信"><a href="#说起来你可能不信" class="headerlink" title="说起来你可能不信"></a>说起来你可能不信</h1><p>本来是打算分开写集合框架的底层分析的，直到我发现，LinkedHashSet是继承自HashSet，底层实现是LinkedHashMap。并且其初始化时直接<code>super(......)</code>，瞬间我就觉得，Set写在一起得了</p>
+<h2 id="LinkedHashSet"><a href="#LinkedHashSet" class="headerlink" title="LinkedHashSet"></a>LinkedHashSet</h2><p>同HashSet相比并没有实现新的功能（新的方法），只不过把HashSet中预留的构造方法启用了，因而可以实现有序插入，而这个具体的实现要去看LinkedHashMap了，我们使用时是不需要再可以去设置参数的，直接拿来用即可。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * The iteration ordering method for this linked hash map: &lt;tt&gt;true&lt;/tt&gt;</div><div class="line"> * for access-order, &lt;tt&gt;false&lt;/tt&gt; for insertion-order.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@serial</span></div><div class="line"> */</div><div class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> accessOrder;</div></pre></td></tr></table></figure></p>
+<p>查看了LinkedHashMap的构造方法后，发现其因为继承自HashMap，所以其底层实现也是HashMap!!!（呵呵，我已经发现了……怪不得还是得主要研究HashMap啊），然后发现了LinkedHashMap调用父类构造方法初始化时，还顺便设置了变量<code>accessOrder = false</code>，看上面得源码可以知道，这是给了迭代器一个参数，<strong>false代表迭代时使用插入得顺序</strong>（追根溯源了，真爽）</p>
+<h3 id="偶然发现"><a href="#偶然发现" class="headerlink" title="偶然发现"></a>偶然发现</h3><p>查看源码时，我发现了一个奇怪的重写的方法：<code>public Spliterator&lt;E&gt; spliterator()</code>，查了查资料发现叫做可分割迭代器，这个接口是为了并行遍历数据源中的元素而设计的迭代器，为了更好的发挥多核CPU的能力。<br>其实这样我想起了要去关注一下集合框架中的并发安全了。</p>
+<h2 id="TreeSet"><a href="#TreeSet" class="headerlink" title="TreeSet"></a>TreeSet</h2><p>根据Set的这个尿性，我先猜测一波，TreeSet的底层实现是TreeMap（而且我在猜TreeMap的底层实现借助了HashMap）。一看源码，哎呦我去，还真是（呵呵，到底谁才是你爹…..心疼一波Collection,Map又不继承Collection接口）<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">TreeSet</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>(<span class="keyword">new</span> TreeMap&lt;E,Object&gt;());</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="TreeSet特点与实现机制"><a href="#TreeSet特点与实现机制" class="headerlink" title="TreeSet特点与实现机制"></a>TreeSet特点与实现机制</h3><p>TreeSet中存放的元素是有序的（不是插入时的顺序，是有按关键字大小排序的），且元素不能重复。<br>而如何实现有序存储，就需要有一个比较器，其实说起来，TreeSet更受关注的是不重复且有序，这个有序就需要有一个compare的过程，因此会需要参数实现Comparable接口。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Constructs a new, empty tree set, sorted according to the specified</div><div class="line"> * comparator.  All elements inserted into the set must be &lt;i&gt;mutually</div><div class="line"> * comparable&lt;/i&gt; by the specified comparator: &#123;<span class="doctag">@code</span> comparator.compare(e1,</div><div class="line"> * e2)&#125; must not throw a &#123;<span class="doctag">@code</span> ClassCastException&#125; for any elements</div><div class="line"> * &#123;<span class="doctag">@code</span> e1&#125; and &#123;<span class="doctag">@code</span> e2&#125; in the set.  If the user attempts to add</div><div class="line"> * an element to the set that violates this constraint, the</div><div class="line"> * &#123;<span class="doctag">@code</span> add&#125; call will throw a &#123;<span class="doctag">@code</span> ClassCastException&#125;.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> comparator the comparator that will be used to order this set.</div><div class="line"> *        If &#123;<span class="doctag">@code</span> null&#125;, the &#123;<span class="doctag">@linkplain</span> Comparable natural</div><div class="line"> *        ordering&#125; of the elements will be used.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">TreeSet</span><span class="params">(Comparator&lt;? <span class="keyword">super</span> E&gt; comparator)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>(<span class="keyword">new</span> TreeMap&lt;&gt;(comparator));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="所以说"><a href="#所以说" class="headerlink" title="所以说"></a>所以说</h2><p>所以说使用Set需要注意的还是根据自己的需求选取正确的存储结构即可，而因为并没有get()方法给你使用，所以还是要用迭代器来获取想要的元素，然后本次Set深入分析到此结束，我要去再开一坑研究TreeMap了（滑稽）</p>
+<h1 id="小总结"><a href="#小总结" class="headerlink" title="小总结"></a>小总结</h1><p>经历这么一次滑稽的经历，看来真的有必要把几个常用的集合框架的底层实现都看一遍，以免再次搞出这样的尴尬（手动滑稽）<br>其实深入到这个程度我觉得常用的集合除了List的家族还有Queue，其实都可以规约为深入理解HashMap，来，就是这个节奏。走起。</p>
 
       
     </div>
@@ -624,7 +599,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#首先是有一个悲伤的故事"><span class="nav-number">1.</span> <span class="nav-text">首先是有一个悲伤的故事</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其次我TM惊呆了"><span class="nav-number">2.</span> <span class="nav-text">其次我TM惊呆了</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#转一下dalao的博客"><span class="nav-number">3.</span> <span class="nav-text">转一下dalao的博客</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HashSet概述和实现"><span class="nav-number">3.1.</span> <span class="nav-text">HashSet概述和实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HashSet插入"><span class="nav-number">3.2.</span> <span class="nav-text">HashSet插入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除"><span class="nav-number">3.2.1.</span> <span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码分析"><span class="nav-number">3.3.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">3.4.</span> <span class="nav-text">注意</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小总结"><span class="nav-number">4.</span> <span class="nav-text">小总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#首先是有一个悲伤的故事"><span class="nav-number">1.</span> <span class="nav-text">首先是有一个悲伤的故事</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其次我TM惊呆了"><span class="nav-number">2.</span> <span class="nav-text">其次我TM惊呆了</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#转一下dalao的博客"><span class="nav-number">3.</span> <span class="nav-text">转一下dalao的博客</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HashSet概述和实现"><span class="nav-number">3.1.</span> <span class="nav-text">HashSet概述和实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HashSet插入"><span class="nav-number">3.2.</span> <span class="nav-text">HashSet插入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除"><span class="nav-number">3.2.1.</span> <span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码分析"><span class="nav-number">3.3.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">3.4.</span> <span class="nav-text">注意</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#说起来你可能不信"><span class="nav-number">4.</span> <span class="nav-text">说起来你可能不信</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LinkedHashSet"><span class="nav-number">4.1.</span> <span class="nav-text">LinkedHashSet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#偶然发现"><span class="nav-number">4.1.1.</span> <span class="nav-text">偶然发现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TreeSet"><span class="nav-number">4.2.</span> <span class="nav-text">TreeSet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TreeSet特点与实现机制"><span class="nav-number">4.2.1.</span> <span class="nav-text">TreeSet特点与实现机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#所以说"><span class="nav-number">4.3.</span> <span class="nav-text">所以说</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小总结"><span class="nav-number">5.</span> <span class="nav-text">小总结</span></a></li></ol></div>
             
 
           </div>
@@ -798,130 +773,6 @@
 
   
   
-  <script type="text/javascript">
-    // Popup Window;
-    var isfetched = false;
-    // Search DB path;
-    var search_path = "search.xml";
-    if (search_path.length == 0) {
-      search_path = "search.xml";
-    }
-    var path = "/" + search_path;
-    // monitor main search box;
-
-    function proceedsearch() {
-      $("body").append('<div class="local-search-pop-overlay">').css('overflow', 'hidden');
-      $('.popup').toggle();
-    }
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-      $.ajax({
-        url: path,
-        dataType: "xml",
-        async: true,
-        success: function( xmlResponse ) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = $( "entry", xmlResponse ).map(function() {
-            return {
-              title: $( "title", this ).text(),
-              content: $("content",this).text(),
-              url: $( "url" , this).text()
-            };
-          }).get();
-          var $input = document.getElementById(search_id);
-          var $resultContent = document.getElementById(content_id);
-          $input.addEventListener('input', function(){
-            var matchcounts = 0;
-            var str='<ul class=\"search-result-list\">';
-            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-            $resultContent.innerHTML = "";
-            if (this.value.trim().length > 1) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var content_index = [];
-                var data_title = data.title.trim().toLowerCase();
-                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
-                var data_url = decodeURIComponent(data.url);
-                var index_title = -1;
-                var index_content = -1;
-                var first_occur = -1;
-                // only match artiles with not empty titles and contents
-                if(data_title != '') {
-                  keywords.forEach(function(keyword, i) {
-                    index_title = data_title.indexOf(keyword);
-                    index_content = data_content.indexOf(keyword);
-                    if( index_title >= 0 || index_content >= 0 ){
-                      isMatch = true;
-                      if (i == 0) {
-                        first_occur = index_content;
-                      }
-                    }
-
-                  });
-                }
-                // show search results
-                if (isMatch) {
-                  matchcounts += 1;
-                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
-                  var content = data.content.trim().replace(/<[^>]+>/g,"");
-                  if (first_occur >= 0) {
-                    // cut out 100 characters
-                    var start = first_occur - 20;
-                    var end = first_occur + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if(start == 0){
-                      end = 50;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    var match_content = content.substring(start, end);
-                    // highlight all keywords
-                    keywords.forEach(function(keyword){
-                      var regS = new RegExp(keyword, "gi");
-                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
-                    });
-
-                    str += "<p class=\"search-result\">" + match_content +"...</p>"
-                  }
-                  str += "</li>";
-                }
-              })};
-            str += "</ul>";
-            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
-            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
-            $resultContent.innerHTML = str;
-          });
-          proceedsearch();
-        }
-      });}
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched == false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(function(e){
-      $('.popup').hide();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    });
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-  </script>
-
 
   
 
