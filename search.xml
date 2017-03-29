@@ -1,836 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   
-  
     
     <entry>
       <title><![CDATA[深入理解HashSet]]></title>
-      <url>http://yoursite.com/2017/03/29/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3HashSet/</url>
-      <content type="html"><![CDATA[<h1 id="首先是有一个悲伤的故事"><a href="#首先是有一个悲伤的故事" class="headerlink" title="首先是有一个悲伤的故事"></a>首先是有一个悲伤的故事</h1><p>讲道理，这是面试时遇到的第一个卡壳以至于转移面试官注意力的地方（……），还好之前有被人指点一下加确实已经仔细研究过HashMap，才不至于无法补救</p>
-<h1 id="其次我TM惊呆了"><a href="#其次我TM惊呆了" class="headerlink" title="其次我TM惊呆了"></a>其次我TM惊呆了</h1><p>本想着回来以后好好看看HashSet的底层实现，结果打开源码一看的我惊呆了<br><img src="/2017/03/29/深入理解HashSet/set.png" alt="set"><br>wocao怎么这么刺眼呢？你是set啊，你是Collection的子类啊，你叔叔才是Map啊，<br><img src="/2017/03/29/深入理解HashSet/cai.png" alt="cai"><br>你这样我心好痛啊<br><img src="/2017/03/29/深入理解HashSet/ji.jpg" alt="ji"><br>冷静下来我仔细一想，Set不能有重复的元素，HashMap不允许有重复的键，又是一口老血，当时也没想到也没敢去这么想</p>
-<h1 id="转一下dalao的博客"><a href="#转一下dalao的博客" class="headerlink" title="转一下dalao的博客"></a>转一下dalao的博客</h1><p>于是接着去看网上的dalao的博客，发现了这一篇<a href="http://zhangshixi.iteye.com/blog/673143" target="_blank" rel="external">私自转载dalao博文侵删</a></p>
-<h2 id="HashSet概述和实现"><a href="#HashSet概述和实现" class="headerlink" title="HashSet概述和实现"></a>HashSet概述和实现</h2><p>HashSet实现Set接口，由哈希表（实际上是一个HashMap实例）支持。它不保证set 的迭代顺序；特别是它不保证该顺序恒久不变，此类允许使用null元素。<br>在HashSet中，<strong>元素都存到HashMap键值对的Key上面，而Value时有一个统一的值<code>private static final Object PRESENT = new Object();</code></strong>，</p>
-<h2 id="HashSet插入"><a href="#HashSet插入" class="headerlink" title="HashSet插入"></a>HashSet插入</h2><p>当有新值加入时，底层的HashMap会判断Key值是否存在（HashMap细节请移步<a href="http://zpcheng.me" target="_blank" rel="external">深入理解HashMap</a>），如果不存在，则插入新值，同时这个插入的细节会依照HashMap插入细节；如果存在就不插入</p>
-<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><p>同HashMap删除原理</p>
-<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>盗（xue）用（xi）一下dalao 的分析代码，侵权请告之，立马删除<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HashSet</span>&lt;<span class="title">E</span>&gt;  </span></div><div class="line">    <span class="keyword">extends</span> <span class="title">AbstractSet</span>&lt;<span class="title">E</span>&gt;  </div><div class="line">    <span class="keyword">implements</span> <span class="title">Set</span>&lt;<span class="title">E</span>&gt;, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span>  </div><div class="line">&#123;  </div><div class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">5024744406713321676L</span>;  </div><div class="line">  </div><div class="line">    <span class="comment">// 底层使用HashMap来保存HashSet中所有元素。  </span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> HashMap&lt;E,Object&gt; map;  </div><div class="line">      </div><div class="line">    <span class="comment">// 定义一个虚拟的Object对象作为HashMap的value，将此对象定义为static final。  </span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object PRESENT = <span class="keyword">new</span> Object();  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 默认的无参构造器，构造一个空的HashSet。 </div><div class="line">     *  </div><div class="line">     * 实际底层会初始化一个空的HashMap，并使用默认初始容量为16和加载因子0.75。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">()</span> </span>&#123;  </div><div class="line">    map = <span class="keyword">new</span> HashMap&lt;E,Object&gt;();  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 构造一个包含指定collection中的元素的新set。 </div><div class="line">     * </div><div class="line">     * 实际底层使用默认的加载因子0.75和足以包含指定 </div><div class="line">     * collection中所有元素的初始容量来创建一个HashMap。 </div><div class="line">     * <span class="doctag">@param</span> c 其中的元素将存放在此set中的collection。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;  </div><div class="line">    map = <span class="keyword">new</span> HashMap&lt;E,Object&gt;(Math.max((<span class="keyword">int</span>) (c.size()/.<span class="number">75f</span>) + <span class="number">1</span>, <span class="number">16</span>));  </div><div class="line">    addAll(c);  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 以指定的initialCapacity和loadFactor构造一个空的HashSet。 </div><div class="line">     * </div><div class="line">     * 实际底层以相应的参数构造一个空的HashMap。 </div><div class="line">     * <span class="doctag">@param</span> initialCapacity 初始容量。 </div><div class="line">     * <span class="doctag">@param</span> loadFactor 加载因子。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;  </div><div class="line">    map = <span class="keyword">new</span> HashMap&lt;E,Object&gt;(initialCapacity, loadFactor);  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 以指定的initialCapacity构造一个空的HashSet。 </div><div class="line">     * </div><div class="line">     * 实际底层以相应的参数及加载因子loadFactor为0.75构造一个空的HashMap。 </div><div class="line">     * <span class="doctag">@param</span> initialCapacity 初始容量。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;  </div><div class="line">    map = <span class="keyword">new</span> HashMap&lt;E,Object&gt;(initialCapacity);  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 以指定的initialCapacity和loadFactor构造一个新的空链接哈希集合。 </div><div class="line">     * 此构造函数为包访问权限，不对外公开，实际只是是对LinkedHashSet的支持。 </div><div class="line">     * </div><div class="line">     * 实际底层会以指定的参数构造一个空LinkedHashMap实例来实现。 </div><div class="line">     * <span class="doctag">@param</span> initialCapacity 初始容量。 </div><div class="line">     * <span class="doctag">@param</span> loadFactor 加载因子。 </div><div class="line">     * <span class="doctag">@param</span> dummy 标记。 </div><div class="line">     */  </div><div class="line">    HashSet(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor, <span class="keyword">boolean</span> dummy) &#123;  </div><div class="line">    map = <span class="keyword">new</span> LinkedHashMap&lt;E,Object&gt;(initialCapacity, loadFactor);  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 返回对此set中元素进行迭代的迭代器。返回元素的顺序并不是特定的。 </div><div class="line">     *  </div><div class="line">     * 底层实际调用底层HashMap的keySet来返回所有的key。 </div><div class="line">     * 可见HashSet中的元素，只是存放在了底层HashMap的key上， </div><div class="line">     * value使用一个static final的Object对象标识。 </div><div class="line">     * <span class="doctag">@return</span> 对此set中元素进行迭代的Iterator。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> Iterator&lt;E&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;  </div><div class="line">    <span class="keyword">return</span> map.keySet().iterator();  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 返回此set中的元素的数量（set的容量）。 </div><div class="line">     * </div><div class="line">     * 底层实际调用HashMap的size()方法返回Entry的数量，就得到该Set中元素的个数。 </div><div class="line">     * <span class="doctag">@return</span> 此set中的元素的数量（set的容量）。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;  </div><div class="line">    <span class="keyword">return</span> map.size();  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 如果此set不包含任何元素，则返回true。 </div><div class="line">     * </div><div class="line">     * 底层实际调用HashMap的isEmpty()判断该HashSet是否为空。 </div><div class="line">     * <span class="doctag">@return</span> 如果此set不包含任何元素，则返回true。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;  </div><div class="line">    <span class="keyword">return</span> map.isEmpty();  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 如果此set包含指定元素，则返回true。 </div><div class="line">     * 更确切地讲，当且仅当此set包含一个满足(o==null ? e==null : o.equals(e)) </div><div class="line">     * 的e元素时，返回true。 </div><div class="line">     * </div><div class="line">     * 底层实际调用HashMap的containsKey判断是否包含指定key。 </div><div class="line">     * <span class="doctag">@param</span> o 在此set中的存在已得到测试的元素。 </div><div class="line">     * <span class="doctag">@return</span> 如果此set包含指定元素，则返回true。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;  </div><div class="line">    <span class="keyword">return</span> map.containsKey(o);  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 如果此set中尚未包含指定元素，则添加指定元素。 </div><div class="line">     * 更确切地讲，如果此 set 没有包含满足(e==null ? e2==null : e.equals(e2)) </div><div class="line">     * 的元素e2，则向此set 添加指定的元素e。 </div><div class="line">     * 如果此set已包含该元素，则该调用不更改set并返回false。 </div><div class="line">     * </div><div class="line">     * 底层实际将将该元素作为key放入HashMap。 </div><div class="line">     * 由于HashMap的put()方法添加key-value对时，当新放入HashMap的Entry中key </div><div class="line">     * 与集合中原有Entry的key相同（hashCode()返回值相等，通过equals比较也返回true）， </div><div class="line">     * 新添加的Entry的value会将覆盖原来Entry的value，但key不会有任何改变， </div><div class="line">     * 因此如果向HashSet中添加一个已经存在的元素时，新添加的集合元素将不会被放入HashMap中， </div><div class="line">     * 原来的元素也不会有任何改变，这也就满足了Set中元素不重复的特性。 </div><div class="line">     * <span class="doctag">@param</span> e 将添加到此set中的元素。 </div><div class="line">     * <span class="doctag">@return</span> 如果此set尚未包含指定元素，则返回true。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;  </div><div class="line">    <span class="keyword">return</span> map.put(e, PRESENT)==<span class="keyword">null</span>;  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 如果指定元素存在于此set中，则将其移除。 </div><div class="line">     * 更确切地讲，如果此set包含一个满足(o==null ? e==null : o.equals(e))的元素e， </div><div class="line">     * 则将其移除。如果此set已包含该元素，则返回true </div><div class="line">     * （或者：如果此set因调用而发生更改，则返回true）。（一旦调用返回，则此set不再包含该元素）。 </div><div class="line">     * </div><div class="line">     * 底层实际调用HashMap的remove方法删除指定Entry。 </div><div class="line">     * <span class="doctag">@param</span> o 如果存在于此set中则需要将其移除的对象。 </div><div class="line">     * <span class="doctag">@return</span> 如果set包含指定元素，则返回true。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;  </div><div class="line">    <span class="keyword">return</span> map.remove(o)==PRESENT;  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 从此set中移除所有元素。此调用返回后，该set将为空。 </div><div class="line">     * </div><div class="line">     * 底层实际调用HashMap的clear方法清空Entry中所有元素。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;  </div><div class="line">    map.clear();  </div><div class="line">    &#125;  </div><div class="line">  </div><div class="line">    <span class="comment">/** </span></div><div class="line">     * 返回此HashSet实例的浅表副本：并没有复制这些元素本身。 </div><div class="line">     * </div><div class="line">     * 底层实际调用HashMap的clone()方法，获取HashMap的浅表副本，并设置到HashSet中。 </div><div class="line">     */  </div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">clone</span><span class="params">()</span> </span>&#123;  </div><div class="line">        <span class="keyword">try</span> &#123;  </div><div class="line">            HashSet&lt;E&gt; newSet = (HashSet&lt;E&gt;) <span class="keyword">super</span>.clone();  </div><div class="line">            newSet.map = (HashMap&lt;E, Object&gt;) map.clone();  </div><div class="line">            <span class="keyword">return</span> newSet;  </div><div class="line">        &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;  </div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> InternalError();  </div><div class="line">        &#125;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
-<li>说白了，HashSet就是限制了功能的HashMap，所以了解HashMap的实现原理，这个HashSet自然就通</li>
-<li>对于HashSet中保存的对象，主要要正确重写equals方法和hashCode方法，以保证放入Set对象的唯一性</li>
-<li>虽说时Set是对于重复的元素不放入，倒不如直接说是底层的Map直接把原值替代了（这个Set的put方法的返回值真有意思）</li>
-<li>HashSet没有提供get()方法，愿意是同HashMap一样，Set内部是无序的，只能通过迭代的方式获得</li>
-</ul>
-<h1 id="小总结"><a href="#小总结" class="headerlink" title="小总结"></a>小总结</h1><p>经历这么一次滑稽的经历，看来真的有必要把几个常用的集合框架的底层实现都看一遍，以免再次搞出这样的尴尬（手动滑稽）</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F29%2F%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3HashSet%2F</url>
+      <content type="text"><![CDATA[首先是有一个悲伤的故事讲道理，这是面试时遇到的第一个卡壳以至于转移面试官注意力的地方（……），还好之前有被人指点一下加确实已经仔细研究过HashMap，才不至于无法补救 其次我TM惊呆了本想着回来以后好好看看HashSet的底层实现，结果打开源码一看的我惊呆了wocao怎么这么刺眼呢？你是set啊，你是Collection的子类啊，你叔叔才是Map啊，你这样我心好痛啊冷静下来我仔细一想，Set不能有重复的元素，HashMap不允许有重复的键，又是一口老血，当时也没想到也没敢去这么想 转一下dalao的博客于是接着去看网上的dalao的博客，发现了这一篇私自转载dalao博文侵删 HashSet概述和实现HashSet实现Set接口，由哈希表（实际上是一个HashMap实例）支持。它不保证set 的迭代顺序；特别是它不保证该顺序恒久不变，此类允许使用null元素。在HashSet中，元素都存到HashMap键值对的Key上面，而Value时有一个统一的值private static final Object PRESENT = new Object();， HashSet插入当有新值加入时，底层的HashMap会判断Key值是否存在（HashMap细节请移步深入理解HashMap），如果不存在，则插入新值，同时这个插入的细节会依照HashMap插入细节；如果存在就不插入 删除同HashMap删除原理 源码分析盗（xue）用（xi）一下dalao 的分析代码，侵权请告之，立马删除123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169public class HashSet&lt;E&gt; extends AbstractSet&lt;E&gt; implements Set&lt;E&gt;, Cloneable, java.io.Serializable &#123; static final long serialVersionUID = -5024744406713321676L; // 底层使用HashMap来保存HashSet中所有元素。 private transient HashMap&lt;E,Object&gt; map; // 定义一个虚拟的Object对象作为HashMap的value，将此对象定义为static final。 private static final Object PRESENT = new Object(); /** * 默认的无参构造器，构造一个空的HashSet。 * * 实际底层会初始化一个空的HashMap，并使用默认初始容量为16和加载因子0.75。 */ public HashSet() &#123; map = new HashMap&lt;E,Object&gt;(); &#125; /** * 构造一个包含指定collection中的元素的新set。 * * 实际底层使用默认的加载因子0.75和足以包含指定 * collection中所有元素的初始容量来创建一个HashMap。 * @param c 其中的元素将存放在此set中的collection。 */ public HashSet(Collection&lt;? extends E&gt; c) &#123; map = new HashMap&lt;E,Object&gt;(Math.max((int) (c.size()/.75f) + 1, 16)); addAll(c); &#125; /** * 以指定的initialCapacity和loadFactor构造一个空的HashSet。 * * 实际底层以相应的参数构造一个空的HashMap。 * @param initialCapacity 初始容量。 * @param loadFactor 加载因子。 */ public HashSet(int initialCapacity, float loadFactor) &#123; map = new HashMap&lt;E,Object&gt;(initialCapacity, loadFactor); &#125; /** * 以指定的initialCapacity构造一个空的HashSet。 * * 实际底层以相应的参数及加载因子loadFactor为0.75构造一个空的HashMap。 * @param initialCapacity 初始容量。 */ public HashSet(int initialCapacity) &#123; map = new HashMap&lt;E,Object&gt;(initialCapacity); &#125; /** * 以指定的initialCapacity和loadFactor构造一个新的空链接哈希集合。 * 此构造函数为包访问权限，不对外公开，实际只是是对LinkedHashSet的支持。 * * 实际底层会以指定的参数构造一个空LinkedHashMap实例来实现。 * @param initialCapacity 初始容量。 * @param loadFactor 加载因子。 * @param dummy 标记。 */ HashSet(int initialCapacity, float loadFactor, boolean dummy) &#123; map = new LinkedHashMap&lt;E,Object&gt;(initialCapacity, loadFactor); &#125; /** * 返回对此set中元素进行迭代的迭代器。返回元素的顺序并不是特定的。 * * 底层实际调用底层HashMap的keySet来返回所有的key。 * 可见HashSet中的元素，只是存放在了底层HashMap的key上， * value使用一个static final的Object对象标识。 * @return 对此set中元素进行迭代的Iterator。 */ public Iterator&lt;E&gt; iterator() &#123; return map.keySet().iterator(); &#125; /** * 返回此set中的元素的数量（set的容量）。 * * 底层实际调用HashMap的size()方法返回Entry的数量，就得到该Set中元素的个数。 * @return 此set中的元素的数量（set的容量）。 */ public int size() &#123; return map.size(); &#125; /** * 如果此set不包含任何元素，则返回true。 * * 底层实际调用HashMap的isEmpty()判断该HashSet是否为空。 * @return 如果此set不包含任何元素，则返回true。 */ public boolean isEmpty() &#123; return map.isEmpty(); &#125; /** * 如果此set包含指定元素，则返回true。 * 更确切地讲，当且仅当此set包含一个满足(o==null ? e==null : o.equals(e)) * 的e元素时，返回true。 * * 底层实际调用HashMap的containsKey判断是否包含指定key。 * @param o 在此set中的存在已得到测试的元素。 * @return 如果此set包含指定元素，则返回true。 */ public boolean contains(Object o) &#123; return map.containsKey(o); &#125; /** * 如果此set中尚未包含指定元素，则添加指定元素。 * 更确切地讲，如果此 set 没有包含满足(e==null ? e2==null : e.equals(e2)) * 的元素e2，则向此set 添加指定的元素e。 * 如果此set已包含该元素，则该调用不更改set并返回false。 * * 底层实际将将该元素作为key放入HashMap。 * 由于HashMap的put()方法添加key-value对时，当新放入HashMap的Entry中key * 与集合中原有Entry的key相同（hashCode()返回值相等，通过equals比较也返回true）， * 新添加的Entry的value会将覆盖原来Entry的value，但key不会有任何改变， * 因此如果向HashSet中添加一个已经存在的元素时，新添加的集合元素将不会被放入HashMap中， * 原来的元素也不会有任何改变，这也就满足了Set中元素不重复的特性。 * @param e 将添加到此set中的元素。 * @return 如果此set尚未包含指定元素，则返回true。 */ public boolean add(E e) &#123; return map.put(e, PRESENT)==null; &#125; /** * 如果指定元素存在于此set中，则将其移除。 * 更确切地讲，如果此set包含一个满足(o==null ? e==null : o.equals(e))的元素e， * 则将其移除。如果此set已包含该元素，则返回true * （或者：如果此set因调用而发生更改，则返回true）。（一旦调用返回，则此set不再包含该元素）。 * * 底层实际调用HashMap的remove方法删除指定Entry。 * @param o 如果存在于此set中则需要将其移除的对象。 * @return 如果set包含指定元素，则返回true。 */ public boolean remove(Object o) &#123; return map.remove(o)==PRESENT; &#125; /** * 从此set中移除所有元素。此调用返回后，该set将为空。 * * 底层实际调用HashMap的clear方法清空Entry中所有元素。 */ public void clear() &#123; map.clear(); &#125; /** * 返回此HashSet实例的浅表副本：并没有复制这些元素本身。 * * 底层实际调用HashMap的clone()方法，获取HashMap的浅表副本，并设置到HashSet中。 */ public Object clone() &#123; try &#123; HashSet&lt;E&gt; newSet = (HashSet&lt;E&gt;) super.clone(); newSet.map = (HashMap&lt;E, Object&gt;) map.clone(); return newSet; &#125; catch (CloneNotSupportedException e) &#123; throw new InternalError(); &#125; &#125; &#125; 注意 说白了，HashSet就是限制了功能的HashMap，所以了解HashMap的实现原理，这个HashSet自然就通 对于HashSet中保存的对象，主要要正确重写equals方法和hashCode方法，以保证放入Set对象的唯一性 虽说时Set是对于重复的元素不放入，倒不如直接说是底层的Map直接把原值替代了（这个Set的put方法的返回值真有意思） HashSet没有提供get()方法，愿意是同HashMap一样，Set内部是无序的，只能通过迭代的方式获得 小总结经历这么一次滑稽的经历，看来真的有必要把几个常用的集合框架的底层实现都看一遍，以免再次搞出这样的尴尬（手动滑稽）]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[JVM-String常量池与运行时常量池]]></title>
-      <url>http://yoursite.com/2017/03/29/JVM-String%E5%B8%B8%E9%87%8F%E6%B1%A0%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0/</url>
-      <content type="html"><![CDATA[<h1 id="Start-with-JVM"><a href="#Start-with-JVM" class="headerlink" title="Start with JVM"></a>Start with JVM</h1><p>周志明先生著-《深入理解Java虚拟机》，书买回来好几天了，但是最近才准备开始搞一搞了（哭瞎…..）。首先是第一章的Java以及JVM发展历史，大概知道了现行的应用最广泛的Java虚拟机是HotSpot，当然一些商业公司也有使用自己的虚拟机。</p>
-<h2 id="JVM运行时数据区"><a href="#JVM运行时数据区" class="headerlink" title="JVM运行时数据区"></a>JVM运行时数据区</h2><p>这是放在Java内存区域与内存溢出异常里面的必备知识，描述了Java虚拟机在运行时的数据区域<br>↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓<br><img src="/2017/03/29/JVM-String常量池与运行时常量池/shujuqu.png" alt="shujuqu"><br><strong>私有</strong></p>
-<ul>
-<li>程序计数器：记录当前线程所执行字节码的行号指示器</li>
-<li>虚拟机栈：存放了当前线程调用方法的局部变量表、操作数栈、动态链接、方法返回值等信息（可以理解为线程的栈）</li>
-<li>本地方法栈：为虚拟机使用的Native方法提供服务，后多与JVM Stack合并为一起</li>
-</ul>
-<p><strong>共享</strong></p>
-<ul>
-<li>Java堆：占据了虚拟机管理内存中最大的一块（没想到吧），<strong>唯一目的就是存放对象实例</strong>（与引用是两个概念），也是垃圾回收器主要管理的地方，故又称GC堆。先开坑，后面讲垃圾回收机制再详述</li>
-<li>方法区：<strong>存储加载的类信息、常量区、静态变量、JIT（即时编译器）处理后的数据等</strong>，类的信息包含类的版本、字段、方法、接口等信息。需要注意是常量池就在方法区中，也是我们这次需要关注的地方。</li>
-</ul>
-<h3 id="提一下这个Native方法"><a href="#提一下这个Native方法" class="headerlink" title="提一下这个Native方法"></a>提一下这个Native方法</h3><p>指得就是Java程序调用了非Java代码，算是一种引入其它语言程序的接口</p>
-<h2 id="看一下方法区"><a href="#看一下方法区" class="headerlink" title="看一下方法区"></a>看一下方法区</h2><p>方法区因为总是存放不会轻易改变的内容，故又被称之为“永久代”。HotSpot也选择把GC分代收集扩展至方法区，但也容易遇到内存溢出问题。可以选择不实现垃圾回收，但如果回收就主要涉及常量池的回收和类的卸载（这里开坑，后续补上链接）</p>
-<h1 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h1><p>回归本次讨论正题，主要是在看Java和C++的一些原理时，老是有“常量池”这个我一知半解的讨厌的字词，烦的一批，今天我就来探一探究竟。</p>
-<p>JVM中运行时常量池在方法区中，因为是建立在JDK1.7/1.8的基础上来研究这个，所以我先认为String常量池在堆中。Class文件中除了类的版本、字段、方法、接口等描述信息，还有常量池，用于<strong>存放编译期生成的各种字面量和符号引用</strong></p>
-<h2 id="运行时常量池与Class文件常量池区别"><a href="#运行时常量池与Class文件常量池区别" class="headerlink" title="运行时常量池与Class文件常量池区别"></a>运行时常量池与Class文件常量池区别</h2><ul>
-<li>JVM对Class文件中每一部分的格式都有严格的要求，每一个字节用于存储那种数据都必须符合规范上的要求才会被虚拟机认可、装载和执行；但运行时常量池没有这些限制，<strong>除了保存Class文件中描述的符号引用，还会把翻译出来的直接引用也存储在运行时常量区</strong></li>
-<li>相较于Class文件常量池，运行时常量池更具动态性，<strong>在运行期间也可以将新的变量放入常量池中，而不是一定要在编译时确定的常量才能放入</strong>。最主要的运用便是String类的intern()方法</li>
-<li>在方法区中，常量池有运行时常量池和Class文件常量池；但其中的内容是否完全不同，暂时还未得知</li>
-</ul>
-<h3 id="String-intern"><a href="#String-intern" class="headerlink" title="String.intern()"></a>String.intern()</h3><p>检查字符串常量池中是否存在String并返回池里的字符串引用；若池中不存在，则将其加入池中，并返回其引用。<br>这样做主要是为了避免在堆中不断地创建新的字符串对象</p>
-<h2 id="那class常量池呢？"><a href="#那class常量池呢？" class="headerlink" title="那class常量池呢？"></a>那class常量池呢？</h2><p>具体的等分析到Class文件格式再来填这个坑，先来看常量池中的内容：<br><img src="/2017/03/29/JVM-String常量池与运行时常量池/changliangchi.png" alt="changliangchi"><br>看一下dalao的博客<a href="http://blog.csdn.net/wangtaomtk/article/details/52267548" target="_blank" rel="external">Class文件中常量池详解</a></p>
-<h1 id="看一看String常量池（的特殊姿势）吧"><a href="#看一看String常量池（的特殊姿势）吧" class="headerlink" title="看一看String常量池（的特殊姿势）吧"></a>看一看String常量池（的特殊姿势）吧</h1><p>在研究这个的时候我也上网看了别人的博客，有的人做出了实验，我也试一下</p>
-<h2 id="实验一"><a href="#实验一" class="headerlink" title="实验一"></a>实验一</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> String a = <span class="string">"a"</span>;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">		String b = <span class="string">"b"</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>使用Java自带的反编译工具反编译一下，编译后输入<code>javap -verbose Test.cass</code></p>
-<p><img src="/2017/03/29/JVM-String常量池与运行时常量池/test1.png" alt="test1"><br>可以发现两个静态String变量都放入了常量池中</p>
-<h2 id="实验二"><a href="#实验二" class="headerlink" title="实验二"></a>实验二</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test2</span></span>&#123;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">static</span> String str = <span class="string">"laji"</span> + <span class="string">"MySQL"</span>;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在编译前先分析一波，按理说，既然是静态String常量，那么理应出现在常量池（Constant Pool）中，但<br><img src="/2017/03/29/JVM-String常量池与运行时常量池/test2.png" alt="test2"></p>
-<p>来看看进阶版的Test2_2<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test2_2</span></span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		String string1 = <span class="string">"laji"</span>;  </div><div class="line">		String string2 = <span class="string">"MySQL"</span>;  </div><div class="line">		String string3 = string1+string2;  </div><div class="line">		String string4 = string1+<span class="string">"C"</span>;	</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这个的结果就更有意思了↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓<br><img src="/2017/03/29/JVM-String常量池与运行时常量池/test2_2.png" alt="test2_2"><br>总商量个实验，可以看出</p>
-<ul>
-<li>对于直接做<code>+</code>运算的两个字符串（字面量）常量，并不会放入String常量池中，而是直接把运算后的结果放入常量池中</li>
-<li>对于先声明的字符串字面量常量，会放入常量池，但是若使用字面量的引用进行运算就不会把运算后的结果放入常量池中了</li>
-<li>总结一下就是JVM会对String常量的运算进行优化，未声明的，只放结果；已经声明的，只放声明</li>
-</ul>
-<h2 id="实验三"><a href="#实验三" class="headerlink" title="实验三"></a>实验三</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test3</span></span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		String str = <span class="string">"laji"</span>;</div><div class="line">		String str2 = <span class="keyword">new</span> String(<span class="string">"MySQL"</span>);</div><div class="line">		String str3 = <span class="keyword">new</span> String(<span class="string">"laji"</span>);</div><div class="line">		</div><div class="line">		System.out.println(str==str3);<span class="comment">// 运行后结果为false</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>结果为：<br><img src="/2017/03/29/JVM-String常量池与运行时常量池/test3.png" alt="test3"><br>这个实验三包含了很多内容，首先是new一个对象时，明明是在堆中实例化一个对象，怎么会出现常量池中？</p>
-<ul>
-<li>这里的<code>&quot;MySQL&quot;</code>并不是字符串常量出现在常量池中的，而是以字面量出现的，实例化操作（new的过程）是在运行时才执行的，编译时并没有在堆中生成相应的对象</li>
-<li>最后输出的结果之所以是false，就是因为str指向的”laji”是存放在常量池中的，而str3指向的”laji”是存放在堆中的，==比较的是引用（地址），当然是false</li>
-</ul>
-<h2 id="实验四"><a href="#实验四" class="headerlink" title="实验四"></a>实验四</h2><p>主要是为了解释一下intern()方法的用处<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test4</span></span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		String str = <span class="string">"laji"</span>;</div><div class="line">		String str2 = <span class="keyword">new</span> String(<span class="string">"laji"</span>);</div><div class="line">		String str3 = <span class="keyword">null</span>;</div><div class="line">		</div><div class="line">		System.out.println(str==str2);<span class="comment">// 运行后结果为false</span></div><div class="line">		str3 = str2.intern();</div><div class="line">		System.out.println(str==str3);<span class="comment">// 运行后结果为true</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>显然，str3在初始化的时候是从字符串常量池中获取到的值</p>
-<h1 id="String常量池随JDK的改变"><a href="#String常量池随JDK的改变" class="headerlink" title="String常量池随JDK的改变"></a>String常量池随JDK的改变</h1><p>JDK1.7中JVM把String常量区从方法区中移除了；JDK1.8中JVM把String常量池移入了堆中，同时取消了“永久代”，改用元空间代替（Metaspace）<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.util.ArrayList;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestString</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">		 String str = <span class="string">"abc"</span>;  </div><div class="line">	        <span class="keyword">char</span>[] array = &#123;<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>&#125;;  </div><div class="line">	        String str2 = <span class="keyword">new</span> String(array);  </div><div class="line">	        <span class="comment">//使用intern()将str2字符串内容放入常量池  </span></div><div class="line">	        str2 = str2.intern();  </div><div class="line">	        <span class="comment">//这个比较用来说明字符串字面常量和我们使用intern处理后的字符串是在同一个地方  </span></div><div class="line">	        System.out.println(str == str2);  </div><div class="line">	        <span class="comment">//那好，下面我们就拼命的intern吧  </span></div><div class="line">	     </div><div class="line">	        ArrayList&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;String&gt;();  </div><div class="line">	        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000000</span>; i++) &#123;  </div><div class="line">	            String temp = String.valueOf(i).intern();  </div><div class="line">	            list.add(temp);  </div><div class="line">	        &#125;  </div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>这个实验最早是2014年有人实验过的，ta得出的结论是<code>Exception in thread &quot;main&quot; java.lang.OutOfMemoryError: PermGen space</code>，然而时至今日，我自己按照ta的代码跑了一遍，并没有出现上述的错误，虽然一段时间内内存资源占用呈上升状态。猜想：所使用JDK版本不同，对于String常量池存放的位置已经发生了改变；或者是两者的电脑硬件不同<br><a href="http://zangxt.iteye.com/blog/472236" target="_blank" rel="external">实验出处</a></p>
-<p>然后，我又看到了这个<a href="http://book.51cto.com/art/201504/472210.htm" target="_blank" rel="external">新的实验证明String常量池的位置</a>，<br><code>JVM参数设置：-Xmx5m -XX:MaxPermSize=5m</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> java.util.ArrayList;</div><div class="line"><span class="keyword">import</span> java.util.List;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestString2</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">		<span class="comment">// TODO Auto-generated method stub</span></div><div class="line">        List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;String&gt;();  </div><div class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;  </div><div class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;  </div><div class="line">            list.add(String.valueOf(i++).intern());  </div><div class="line">        &#125;  </div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>因为JDK版本不同的原因，我无法按照上述的代码得出原博文相同的结果，这是我自己运行出的结果<br><img src="/2017/03/29/JVM-String常量池与运行时常量池/GC.png" alt="GC"></p>
-<blockquote>
-<p>sun官方说明：并行/并发回收器在GC回收时间过长时会抛出OutOfMemroyError。过长的定义是，超过98%的时间用来做GC并且回收了不到2%的堆内存。用来避免内存过小造成应用不能正常工作。</p>
-</blockquote>
-<p>对照着结果以及上面的博客可以得知，这显然是在堆中的垃圾回收发生了异常所致。在内存满后，会进行垃圾回收，但又会intern新的字符串到String常量池中，那么就会导致垃圾回收器一直不停的干着没有意义的活，时间一久，自然报错。同时原文中所提及的这一句话我觉得需要注意一下：</p>
-<blockquote>
-<p>另外一点值得注意的是，虽然String.intern()的返回值永远等于字符串常量。但这并不代表在系统的每时每刻，相同的字符串的intern()返回都会是一样的（虽然在95%以上的情况下，都是相同的）。因为存在这么一种可能：在一次intern()调用之后，该字符串在某一个时刻被回收，之后，再进行一次intern()调用，那么字面量相同的字符串重新被加入常量池，但是引用位置已经不同。</p>
-</blockquote>
-<p>综上，虽自己没有太多的明确结果证明，但是我想这已经能够印证JDK版本变化导致的String常量池位置的改变。</p>
-<h1 id="日常summary"><a href="#日常summary" class="headerlink" title="日常summary"></a>日常summary</h1><p>这个本来是今天计划打算进行的一部分，结果好像进入牛角尖了，一定要深入一下…..，结果垃圾回收也没有看多少，明天继续。<br>但终于算是把这一块搞的一清二楚了，😜</p>
-<h2 id="吐槽一下"><a href="#吐槽一下" class="headerlink" title="吐槽一下"></a>吐槽一下</h2><p>第一次听说垃圾分代时是懵逼的，分袋？还用分袋装垃圾？这是真的吗？现在了解了才发现自己的想法真是666</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> JVM </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F29%2FJVM-String%E5%B8%B8%E9%87%8F%E6%B1%A0%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0%2F</url>
+      <content type="text"><![CDATA[Start with JVM周志明先生著-《深入理解Java虚拟机》，书买回来好几天了，但是最近才准备开始搞一搞了（哭瞎…..）。首先是第一章的Java以及JVM发展历史，大概知道了现行的应用最广泛的Java虚拟机是HotSpot，当然一些商业公司也有使用自己的虚拟机。 JVM运行时数据区这是放在Java内存区域与内存溢出异常里面的必备知识，描述了Java虚拟机在运行时的数据区域↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓私有 程序计数器：记录当前线程所执行字节码的行号指示器 虚拟机栈：存放了当前线程调用方法的局部变量表、操作数栈、动态链接、方法返回值等信息（可以理解为线程的栈） 本地方法栈：为虚拟机使用的Native方法提供服务，后多与JVM Stack合并为一起 共享 Java堆：占据了虚拟机管理内存中最大的一块（没想到吧），唯一目的就是存放对象实例（与引用是两个概念），也是垃圾回收器主要管理的地方，故又称GC堆。先开坑，后面讲垃圾回收机制再详述 方法区：存储加载的类信息、常量区、静态变量、JIT（即时编译器）处理后的数据等，类的信息包含类的版本、字段、方法、接口等信息。需要注意是常量池就在方法区中，也是我们这次需要关注的地方。 提一下这个Native方法指得就是Java程序调用了非Java代码，算是一种引入其它语言程序的接口 看一下方法区方法区因为总是存放不会轻易改变的内容，故又被称之为“永久代”。HotSpot也选择把GC分代收集扩展至方法区，但也容易遇到内存溢出问题。可以选择不实现垃圾回收，但如果回收就主要涉及常量池的回收和类的卸载（这里开坑，后续补上链接） 运行时常量池回归本次讨论正题，主要是在看Java和C++的一些原理时，老是有“常量池”这个我一知半解的讨厌的字词，烦的一批，今天我就来探一探究竟。 JVM中运行时常量池在方法区中，因为是建立在JDK1.7/1.8的基础上来研究这个，所以我先认为String常量池在堆中。Class文件中除了类的版本、字段、方法、接口等描述信息，还有常量池，用于存放编译期生成的各种字面量和符号引用 运行时常量池与Class文件常量池区别 JVM对Class文件中每一部分的格式都有严格的要求，每一个字节用于存储那种数据都必须符合规范上的要求才会被虚拟机认可、装载和执行；但运行时常量池没有这些限制，除了保存Class文件中描述的符号引用，还会把翻译出来的直接引用也存储在运行时常量区 相较于Class文件常量池，运行时常量池更具动态性，在运行期间也可以将新的变量放入常量池中，而不是一定要在编译时确定的常量才能放入。最主要的运用便是String类的intern()方法 在方法区中，常量池有运行时常量池和Class文件常量池；但其中的内容是否完全不同，暂时还未得知 String.intern()检查字符串常量池中是否存在String并返回池里的字符串引用；若池中不存在，则将其加入池中，并返回其引用。这样做主要是为了避免在堆中不断地创建新的字符串对象 那class常量池呢？具体的等分析到Class文件格式再来填这个坑，先来看常量池中的内容：看一下dalao的博客Class文件中常量池详解 看一看String常量池（的特殊姿势）吧在研究这个的时候我也上网看了别人的博客，有的人做出了实验，我也试一下 实验一123456public class Test&#123; public static String a = "a"; public static void main()&#123; String b = "b"; &#125;&#125; 使用Java自带的反编译工具反编译一下，编译后输入javap -verbose Test.cass 可以发现两个静态String变量都放入了常量池中 实验二12345public class Test2&#123; public static String str = "laji" + "MySQL"; public static void main()&#123; &#125;&#125; 在编译前先分析一波，按理说，既然是静态String常量，那么理应出现在常量池（Constant Pool）中，但 来看看进阶版的Test2_212345678public class Test2_2&#123; public static void main(String[] args)&#123; String string1 = "laji"; String string2 = "MySQL"; String string3 = string1+string2; String string4 = string1+"C"; &#125;&#125; 这个的结果就更有意思了↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓总商量个实验，可以看出 对于直接做+运算的两个字符串（字面量）常量，并不会放入String常量池中，而是直接把运算后的结果放入常量池中 对于先声明的字符串字面量常量，会放入常量池，但是若使用字面量的引用进行运算就不会把运算后的结果放入常量池中了 总结一下就是JVM会对String常量的运算进行优化，未声明的，只放结果；已经声明的，只放声明 实验三123456789public class Test3&#123; public static void main(String[] args)&#123; String str = "laji"; String str2 = new String("MySQL"); String str3 = new String("laji"); System.out.println(str==str3);// 运行后结果为false &#125;&#125; 结果为：这个实验三包含了很多内容，首先是new一个对象时，明明是在堆中实例化一个对象，怎么会出现常量池中？ 这里的&quot;MySQL&quot;并不是字符串常量出现在常量池中的，而是以字面量出现的，实例化操作（new的过程）是在运行时才执行的，编译时并没有在堆中生成相应的对象 最后输出的结果之所以是false，就是因为str指向的”laji”是存放在常量池中的，而str3指向的”laji”是存放在堆中的，==比较的是引用（地址），当然是false 实验四主要是为了解释一下intern()方法的用处1234567891011public class Test4&#123; public static void main(String[] args)&#123; String str = "laji"; String str2 = new String("laji"); String str3 = null; System.out.println(str==str2);// 运行后结果为false str3 = str2.intern(); System.out.println(str==str3);// 运行后结果为true &#125;&#125; 显然，str3在初始化的时候是从字符串常量池中获取到的值 String常量池随JDK的改变JDK1.7中JVM把String常量区从方法区中移除了；JDK1.8中JVM把String常量池移入了堆中，同时取消了“永久代”，改用元空间代替（Metaspace）12345678910111213141516171819202122import java.util.ArrayList;public class TestString &#123; public static void main(String[] args) &#123; String str = "abc"; char[] array = &#123;'a', 'b', 'c'&#125;; String str2 = new String(array); //使用intern()将str2字符串内容放入常量池 str2 = str2.intern(); //这个比较用来说明字符串字面常量和我们使用intern处理后的字符串是在同一个地方 System.out.println(str == str2); //那好，下面我们就拼命的intern吧 ArrayList&lt;String&gt; list = new ArrayList&lt;String&gt;(); for (int i = 0; i &lt; 10000000; i++) &#123; String temp = String.valueOf(i).intern(); list.add(temp); &#125; &#125;&#125; 这个实验最早是2014年有人实验过的，ta得出的结论是Exception in thread &quot;main&quot; java.lang.OutOfMemoryError: PermGen space，然而时至今日，我自己按照ta的代码跑了一遍，并没有出现上述的错误，虽然一段时间内内存资源占用呈上升状态。猜想：所使用JDK版本不同，对于String常量池存放的位置已经发生了改变；或者是两者的电脑硬件不同实验出处 然后，我又看到了这个新的实验证明String常量池的位置，JVM参数设置：-Xmx5m -XX:MaxPermSize=5m1234567891011121314import java.util.ArrayList;import java.util.List;public class TestString2 &#123; public static void main(String[] args) &#123; // TODO Auto-generated method stub List&lt;String&gt; list = new ArrayList&lt;String&gt;(); int i = 0; while(true)&#123; list.add(String.valueOf(i++).intern()); &#125; &#125;&#125; 因为JDK版本不同的原因，我无法按照上述的代码得出原博文相同的结果，这是我自己运行出的结果 sun官方说明：并行/并发回收器在GC回收时间过长时会抛出OutOfMemroyError。过长的定义是，超过98%的时间用来做GC并且回收了不到2%的堆内存。用来避免内存过小造成应用不能正常工作。 对照着结果以及上面的博客可以得知，这显然是在堆中的垃圾回收发生了异常所致。在内存满后，会进行垃圾回收，但又会intern新的字符串到String常量池中，那么就会导致垃圾回收器一直不停的干着没有意义的活，时间一久，自然报错。同时原文中所提及的这一句话我觉得需要注意一下： 另外一点值得注意的是，虽然String.intern()的返回值永远等于字符串常量。但这并不代表在系统的每时每刻，相同的字符串的intern()返回都会是一样的（虽然在95%以上的情况下，都是相同的）。因为存在这么一种可能：在一次intern()调用之后，该字符串在某一个时刻被回收，之后，再进行一次intern()调用，那么字面量相同的字符串重新被加入常量池，但是引用位置已经不同。 综上，虽自己没有太多的明确结果证明，但是我想这已经能够印证JDK版本变化导致的String常量池位置的改变。 日常summary这个本来是今天计划打算进行的一部分，结果好像进入牛角尖了，一定要深入一下…..，结果垃圾回收也没有看多少，明天继续。但终于算是把这一块搞的一清二楚了，😜 吐槽一下第一次听说垃圾分代时是懵逼的，分袋？还用分袋装垃圾？这是真的吗？现在了解了才发现自己的想法真是666]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[Java中的volatile关键字]]></title>
-      <url>http://yoursite.com/2017/03/18/Java%E4%B8%AD%E7%9A%84volatile%E5%85%B3%E9%94%AE%E5%AD%97/</url>
-      <content type="html"><![CDATA[<h1 id="Java并发中的可见性与原子性"><a href="#Java并发中的可见性与原子性" class="headerlink" title="Java并发中的可见性与原子性"></a>Java并发中的可见性与原子性</h1><p>Java并发是一个十分重要的知识点，然而我并不会（…..），慢慢上手吧，今天来看一看这个volatile</p>
-<h2 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h2><p>可见性是指线程之间的可见性，也就是一个线程修改的结果对另一个线程是可见的。使用volatile修饰的变量就会具有可见性。但需要注意的是volatile只能保证被修饰的内容具有可见性，而不能保证具有原子性，因而就会存在线程安全问题</p>
-<h2 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h2><p>原子是不可分割的，因此原子操作也是指某些操作是连续的不可分割的（操作系统中有详细的解释）。非原子操作会存在线程安全问题，而加上synchronized关键字后就会使操作变成原子操作<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ......</span></div><div class="line"><span class="keyword">int</span> a = <span class="number">0</span>;</div><div class="line">a = a + <span class="number">1</span>;</div><div class="line"><span class="comment">// ......</span></div></pre></td></tr></table></figure></p>
-<p>这么一个简单的过程，CPU在运行的时候会先读取a的值，然后相加计算的结果会再赋值给a；这时候如果是多个线程在工作，那么在赋值操作前CPU读取的值到底是0还是1呢？（多个线程同时工作，无法得知哪个线程在CPU执行的先后顺序，此时使用的a值说不定就是彼时计算后的a值）</p>
-<h2 id="重排序-Java多线程"><a href="#重排序-Java多线程" class="headerlink" title="重排序-Java多线程"></a>重排序-Java多线程</h2><p>再看下面的内容之前，先要看一看这个重排序：指令重排序，是指编译器或程序运行时环境为了<strong>优化程序性能</strong>而采取的对指令重新排序执行的一种手段<br>简单的说，两条语句在执行时，处于优化的原因，谁先执行谁后不一定</p>
-<h1 id="synchronized和volatile"><a href="#synchronized和volatile" class="headerlink" title="synchronized和volatile"></a>synchronized和volatile</h1><p>为了解决线程并发的问题，Java引入了同步快synchronized和volatile关键字机制</p>
-<ul>
-<li>synchronized关键字：被synchronized修饰的块结构在多线程访问时，同一时刻只能有一个线程能有访问的到块内容</li>
-<li>volatile关键字：volatile修饰的变量，线程在每次访问的时候，都会读取变量最后一次修改的值</li>
-</ul>
-<h1 id="volatile原理"><a href="#volatile原理" class="headerlink" title="volatile原理"></a>volatile原理</h1><p>再来仔细探讨一下volatile深入的原理，这是一种相对较弱的同步机制，能够确保使变量的更新对其他线程是可见的。被volatile声明的变量，编译器与运行时的环境都会注意到这是一个共享的变量，<strong>因此不会将该变量上的操作与其他内容操作一起重排序</strong>。这是因为volatile变量不会被缓存在寄存器或者其它对处理器不可见的地方，因此每次访问volatile变量都会返回最新更新的值。</p>
-<blockquote>
-<p>处理器在访问volatile变量时不会执行加锁操作，因此也就不会使执行线程阻塞，因此volatile变量是一种比synchronized关键字更为轻量级（稍弱）的同步机制</p>
-</blockquote>
-<h2 id="先看一下普通状态下的线程工作的内存变化"><a href="#先看一下普通状态下的线程工作的内存变化" class="headerlink" title="先看一下普通状态下的线程工作的内存变化"></a>先看一下普通状态下的线程工作的内存变化</h2><p>↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓<br><img src="/2017/03/18/Java中的volatile关键字/volatile.png" alt="volatile原理"><br>JVM在运行时会对不同的线程分配自己的线程栈（线程内存），线程栈保存了线程运行时变量的信息。当线程想访问一个对象的值的时候，会进行如下的操作：</p>
-<ul>
-<li>首先，通过对象的引用找到对应在堆内存中变量的值</li>
-<li>然后把该值load到本地线程内存中，<strong>建立一个变量的副本</strong>，之后线程就不在和对内存中变量的值有任何关系，而是直接修改副本中的值</li>
-<li>在修改完副本变量值后，在线程完全退出前，会自动把线程副本变量的值写回到对象在堆中的值，这样堆中变量的值就发生了变化</li>
-</ul>
-<p>如上图所示，取副本中的值（use）和写到副本中（asign）可以多次出现。<strong>重要的是，上图中的操作并不是原子性的</strong>，就是说当线程read和load后，如果主内存中变量的值发生了改变，线程无从得知，进而导致最后计算出的结果并不是我们预想中的。</p>
-<h2 id="回过头来看一下volatile的原理"><a href="#回过头来看一下volatile的原理" class="headerlink" title="回过头来看一下volatile的原理"></a>回过头来看一下volatile的原理</h2><p>还是上图，当使用volatile修饰后，JVM<strong>只会</strong>保证从主存加载到线程栈中的变量的值是最新的，这已经可以解释了volatile是如何使处理器总是使用到最新的变量值（依靠上图中蓝色的双向箭头）。</p>
-<p><strong>但是，注意但是</strong>，凡事都有个意外，volatile也会引发并发取值不一致的情况，原因在这里：</p>
-<ul>
-<li>假设有一个线程1和一个线程2，两个线程都会取number变量的值，计算，并写回主存</li>
-<li>先是线程1，read和load并计算写回后，number的值发生了变化</li>
-<li>再是线程2，当线程2read和load时，可能会是线程1写回并更新之后的number的新值，当线程2计算并写回后，这个number的值还是我们想要的值嘛？</li>
-</ul>
-<h2 id="总结普通状态与加了volatile关键字的对比"><a href="#总结普通状态与加了volatile关键字的对比" class="headerlink" title="总结普通状态与加了volatile关键字的对比"></a>总结普通状态与加了volatile关键字的对比</h2><p>简单的说，普通状态下，每个线程先从内存拷贝变量值到CPU缓存中（线程工作内存）。当有多个CPU工作时，每个线程可能在不同的CPU上被处理，也就是说，不同的线程使用的变量值都是来自不同的CPU缓存的</p>
-<p>而<strong>volatile生命的变量就保证了JVM每次读变量都从主存中读取，跳过了CPU缓存这一步</strong></p>
-<h1 id="加了volatile关键词后带来的特性"><a href="#加了volatile关键词后带来的特性" class="headerlink" title="加了volatile关键词后带来的特性"></a>加了volatile关键词后带来的特性</h1><ul>
-<li>一就是可见性了，因为线程都是从主存读取数据，相当于线程利用主存传递数据</li>
-<li>二就是禁止了指令重排序，查看网上的博客，发现了这么一句指令代码<code>load addl $0x0,(%esp)</code>，这是汇编指令，该操作相当于是一个<strong>内存屏障</strong>，作用是指令重排序时不能把屏障之后的指令排到屏障之前的位置</li>
-</ul>
-<h1 id="日常O-O"><a href="#日常O-O" class="headerlink" title="日常O_O"></a>日常O_O</h1><p>写这个Blog主要还是被笔试题虐了，关于JVM内存处理机制还是处于比较懵懂的状态，后面买了书再慢慢填坑<br>PS：今天心情爆炸不爽，服。自己还是先狗后人吧。:-)</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F18%2FJava%E4%B8%AD%E7%9A%84volatile%E5%85%B3%E9%94%AE%E5%AD%97%2F</url>
+      <content type="text"><![CDATA[Java并发中的可见性与原子性Java并发是一个十分重要的知识点，然而我并不会（…..），慢慢上手吧，今天来看一看这个volatile 可见性可见性是指线程之间的可见性，也就是一个线程修改的结果对另一个线程是可见的。使用volatile修饰的变量就会具有可见性。但需要注意的是volatile只能保证被修饰的内容具有可见性，而不能保证具有原子性，因而就会存在线程安全问题 原子性原子是不可分割的，因此原子操作也是指某些操作是连续的不可分割的（操作系统中有详细的解释）。非原子操作会存在线程安全问题，而加上synchronized关键字后就会使操作变成原子操作1234// ......int a = 0;a = a + 1;// ...... 这么一个简单的过程，CPU在运行的时候会先读取a的值，然后相加计算的结果会再赋值给a；这时候如果是多个线程在工作，那么在赋值操作前CPU读取的值到底是0还是1呢？（多个线程同时工作，无法得知哪个线程在CPU执行的先后顺序，此时使用的a值说不定就是彼时计算后的a值） 重排序-Java多线程再看下面的内容之前，先要看一看这个重排序：指令重排序，是指编译器或程序运行时环境为了优化程序性能而采取的对指令重新排序执行的一种手段简单的说，两条语句在执行时，处于优化的原因，谁先执行谁后不一定 synchronized和volatile为了解决线程并发的问题，Java引入了同步快synchronized和volatile关键字机制 synchronized关键字：被synchronized修饰的块结构在多线程访问时，同一时刻只能有一个线程能有访问的到块内容 volatile关键字：volatile修饰的变量，线程在每次访问的时候，都会读取变量最后一次修改的值 volatile原理再来仔细探讨一下volatile深入的原理，这是一种相对较弱的同步机制，能够确保使变量的更新对其他线程是可见的。被volatile声明的变量，编译器与运行时的环境都会注意到这是一个共享的变量，因此不会将该变量上的操作与其他内容操作一起重排序。这是因为volatile变量不会被缓存在寄存器或者其它对处理器不可见的地方，因此每次访问volatile变量都会返回最新更新的值。 处理器在访问volatile变量时不会执行加锁操作，因此也就不会使执行线程阻塞，因此volatile变量是一种比synchronized关键字更为轻量级（稍弱）的同步机制 先看一下普通状态下的线程工作的内存变化↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓JVM在运行时会对不同的线程分配自己的线程栈（线程内存），线程栈保存了线程运行时变量的信息。当线程想访问一个对象的值的时候，会进行如下的操作： 首先，通过对象的引用找到对应在堆内存中变量的值 然后把该值load到本地线程内存中，建立一个变量的副本，之后线程就不在和对内存中变量的值有任何关系，而是直接修改副本中的值 在修改完副本变量值后，在线程完全退出前，会自动把线程副本变量的值写回到对象在堆中的值，这样堆中变量的值就发生了变化 如上图所示，取副本中的值（use）和写到副本中（asign）可以多次出现。重要的是，上图中的操作并不是原子性的，就是说当线程read和load后，如果主内存中变量的值发生了改变，线程无从得知，进而导致最后计算出的结果并不是我们预想中的。 回过头来看一下volatile的原理还是上图，当使用volatile修饰后，JVM只会保证从主存加载到线程栈中的变量的值是最新的，这已经可以解释了volatile是如何使处理器总是使用到最新的变量值（依靠上图中蓝色的双向箭头）。 但是，注意但是，凡事都有个意外，volatile也会引发并发取值不一致的情况，原因在这里： 假设有一个线程1和一个线程2，两个线程都会取number变量的值，计算，并写回主存 先是线程1，read和load并计算写回后，number的值发生了变化 再是线程2，当线程2read和load时，可能会是线程1写回并更新之后的number的新值，当线程2计算并写回后，这个number的值还是我们想要的值嘛？ 总结普通状态与加了volatile关键字的对比简单的说，普通状态下，每个线程先从内存拷贝变量值到CPU缓存中（线程工作内存）。当有多个CPU工作时，每个线程可能在不同的CPU上被处理，也就是说，不同的线程使用的变量值都是来自不同的CPU缓存的 而volatile生命的变量就保证了JVM每次读变量都从主存中读取，跳过了CPU缓存这一步 加了volatile关键词后带来的特性 一就是可见性了，因为线程都是从主存读取数据，相当于线程利用主存传递数据 二就是禁止了指令重排序，查看网上的博客，发现了这么一句指令代码load addl $0x0,(%esp)，这是汇编指令，该操作相当于是一个内存屏障，作用是指令重排序时不能把屏障之后的指令排到屏障之前的位置 日常O_O写这个Blog主要还是被笔试题虐了，关于JVM内存处理机制还是处于比较懵懂的状态，后面买了书再慢慢填坑PS：今天心情爆炸不爽，服。自己还是先狗后人吧。:-)]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[Java序列化]]></title>
-      <url>http://yoursite.com/2017/03/18/Java%E5%BA%8F%E5%88%97%E5%8C%96/</url>
-      <content type="html"><![CDATA[<h1 id="什么是序列化？"><a href="#什么是序列化？" class="headerlink" title="什么是序列化？"></a>什么是序列化？</h1><p>Java序列化是指把Java对象转换为字节序列的过程；反序列化就是把字节序列再恢复成Java对象的过程</p>
-<h1 id="序列化的作用是什么？"><a href="#序列化的作用是什么？" class="headerlink" title="序列化的作用是什么？"></a>序列化的作用是什么？</h1><p>一般序列化的作用有两方面：</p>
-<ul>
-<li>把对象转换成字节序列永久的保存到硬盘上（保存到文件中），在MVC中很好用</li>
-<li>在网络上传送对象的字节序列</li>
-</ul>
-<p>简单的说，就是<strong>把数据（对象）换个时间或者是换个地方，继续使用</strong></p>
-<ul>
-<li>换个时间，比如说把数据存盘</li>
-<li>换个地方，比如网络间数据的传输</li>
-</ul>
-<h2 id="网络间对象的传输"><a href="#网络间对象的传输" class="headerlink" title="网络间对象的传输"></a>网络间对象的传输</h2><p>我们可以通过网络传输图片、文子、音像、视频等资料，同样也可以传对象，这样两个Java程序间通信就可以交换数据。（云服务，把用户数据从服务器传输给用户等）</p>
-<h1 id="如何实现序列化和反序列化？"><a href="#如何实现序列化和反序列化？" class="headerlink" title="如何实现序列化和反序列化？"></a>如何实现序列化和反序列化？</h1><p>一个不是很难理解的过程，很像是一个处理流</p>
-<h2 id="对象流：ObjectOutputStream和ObjectInputStream"><a href="#对象流：ObjectOutputStream和ObjectInputStream" class="headerlink" title="对象流：ObjectOutputStream和ObjectInputStream"></a>对象流：ObjectOutputStream和ObjectInputStream</h2><p>ObjectOutputStream对象输出流，在实例化时<code>new ObjectOutputStream(OutputStream os)</code>获取输出流，然后<code>writeObject(Object obj)</code>方法可以对参数指定的obj对象进行序列化，然后可以把序列化的的字节序列写到这个os流中；<br><strong>序列化操作</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">File file = <span class="keyword">new</span> File(file_name);</div><div class="line">FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(file);</div><div class="line">ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(fos);</div><div class="line"><span class="comment">// ......</span></div><div class="line">Object obj  = <span class="keyword">new</span> Object();</div><div class="line">oos.writeObject(obj);</div><div class="line"><span class="comment">// ......</span></div></pre></td></tr></table></figure></p>
-<hr>
-<p><strong>反序列化操作</strong><br>ObjectInputStream对象输出流，在实例化时<code>new ObjectOutputStream(OutputStream os)</code>获取输入流，然后<code>(Object)readObject()</code>方法可以把读取到的字节序列强制转换成某个类的对象，并赋值；<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">File file = <span class="keyword">new</span> File(file_name);</div><div class="line">FileInputStream fis = <span class="keyword">new</span> FileInputStream(file);</div><div class="line">ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(fis);</div><div class="line"><span class="comment">// ......</span></div><div class="line"><span class="comment">// 所需的对象字节序列都在流中</span></div><div class="line">Object obj  = (Object)ois.readObject();</div><div class="line"><span class="comment">// ......</span></div></pre></td></tr></table></figure></p>
-<h2 id="必备条件"><a href="#必备条件" class="headerlink" title="必备条件"></a>必备条件</h2><p>只有实现了<code>Serializable或Externalizable接口的类</code>的对象才能被序列化，否则会抛出异常</p>
-<ul>
-<li>实现Serializable接口<br>使用默认的序列化/反序列化的方式，对类的非transient的实例对象进行序列化和反序列化</li>
-<li>实现Serializable接口并重写了writeObjetct和readObject方法<br>该类对象就可以调用重写后的读写方法</li>
-<li>实现Externalizable接口并重写了writeExternal和readExternal方法<br>该类对象可以调用读写方法</li>
-<li>直接使用JDK类库<br>上述代码段的使用方式，不再赘述<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><strong>对象序列化写入到对象流中的顺序应该与读取对象反序列化时的顺序一致</strong></li>
-</ul>
-<h2 id="对于transient关键字的补充"><a href="#对于transient关键字的补充" class="headerlink" title="对于transient关键字的补充"></a>对于transient关键字的补充</h2><ul>
-<li>transient只能修饰变量，不能修饰方法和类</li>
-<li>被transient修饰的变量不能被序列化；同时，static静态变量不管是否被transient修饰，都不会被序列化</li>
-<li>一旦变量被transient修饰，变量将不会被作为持久化对象中的一部分，该变量<strong>内容</strong>在序列化后不能被访问（变量还在，但变量中的值不在了）</li>
-</ul>
-<h1 id="日常总结"><a href="#日常总结" class="headerlink" title="日常总结"></a>日常总结</h1><p>被虐了……直到现在还在心塞，原理还是不懂，这些Java的小细节可以说是知之甚少，虽然听说过，但怎么用，为什么这么用，实现的原理是什么，一句话都说不出来……<br>关键是还知道这是各种面试笔试都会被提到的高频知识点……讲真的，该去买书看了，JVM、设计模式……</p>
-<p>PS：没错，我又开始挖坑了…….剩下的慢慢写好了</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F18%2FJava%E5%BA%8F%E5%88%97%E5%8C%96%2F</url>
+      <content type="text"><![CDATA[什么是序列化？Java序列化是指把Java对象转换为字节序列的过程；反序列化就是把字节序列再恢复成Java对象的过程 序列化的作用是什么？一般序列化的作用有两方面： 把对象转换成字节序列永久的保存到硬盘上（保存到文件中），在MVC中很好用 在网络上传送对象的字节序列 简单的说，就是把数据（对象）换个时间或者是换个地方，继续使用 换个时间，比如说把数据存盘 换个地方，比如网络间数据的传输 网络间对象的传输我们可以通过网络传输图片、文子、音像、视频等资料，同样也可以传对象，这样两个Java程序间通信就可以交换数据。（云服务，把用户数据从服务器传输给用户等） 如何实现序列化和反序列化？一个不是很难理解的过程，很像是一个处理流 对象流：ObjectOutputStream和ObjectInputStreamObjectOutputStream对象输出流，在实例化时new ObjectOutputStream(OutputStream os)获取输出流，然后writeObject(Object obj)方法可以对参数指定的obj对象进行序列化，然后可以把序列化的的字节序列写到这个os流中；序列化操作1234567File file = new File(file_name);FileOutputStream fos = new FileOutputStream(file);ObjectOutputStream oos = new ObjectOutputStream(fos);// ......Object obj = new Object();oos.writeObject(obj);// ...... 反序列化操作ObjectInputStream对象输出流，在实例化时new ObjectOutputStream(OutputStream os)获取输入流，然后(Object)readObject()方法可以把读取到的字节序列强制转换成某个类的对象，并赋值；1234567File file = new File(file_name);FileInputStream fis = new FileInputStream(file);ObjectInputStream ois = new ObjectInputStream(fis);// ......// 所需的对象字节序列都在流中Object obj = (Object)ois.readObject();// ...... 必备条件只有实现了Serializable或Externalizable接口的类的对象才能被序列化，否则会抛出异常 实现Serializable接口使用默认的序列化/反序列化的方式，对类的非transient的实例对象进行序列化和反序列化 实现Serializable接口并重写了writeObjetct和readObject方法该类对象就可以调用重写后的读写方法 实现Externalizable接口并重写了writeExternal和readExternal方法该类对象可以调用读写方法 直接使用JDK类库上述代码段的使用方式，不再赘述注意对象序列化写入到对象流中的顺序应该与读取对象反序列化时的顺序一致 对于transient关键字的补充 transient只能修饰变量，不能修饰方法和类 被transient修饰的变量不能被序列化；同时，static静态变量不管是否被transient修饰，都不会被序列化 一旦变量被transient修饰，变量将不会被作为持久化对象中的一部分，该变量内容在序列化后不能被访问（变量还在，但变量中的值不在了） 日常总结被虐了……直到现在还在心塞，原理还是不懂，这些Java的小细节可以说是知之甚少，虽然听说过，但怎么用，为什么这么用，实现的原理是什么，一句话都说不出来……关键是还知道这是各种面试笔试都会被提到的高频知识点……讲真的，该去买书看了，JVM、设计模式…… PS：没错，我又开始挖坑了…….剩下的慢慢写好了]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[指针常量和常量指针]]></title>
-      <url>http://yoursite.com/2017/03/18/%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F%E6%8C%87%E9%92%88/</url>
-      <content type="html"><![CDATA[<h1 id="翻看笔试题绕晕了"><a href="#翻看笔试题绕晕了" class="headerlink" title="翻看笔试题绕晕了"></a>翻看笔试题绕晕了</h1><p>本来翻看着各种笔试题，一切顺利的进行，不会的查一查，记不起来的查一查，直到在看<code>C/C++</code>有关的题目时遇到了</p>
-<blockquote>
-<p>指针常量和常量指针的区别</p>
-</blockquote>
-<p>手动黑人问号懵逼</p>
-<p>然后，法式懵逼……一种不祥的预感</p>
-<p>然后查了一下，世界懵逼……</p>
-<h1 id="有这么一种通俗易懂的说法"><a href="#有这么一种通俗易懂的说法" class="headerlink" title="有这么一种通俗易懂的说法"></a>有这么一种通俗易懂的说法</h1><p>查看了好几篇博客，直到看到了这么一种说法：<br><strong>三句箴言：</strong></p>
-<ul>
-<li>常量 const ，指针 <code>*</code>，谁排在前先读谁</li>
-<li><code>*</code> 是指针本身，是地址，<code>const</code>是常量本身</li>
-<li><code>const</code>和 <code>*</code> 谁排在前，谁代表的内容就不可以改变<br>举个栗子吧：<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> a = <span class="number">3</span>;</div><div class="line"><span class="keyword">int</span> b = <span class="number">4</span>;</div><div class="line"><span class="keyword">int</span> <span class="keyword">const</span> *ptr = &amp;a;</div><div class="line"><span class="keyword">int</span>* <span class="keyword">const</span> ptr2 = &amp;b;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>在上面的代码中，ptr就是常量指针，ptr2是指针常量；<br><strong>ptr所指向的地址中的内容是常量</strong>，所以指向内容不可以改变，但是指向的地址可以改变，比如可以<code>ptr = &amp;b</code>，但是不可以<code>*ptr = b</code><br><strong>ptr2所指向的地址不可以改变，但该地址中的内容可以改变</strong>，比如可以<code>*ptr2 = a</code>，但是不可以<code>ptr = &amp;a</code></p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>指针常量因为指向的地址不可更改的原因，在定义时一定要初始化（不能为NULL）</p>
-<h1 id="指针常量的用处"><a href="#指针常量的用处" class="headerlink" title="指针常量的用处"></a>指针常量的用处</h1><p>指针常量有这么两个可靠性方面的优点：</p>
-<ul>
-<li>指针不可修改指向，且不能赋值为null</li>
-<li>在调用函数时，对于传入的参数可以起到保护的作用，同时还不需要考虑指针为null时的情况</li>
-</ul>
-<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>其实这是翻译的锅，我们在学习的时候大多用的是翻译过来的说法，如果有心去看一下原文《C Primer plus》，可以看到对于指针常量和常量指针的写法是：</p>
-<ul>
-<li>常量指针<code>const pointer</code></li>
-<li>指针常量<code>pointer to const</code></li>
-</ul>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> C/C++ </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F18%2F%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F%E6%8C%87%E9%92%88%2F</url>
+      <content type="text"><![CDATA[翻看笔试题绕晕了本来翻看着各种笔试题，一切顺利的进行，不会的查一查，记不起来的查一查，直到在看C/C++有关的题目时遇到了 指针常量和常量指针的区别 手动黑人问号懵逼 然后，法式懵逼……一种不祥的预感 然后查了一下，世界懵逼…… 有这么一种通俗易懂的说法查看了好几篇博客，直到看到了这么一种说法：三句箴言： 常量 const ，指针 *，谁排在前先读谁 * 是指针本身，是地址，const是常量本身 const和 * 谁排在前，谁代表的内容就不可以改变举个栗子吧：1234int a = 3;int b = 4;int const *ptr = &amp;a;int* const ptr2 = &amp;b; 在上面的代码中，ptr就是常量指针，ptr2是指针常量；ptr所指向的地址中的内容是常量，所以指向内容不可以改变，但是指向的地址可以改变，比如可以ptr = &amp;b，但是不可以*ptr = bptr2所指向的地址不可以改变，但该地址中的内容可以改变，比如可以*ptr2 = a，但是不可以ptr = &amp;a 注意指针常量因为指向的地址不可更改的原因，在定义时一定要初始化（不能为NULL） 指针常量的用处指针常量有这么两个可靠性方面的优点： 指针不可修改指向，且不能赋值为null 在调用函数时，对于传入的参数可以起到保护的作用，同时还不需要考虑指针为null时的情况 结论其实这是翻译的锅，我们在学习的时候大多用的是翻译过来的说法，如果有心去看一下原文《C Primer plus》，可以看到对于指针常量和常量指针的写法是： 常量指针const pointer 指针常量pointer to const]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[Java中的优先队列]]></title>
-      <url>http://yoursite.com/2017/03/17/Java%E4%B8%AD%E7%9A%84%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/</url>
-      <content type="html"><![CDATA[<h1 id="Form一个问题"><a href="#Form一个问题" class="headerlink" title="Form一个问题"></a>Form一个问题</h1><p>假设百度搜索引擎一天会搜索<strong>M亿条URL</strong>，如何根据URL被搜索的次数来找出次数最高的N个URL呢？<br>个人有一个抽象的思路：</p>
-<ul>
-<li>先对所有的URL日志文档进行整合，同一类型的当作一个结点，利用B或者B+树搜索的优秀性能来处理</li>
-<li>再使用优先队列或者是最大值堆来进行一个排序</li>
-</ul>
-<p>正确与否先撇开不谈，整合同类URL的过程中会给后续排序减少大量的工作量（但究竟对于这种亿级的数据量还是只有一个朦胧的概念）。不管怎么说，先来研究一下Java中的优先队列好了</p>
-<h1 id="优先队列和遍历层次树"><a href="#优先队列和遍历层次树" class="headerlink" title="优先队列和遍历层次树"></a>优先队列和遍历层次树</h1><p>优先队列（PriorityQueue）是不同于普通队列的先进先出的队列，每次从队列中取出的是具有最高优先权的元素。这是从Java1.5开始引入的数据结构的接口。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// TestPriorityQueue.java</span></div><div class="line"><span class="keyword">import</span> java.util.Comparator;</div><div class="line"><span class="keyword">import</span> java.util.PriorityQueue;</div><div class="line"><span class="keyword">import</span> java.util.Queue;</div><div class="line"><span class="keyword">import</span> java.util.Random;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span></span>&#123;</div><div class="line">	<span class="keyword">int</span> id;</div><div class="line">	String name;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">this</span>.id = <span class="number">0</span>;</div><div class="line">		<span class="keyword">this</span>.name = <span class="string">""</span>;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(<span class="keyword">int</span> id, String name)</span> </span>&#123;</div><div class="line">		<span class="keyword">super</span>();</div><div class="line">		<span class="keyword">this</span>.id = id;</div><div class="line">		<span class="keyword">this</span>.name = name;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> id;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> name;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestPriorityQueue</span> </span>&#123;</div><div class="line">	</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Comparator&lt;Student&gt; stCompare = <span class="keyword">new</span> Comparator&lt;Student&gt;()&#123;</div><div class="line">		<span class="comment">// 重写了比较器中的compare方法，否则直接把Student类型的元素加入优先队列会报错</span></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Student st1,Student st2)</span></span>&#123;</div><div class="line">          	<span class="comment">// 针对Student的id属性进行比较</span></div><div class="line">			<span class="keyword">return</span> (<span class="keyword">int</span>)(st1.getId()-st2.getId());</div><div class="line">		&#125;</div><div class="line">	&#125;;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		Queue&lt;Integer&gt; number = <span class="keyword">new</span> PriorityQueue&lt;Integer&gt;();<span class="comment">// 存放int类型的数据</span></div><div class="line">		Random rand = <span class="keyword">new</span> Random();</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</div><div class="line">			<span class="comment">//因为实例化时使用了默认的比较器，所以队列新增的元素时都会自动排序</span></div><div class="line">			number.add(rand.nextInt(<span class="number">100</span>));</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">for</span>(Integer i : number)&#123;</div><div class="line">			System.out.println(i);</div><div class="line">		&#125;</div><div class="line">		System.out.println();</div><div class="line">		</div><div class="line">		<span class="comment">// ----- 下面开始排序自定义类</span></div><div class="line">		<span class="comment">// 把重写后的比较器作为参数传入优先队列</span></div><div class="line">		Queue&lt;Student&gt; students = <span class="keyword">new</span> PriorityQueue&lt;Student&gt;(<span class="number">5</span>,stCompare);</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</div><div class="line">			students.add(<span class="keyword">new</span> Student(rand.nextInt(<span class="number">10</span>),String.valueOf(i)));</div><div class="line">		&#125;</div><div class="line">      </div><div class="line">		<span class="comment">// 预计的输出结果会是：不管st.name是怎样的顺序，但是st.id一定是由小到大</span></div><div class="line">		<span class="keyword">for</span>(Student st : students)&#123;</div><div class="line">			System.out.println(st.id + <span class="string">" "</span> + st.name);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="遍历层次树"><a href="#遍历层次树" class="headerlink" title="遍历层次树"></a>遍历层次树</h2><p>怎么百度的都是概念层次树（黑人问号….），相关的知识有如何<strong>层次遍历二叉树</strong>，思路是</p>
-<ul>
-<li>使其根节点入队列，然后出队进行访问</li>
-<li>若左子节点不为空，使左子节点入队</li>
-<li>若该节点的右子节点，再使右子节点入队</li>
-<li>重复上面三个步骤，直到访问了所有节点</li>
-</ul>
-<p>大概的思路是这样，开的坑已经够多了，这个就先放后面好了 /:doge</p>
-<h1 id="又回到了HashMap高性能读写方法？"><a href="#又回到了HashMap高性能读写方法？" class="headerlink" title="又回到了HashMap高性能读写方法？"></a>又回到了HashMap高性能读写方法？</h1><p>其实是自己没有绕出这个圈，那天和dalao讨论的时候，ta认为没有什么优化的方法，毕竟HashMap已经被写好放在jar中了，若是使用，怎么会优化呢？</p>
-<p>of cause，自己撸一个HashMap实现，这就引出了一个重点，<strong>在我们讨论这个问题的时候，前提是什么？</strong>，有说可以自己撸吗？不知道，有说必须要用jdk中的HashMap吗？不知道。</p>
-<p>So，…….</p>
-<h2 id="来来来，填坑了"><a href="#来来来，填坑了" class="headerlink" title="来来来，填坑了"></a>来来来，填坑了</h2><p>上次和面试遇到这道题的那个哥们交流了一下，发现了一些意想不到的事情，起始原始的问题是“HashMap放入10W字符串，怎么做可以减少CPU消耗率”<br>他提出了一种解答方式：<strong>线程睡眠-每放一定数量的字符串后，就令线程睡眠个1s</strong><br>这…..手动笑哭，显然是延长了程序周期，但是确实CPU消耗率降下来了…….</p>
-<h1 id="日常总结"><a href="#日常总结" class="headerlink" title="日常总结"></a>日常总结</h1><p>今天被教育“凡是遇到问题的时候，第一个想到的就应该是<strong>前提条件</strong>”，没有前提条件，问题是不受约束的。看似是一个谁都懂的道理，但真的很多时候，会被<strong>自己潜意识认为的条件局限了自己的思维</strong>。就这样。</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F17%2FJava%E4%B8%AD%E7%9A%84%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97%2F</url>
+      <content type="text"><![CDATA[Form一个问题假设百度搜索引擎一天会搜索M亿条URL，如何根据URL被搜索的次数来找出次数最高的N个URL呢？个人有一个抽象的思路： 先对所有的URL日志文档进行整合，同一类型的当作一个结点，利用B或者B+树搜索的优秀性能来处理 再使用优先队列或者是最大值堆来进行一个排序 正确与否先撇开不谈，整合同类URL的过程中会给后续排序减少大量的工作量（但究竟对于这种亿级的数据量还是只有一个朦胧的概念）。不管怎么说，先来研究一下Java中的优先队列好了 优先队列和遍历层次树优先队列（PriorityQueue）是不同于普通队列的先进先出的队列，每次从队列中取出的是具有最高优先权的元素。这是从Java1.5开始引入的数据结构的接口。1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465// TestPriorityQueue.javaimport java.util.Comparator;import java.util.PriorityQueue;import java.util.Queue;import java.util.Random;class Student&#123; int id; String name; public Student()&#123; this.id = 0; this.name = ""; &#125; public Student(int id, String name) &#123; super(); this.id = id; this.name = name; &#125; public int getId() &#123; return id; &#125; public String getName() &#123; return name; &#125;&#125;public class TestPriorityQueue &#123; private static Comparator&lt;Student&gt; stCompare = new Comparator&lt;Student&gt;()&#123; // 重写了比较器中的compare方法，否则直接把Student类型的元素加入优先队列会报错 @Override public int compare(Student st1,Student st2)&#123; // 针对Student的id属性进行比较 return (int)(st1.getId()-st2.getId()); &#125; &#125;; public static void main(String[] args)&#123; Queue&lt;Integer&gt; number = new PriorityQueue&lt;Integer&gt;();// 存放int类型的数据 Random rand = new Random(); for(int i=0;i&lt;5;i++)&#123; //因为实例化时使用了默认的比较器，所以队列新增的元素时都会自动排序 number.add(rand.nextInt(100)); &#125; for(Integer i : number)&#123; System.out.println(i); &#125; System.out.println(); // ----- 下面开始排序自定义类 // 把重写后的比较器作为参数传入优先队列 Queue&lt;Student&gt; students = new PriorityQueue&lt;Student&gt;(5,stCompare); for(int i=0;i&lt;5;i++)&#123; students.add(new Student(rand.nextInt(10),String.valueOf(i))); &#125; // 预计的输出结果会是：不管st.name是怎样的顺序，但是st.id一定是由小到大 for(Student st : students)&#123; System.out.println(st.id + " " + st.name); &#125; &#125;&#125; 遍历层次树怎么百度的都是概念层次树（黑人问号….），相关的知识有如何层次遍历二叉树，思路是 使其根节点入队列，然后出队进行访问 若左子节点不为空，使左子节点入队 若该节点的右子节点，再使右子节点入队 重复上面三个步骤，直到访问了所有节点 大概的思路是这样，开的坑已经够多了，这个就先放后面好了 /:doge 又回到了HashMap高性能读写方法？其实是自己没有绕出这个圈，那天和dalao讨论的时候，ta认为没有什么优化的方法，毕竟HashMap已经被写好放在jar中了，若是使用，怎么会优化呢？ of cause，自己撸一个HashMap实现，这就引出了一个重点，在我们讨论这个问题的时候，前提是什么？，有说可以自己撸吗？不知道，有说必须要用jdk中的HashMap吗？不知道。 So，……. 来来来，填坑了上次和面试遇到这道题的那个哥们交流了一下，发现了一些意想不到的事情，起始原始的问题是“HashMap放入10W字符串，怎么做可以减少CPU消耗率”他提出了一种解答方式：线程睡眠-每放一定数量的字符串后，就令线程睡眠个1s这…..手动笑哭，显然是延长了程序周期，但是确实CPU消耗率降下来了……. 日常总结今天被教育“凡是遇到问题的时候，第一个想到的就应该是前提条件”，没有前提条件，问题是不受约束的。看似是一个谁都懂的道理，但真的很多时候，会被自己潜意识认为的条件局限了自己的思维。就这样。]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[HashMap和HashTable的区别]]></title>
-      <url>http://yoursite.com/2017/03/16/HashMap%E5%92%8CHashTable%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
-      <content type="html"><![CDATA[<h1 id="日常"><a href="#日常" class="headerlink" title="日常"></a>日常</h1><p>昨天听说了这么一道题，往HashMap中读写10w条字符串，如何处理可以消耗更少的cpu资源。后面感觉有点蹊跷，不知所以<br><img src="/2017/03/16/HashMap和HashTable的区别/1.jpg" alt="HashMap和HashTable的区别"><br>后面问了dalao黄一下，问题是没有解决，但是言语之间似乎有这么一个信息，<strong>HashMap和HashTable在存储数据时是有区别的</strong><br><img src="/2017/03/16/HashMap和HashTable的区别/2.jpg" alt="HashMap和HashTable的区别"><br>我是想啊，要么HashTable对数据量大的情况下有更好的存储性能？？？，要么是HashTable有更好的并行<br>性？？？</p>
-<p>of cause，查一下嘛</p>
-<h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><p>大概主要的意思是有这么几点区别：<br>两者继承自不同的类，HashMap是HashTable的轻量级实现（非线程安全的实现），但都完成了Map接口</p>
-<blockquote>
-<ul>
-<li>​HashMap去掉了HashTable中的contains方法，但是加上了containsValue()和containKey()方法</li>
-<li>HashTable是同步的，而HashMap是非同步的，由于非线程安全，效率上比HashTable要高</li>
-<li>​HashMap允许空键值，而HashTable不允许</li>
-</ul>
-</blockquote>
-<p>HashMap和HashTable采用的hash/rehash算法大致一样，性能不会差很多</p>
-<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>好吧，虽然看起来差别不大，但是真的要并行式去存储会不会可以呢？（不晓得啊，其实也不是很懂并行 0.0 ），问题过两天解决了再继续更好了<br><img src="/2017/03/16/HashMap和HashTable的区别/3.jpg" alt="HashMap和HashTable的区别"></p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F16%2FHashMap%E5%92%8CHashTable%E7%9A%84%E5%8C%BA%E5%88%AB%2F</url>
+      <content type="text"><![CDATA[日常昨天听说了这么一道题，往HashMap中读写10w条字符串，如何处理可以消耗更少的cpu资源。后面感觉有点蹊跷，不知所以后面问了dalao黄一下，问题是没有解决，但是言语之间似乎有这么一个信息，HashMap和HashTable在存储数据时是有区别的我是想啊，要么HashTable对数据量大的情况下有更好的存储性能？？？，要么是HashTable有更好的并行性？？？ of cause，查一下嘛 区别大概主要的意思是有这么几点区别：两者继承自不同的类，HashMap是HashTable的轻量级实现（非线程安全的实现），但都完成了Map接口 ​HashMap去掉了HashTable中的contains方法，但是加上了containsValue()和containKey()方法 HashTable是同步的，而HashMap是非同步的，由于非线程安全，效率上比HashTable要高 ​HashMap允许空键值，而HashTable不允许 HashMap和HashTable采用的hash/rehash算法大致一样，性能不会差很多 后记好吧，虽然看起来差别不大，但是真的要并行式去存储会不会可以呢？（不晓得啊，其实也不是很懂并行 0.0 ），问题过两天解决了再继续更好了]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[三月中]]></title>
-      <url>http://yoursite.com/2017/03/12/%E4%B8%89%E6%9C%88%E4%B8%AD/</url>
-      <content type="html"><![CDATA[<h1 id="几句随谈"><a href="#几句随谈" class="headerlink" title="几句随谈"></a>几句随谈</h1><p>前几天听胡哥讲课（正经课），理所当然的提到了鸡汤（这不是日常吗），本着我就静静的看着的心态<br><img src="/2017/03/12/三月中/show.jpg" alt="show"><br>突然某些话还是触动了什么…<br>遇到不会的解决不了的怎么办？看书上网查资料，还是不会呢？问有经验的人，要还是解决不了呢？</p>
-<p>解决问题而不是解释问题，总想着等我把这个学完了再开始弄这个，什么时候是个头？</p>
-<p>买书！买什么书？酸透了的爱情文学？《二十岁的青春》？愤世嫉俗的批判分析？熟悉人情掌控全局的厚黑学？买了你看了吗？为什么坚持一定要买？</p>
-<h1 id="突然明白了什么"><a href="#突然明白了什么" class="headerlink" title="突然明白了什么"></a>突然明白了什么</h1><p>其实，有时候努力钻研但是举步维艰而心生退意很正常，我花了这么多时间，回报呢？受益呢？别人这么久都又敲了那么多代码，看了那么厚的书，然而，自己还是没有把问题解决…….可是，看书不会问人，问人再不会再看书，周而复始，没有一点点进步吗？没有一点点收获吗？每一天只要不虚度踏实的学习，不管在干什么，这不都是收获吗？</p>
-<p>总想着不会，不敢，想着先大概了解一下内容，然后再用，再看，确实很低效，但是没有办法，有时候，就是想知道为什么，就是不想稀里糊涂的完成了，这是一种感觉是一种情怀，没有为什么，没有不敢、怂，可是确实和内心的想法有矛盾？</p>
-<p>买书好，一定要花钱，不然不心疼，花钱是一种享受，买了可以不看，太多了的时候可以扔，扔的时候会有一个筛选的过程，尽管可能是不自知的，但一直都认为，提高生活质量的最有效方式就是定期扔东西，something and sometimes，同理</p>
-<h1 id="心态"><a href="#心态" class="headerlink" title="心态"></a>心态</h1><p>本来几天前就该写的，因为周一下午接到了面试电话，约到了周二晚上，怀着忐忑的心准备了，并等待着，等到了电脑没电，等到了深夜，电话没有打来……第一次经历这样的事情（说不清楚心理变化），唯一能想得就只有继续前进，满满的压力，来自四面八方，羡慕dalao，只是希望到自己面对社会时，能感到，还好我做到了</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> life </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F12%2F%E4%B8%89%E6%9C%88%E4%B8%AD%2F</url>
+      <content type="text"><![CDATA[几句随谈前几天听胡哥讲课（正经课），理所当然的提到了鸡汤（这不是日常吗），本着我就静静的看着的心态突然某些话还是触动了什么…遇到不会的解决不了的怎么办？看书上网查资料，还是不会呢？问有经验的人，要还是解决不了呢？ 解决问题而不是解释问题，总想着等我把这个学完了再开始弄这个，什么时候是个头？ 买书！买什么书？酸透了的爱情文学？《二十岁的青春》？愤世嫉俗的批判分析？熟悉人情掌控全局的厚黑学？买了你看了吗？为什么坚持一定要买？ 突然明白了什么其实，有时候努力钻研但是举步维艰而心生退意很正常，我花了这么多时间，回报呢？受益呢？别人这么久都又敲了那么多代码，看了那么厚的书，然而，自己还是没有把问题解决…….可是，看书不会问人，问人再不会再看书，周而复始，没有一点点进步吗？没有一点点收获吗？每一天只要不虚度踏实的学习，不管在干什么，这不都是收获吗？ 总想着不会，不敢，想着先大概了解一下内容，然后再用，再看，确实很低效，但是没有办法，有时候，就是想知道为什么，就是不想稀里糊涂的完成了，这是一种感觉是一种情怀，没有为什么，没有不敢、怂，可是确实和内心的想法有矛盾？ 买书好，一定要花钱，不然不心疼，花钱是一种享受，买了可以不看，太多了的时候可以扔，扔的时候会有一个筛选的过程，尽管可能是不自知的，但一直都认为，提高生活质量的最有效方式就是定期扔东西，something and sometimes，同理 心态本来几天前就该写的，因为周一下午接到了面试电话，约到了周二晚上，怀着忐忑的心准备了，并等待着，等到了电脑没电，等到了深夜，电话没有打来……第一次经历这样的事情（说不清楚心理变化），唯一能想得就只有继续前进，满满的压力，来自四面八方，羡慕dalao，只是希望到自己面对社会时，能感到，还好我做到了]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[java反射机制]]></title>
-      <url>http://yoursite.com/2017/03/11/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/</url>
-      <content type="html"><![CDATA[<h1 id="前言碎语"><a href="#前言碎语" class="headerlink" title="前言碎语"></a>前言碎语</h1><p>刚开始学习时其实是跳过了这么一个知识点的（因为确定难懂又暂时没什么用），后面听说了在框架中反射是基本的原理，我就又滚回来了（出来混迟早要还的，深以为然）</p>
-<h1 id="反射机制是什么？"><a href="#反射机制是什么？" class="headerlink" title="反射机制是什么？"></a>反射机制是什么？</h1><blockquote>
-<p>反射机制是能在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取信息的以及动态调用对象的方法的功能成为java反射机制</p>
-</blockquote>
-<p>反射是为了动态的加载java类，使得程序在编译时不需要知道某些类的具体信息，只有在运行的时候根据输入的类（补全了某些类的信息），来动态的加载该类，并运行其中的方法。</p>
-<h1 id="反射机制有什么用？"><a href="#反射机制有什么用？" class="headerlink" title="反射机制有什么用？"></a>反射机制有什么用？</h1><p>看过一篇博客，举了这么一个通俗易懂的例子：<br>两个程序员A和B一起工作，因为工作的原因，两个人的任务是分开完成的，同时也是为了保证工程进度；但是程序员A的任务中需要用到程序员B的代码，那么如何在<strong>保证A的任务能够进行下去同时又能保证A和B一起推进任务</strong>呢？<br>这时就需要用到了java反射的机制。按照上面的说法，我们可以在A的代码中先对所需要B中的某个类进行**代理使用，这样可以保证A的程序编译通过；然后在程序运行的时候，通过某种方式（传参数）来获取到真正想要调用的类。这样在程序运行时就会使用到该类的<code>动态代理对象</code>，从而完成任务。</p>
-<h1 id="反射机制的原理"><a href="#反射机制的原理" class="headerlink" title="反射机制的原理"></a>反射机制的原理</h1><p>看了上面的介绍以，我就在想这是怎么实现的（感觉这个反射是为了骗过编译器啊….）</p>
-<p>首先说一下动态加载，我们知道jvm在运行java程序前会先加载所使用到的类进行编译，而有的类是在编译时期不知道的，只有在运行的时候才会加载，此谓动态加载。在实现动态加载类时，又有一个<code>动态的代理机制</code>在里面：<br>所谓动态代理，就是程序在运行的时候，对于一个接口和实现类，可以<strong>由JVM生成一个代理对象来帮助你使用接口或类中的方法</strong>（而不需要显式的去实例化一个类的对象）<br>这样我们可以在程序中直接使用代理对象，完成操作。</p>
-<h1 id="反射机制的常规用法"><a href="#反射机制的常规用法" class="headerlink" title="反射机制的常规用法"></a>反射机制的常规用法</h1><p>对于编译时知道类的信息的情况就不说了，上一篇Class里面有涉及，具体使用时查API文档就好，这里说编译时期不知道类的信息的情况</p>
-<ul>
-<li><p>定义一个动态代理类，该类必须实现<code>InvocationHandler</code>接口</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">DynamicProxy</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">// 这个是要代理的对象</span></div><div class="line">    <span class="keyword">private</span> Object subject;</div><div class="line">    </div><div class="line">    <span class="comment">// 构造方法，给要代理的对象赋初值</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DynamicProxy</span><span class="params">(Object subject)</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">this</span>.subject = subject;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object object, Method method, Object[] args)</span></span></div><div class="line">            <span class="keyword">throws</span> Throwable</div><div class="line">    &#123;</div><div class="line">        <span class="comment">// 在代理真实对象前我们可以添加一些自己的操作</span></div><div class="line">    	<span class="comment">// blablabla... </span></div><div class="line">        </div><div class="line">        <span class="comment">// 当代理对象调用真实对象的方法时，其会自动的跳转到代理对象的invoke方法来进行调用</span></div><div class="line">        method.invoke(subject, args);</div><div class="line">        </div><div class="line">        <span class="comment">// 在代理真实对象后也可以添加一些操作</span></div><div class="line">        <span class="comment">// blablabla...</span></div><div class="line">        </div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>使用Class类来获取所需要代理的类；<a href="http://zpcheng.me/2017/03/10/java反射之Class初级用法/#more" target="_blank" rel="external">java中Class的用法</a></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Class testClass = Class.forName(str);<span class="comment">// str可以以字符串的形式传入</span></div></pre></td></tr></table></figure>
-</li>
-<li><p>创建一个动态代理对象并开始使用被代理对象中的方法；</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 需要代理的真实对象</span></div><div class="line">       Object realObject = <span class="keyword">new</span> Object();</div><div class="line"></div><div class="line">       <span class="comment">// 将真实对象传入，最后是通过代理对象来调用其方法的</span></div><div class="line">       InvocationHandler handler = <span class="keyword">new</span> DynamicProxy(realObject);</div><div class="line"></div><div class="line">       <span class="comment">/*</span></div><div class="line">        * 通过Proxy的newProxyInstance方法来创建我们的代理对象</div><div class="line">        * 第一个参数 handler.getClass().getClassLoader() ，我们这里使用handler这个类的ClassLoader对象来加载代理对象</div><div class="line">        * 第二个参数realObject.getClass().getInterfaces()，这里为代理对象提供的接口是真实对象所实现的接口，表示要代理的是该真实对象，这样就能调用这组接口中的方法了</div><div class="line">        * 第三个参数handler， 将这个代理对象关联到了上方的 InvocationHandler 这个对象上</div><div class="line">        */</div><div class="line">       Object obj = (Object)Proxy.newProxyInstance(handler.getClass().getClassLoader(), realObject.getClass().getInterfaces(), handler);</div><div class="line">    </div><div class="line">       <span class="comment">// obj.xxx(); // 这样使用代理对象来直接调用被代理类的方法</span></div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>这里有需要注意的地方：<strong>Proxy的newProxyInstance方法的第二个参数，意思是代理对象去实现了被代理对像的接口</strong>，这样代理对象才可以去使用被代理对象实现接口或继承类中的方法。同时如果打印出代理对象的<code>obj.getClass().getName()</code>会显示<code>$proxy0</code>，因为这是JVM自动动态生成的代理对象（与使用时自己初始化代理对象不是一个意思，初始化主要是为了传入被代理对象），这是一种固定的命名方式。</p>
-<h1 id="使用反射的利弊"><a href="#使用反射的利弊" class="headerlink" title="使用反射的利弊"></a>使用反射的利弊</h1><p><strong>优点</strong>：<br>反射提高了程序的灵活性以及扩展性，降低了耦合性（依赖关系），提高了程序的适应能力；允许程序在不知道具体类的信息的情况下，创建和控制任何类的对象。</p>
-<p><strong>缺点</strong>：</p>
-<ul>
-<li>性能问题：使用反射时是一种解释操作，用于字段和方法接入时要远慢于直接代码（这事必然啊，总要能理解吧），所以反射机制主要应用于灵活性和扩展性要求很高的系统框架上，普通程序不建议使用</li>
-<li>模糊程序内部逻辑：反射绕过了源代码的技术会带来后期的维护问题，毕竟看反射代码更难</li>
-</ul>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>其实当我们使用编译器，在对象后面加上<code>.</code>时，编译器会自动列出该对象中的所有属性以及方法，这里就用到了这个原理，并称之为<strong>java类的自审</strong>，可以探知到类的基本结构。</p>
-<p>上面的内容都是我在学习时自己提出的问题，越来越感觉在学一个知识点时主动挖掘它的原理是重要的（虽然有的并不需要也并不会想到），开始萌发要看看JVM底层原理的书的念头了….</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F11%2Fjava%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%2F</url>
+      <content type="text"><![CDATA[前言碎语刚开始学习时其实是跳过了这么一个知识点的（因为确定难懂又暂时没什么用），后面听说了在框架中反射是基本的原理，我就又滚回来了（出来混迟早要还的，深以为然） 反射机制是什么？ 反射机制是能在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取信息的以及动态调用对象的方法的功能成为java反射机制 反射是为了动态的加载java类，使得程序在编译时不需要知道某些类的具体信息，只有在运行的时候根据输入的类（补全了某些类的信息），来动态的加载该类，并运行其中的方法。 反射机制有什么用？看过一篇博客，举了这么一个通俗易懂的例子：两个程序员A和B一起工作，因为工作的原因，两个人的任务是分开完成的，同时也是为了保证工程进度；但是程序员A的任务中需要用到程序员B的代码，那么如何在保证A的任务能够进行下去同时又能保证A和B一起推进任务呢？这时就需要用到了java反射的机制。按照上面的说法，我们可以在A的代码中先对所需要B中的某个类进行**代理使用，这样可以保证A的程序编译通过；然后在程序运行的时候，通过某种方式（传参数）来获取到真正想要调用的类。这样在程序运行时就会使用到该类的动态代理对象，从而完成任务。 反射机制的原理看了上面的介绍以，我就在想这是怎么实现的（感觉这个反射是为了骗过编译器啊….） 首先说一下动态加载，我们知道jvm在运行java程序前会先加载所使用到的类进行编译，而有的类是在编译时期不知道的，只有在运行的时候才会加载，此谓动态加载。在实现动态加载类时，又有一个动态的代理机制在里面：所谓动态代理，就是程序在运行的时候，对于一个接口和实现类，可以由JVM生成一个代理对象来帮助你使用接口或类中的方法（而不需要显式的去实例化一个类的对象）这样我们可以在程序中直接使用代理对象，完成操作。 反射机制的常规用法对于编译时知道类的信息的情况就不说了，上一篇Class里面有涉及，具体使用时查API文档就好，这里说编译时期不知道类的信息的情况 定义一个动态代理类，该类必须实现InvocationHandler接口 12345678910111213141516171819202122232425262728class DynamicProxy implements InvocationHandler&#123; // 这个是要代理的对象 private Object subject; // 构造方法，给要代理的对象赋初值 public DynamicProxy(Object subject) &#123; this.subject = subject; &#125; @Override public Object invoke(Object object, Method method, Object[] args) throws Throwable &#123; // 在代理真实对象前我们可以添加一些自己的操作 // blablabla... // 当代理对象调用真实对象的方法时，其会自动的跳转到代理对象的invoke方法来进行调用 method.invoke(subject, args); // 在代理真实对象后也可以添加一些操作 // blablabla... return null; &#125;&#125; 使用Class类来获取所需要代理的类；java中Class的用法 1Class testClass = Class.forName(str);// str可以以字符串的形式传入 创建一个动态代理对象并开始使用被代理对象中的方法； 123456789101112131415// 需要代理的真实对象 Object realObject = new Object(); // 将真实对象传入，最后是通过代理对象来调用其方法的 InvocationHandler handler = new DynamicProxy(realObject); /* * 通过Proxy的newProxyInstance方法来创建我们的代理对象 * 第一个参数 handler.getClass().getClassLoader() ，我们这里使用handler这个类的ClassLoader对象来加载代理对象 * 第二个参数realObject.getClass().getInterfaces()，这里为代理对象提供的接口是真实对象所实现的接口，表示要代理的是该真实对象，这样就能调用这组接口中的方法了 * 第三个参数handler， 将这个代理对象关联到了上方的 InvocationHandler 这个对象上 */ Object obj = (Object)Proxy.newProxyInstance(handler.getClass().getClassLoader(), realObject.getClass().getInterfaces(), handler); // obj.xxx(); // 这样使用代理对象来直接调用被代理类的方法 这里有需要注意的地方：Proxy的newProxyInstance方法的第二个参数，意思是代理对象去实现了被代理对像的接口，这样代理对象才可以去使用被代理对象实现接口或继承类中的方法。同时如果打印出代理对象的obj.getClass().getName()会显示$proxy0，因为这是JVM自动动态生成的代理对象（与使用时自己初始化代理对象不是一个意思，初始化主要是为了传入被代理对象），这是一种固定的命名方式。 使用反射的利弊优点：反射提高了程序的灵活性以及扩展性，降低了耦合性（依赖关系），提高了程序的适应能力；允许程序在不知道具体类的信息的情况下，创建和控制任何类的对象。 缺点： 性能问题：使用反射时是一种解释操作，用于字段和方法接入时要远慢于直接代码（这事必然啊，总要能理解吧），所以反射机制主要应用于灵活性和扩展性要求很高的系统框架上，普通程序不建议使用 模糊程序内部逻辑：反射绕过了源代码的技术会带来后期的维护问题，毕竟看反射代码更难 总结其实当我们使用编译器，在对象后面加上.时，编译器会自动列出该对象中的所有属性以及方法，这里就用到了这个原理，并称之为java类的自审，可以探知到类的基本结构。 上面的内容都是我在学习时自己提出的问题，越来越感觉在学一个知识点时主动挖掘它的原理是重要的（虽然有的并不需要也并不会想到），开始萌发要看看JVM底层原理的书的念头了….]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[java反射之Class初级用法]]></title>
-      <url>http://yoursite.com/2017/03/10/java%E5%8F%8D%E5%B0%84%E4%B9%8BClass%E5%88%9D%E7%BA%A7%E7%94%A8%E6%B3%95/</url>
-      <content type="html"><![CDATA[<h1 id="Class类"><a href="#Class类" class="headerlink" title="Class类"></a>Class类</h1><p>Class类的实例表示java应用运行时的类或接口（每个java类在运行的时候都会在JVM里表现为一个Class对象，可以通过<code>类名.Class</code>，<code>类型.getClass()</code>，<code>Class.forName(&quot;包.类名&quot;)</code>等方法获取Class对象）</p>
-<h2 id="Class类的特点"><a href="#Class类的特点" class="headerlink" title="Class类的特点"></a>Class类的特点</h2><p>Class类的父类是Object，事实上，任何java类，不管是jdk里面的还是自定义的，都是Class类的对象，同时，所有的数据类型、关键字、方法等等，一切的一切都是Class类的对象。这是前提，很关键</p>
-<h2 id="Class类的运行原理"><a href="#Class类的运行原理" class="headerlink" title="Class类的运行原理"></a>Class类的运行原理</h2><p>java种创建对象时不是通过类直接创建的，一个类的对象被创建之前，首先JVM会加载该类的字节码文件（.class文件），也就是编译后的java程序文件；加载完成后，JVM会自动的为该类创建自己的Class对象，再通过Class对象创建目标对象</p>
-<h1 id="使用Class的目的"><a href="#使用Class的目的" class="headerlink" title="使用Class的目的"></a>使用Class的目的</h1><p>很简单的一句话，可以利用反射机制重新获取到Object对象，这个是动态加载类以及对象的，是在程序运行时才会发生的动作，至于反射机制的具体应用，先挖个坑，以后填</p>
-<h1 id="API文档的仿制"><a href="#API文档的仿制" class="headerlink" title="API文档的仿制"></a>API文档的仿制</h1><p>按照Class类的特性，java种的一切都是Class类的对象，我们可以获取到这些“对象”的信息，比如任意类的属性、构造方法、所有方法等等信息，诚然，我们甚至可以做出一个API文档<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ClassNotFoundException</span>&#123;</div><div class="line">		<span class="comment">// 1.返回与带有给定字符串名的类或接口相关联的 Class 对象，直接导致该类被初始化</span></div><div class="line">		Class testClass = Class.forName(<span class="string">"java.lang.Class"</span>);</div><div class="line">		</div><div class="line">		<span class="comment">// 2. 获取该类的实例化对象</span></div><div class="line">		Class testClass2 =  Class.class;</div><div class="line">		</div><div class="line">		<span class="comment">// 3.获取该类的实例化Class对象</span></div><div class="line">		Class testClass3 = <span class="keyword">new</span> Test().getClass();</div><div class="line">		</div><div class="line">		String target = <span class="string">"([a-zA-Z_-]+)\\."</span>; <span class="comment">// 需要匹配的正则表达式，表示了形如“字母+.”的模式，这样便去除了某个类的包名前缀</span></div><div class="line">		</div><div class="line">		Class&lt;? <span class="keyword">super</span> Object&gt; superC = testClass.getSuperclass();</div><div class="line">		String name = superC.getName();</div><div class="line">		System.out.print(<span class="string">"Class的父类是："</span> + name.replaceAll(target, <span class="string">""</span>) + <span class="string">"\n"</span>);</div><div class="line">		</div><div class="line">		Constructor&lt;Class&gt;[] consClass = testClass.getDeclaredConstructors();</div><div class="line">		System.out.println(<span class="string">"Class的构造方法有："</span>);</div><div class="line">		<span class="keyword">for</span>(Constructor con : consClass)&#123;</div><div class="line">			name = con.toString();</div><div class="line">			name = name.replaceAll(target, <span class="string">""</span>);</div><div class="line">			System.out.println(name);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		Class&lt;Class&gt;[] classes = testClass.getClasses();</div><div class="line">		System.out.println(<span class="string">"Clsass所有的成员的公共类和接口："</span>);</div><div class="line">		<span class="keyword">if</span>(classes.length==<span class="number">0</span>)</div><div class="line">			System.out.println(<span class="string">"null"</span>);</div><div class="line">		<span class="keyword">for</span>(Class cla : classes)&#123;</div><div class="line">			name = cla.toString();</div><div class="line">			name = name.replaceAll(target, <span class="string">""</span>);</div><div class="line">			System.out.println(name);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		System.out.println(<span class="string">"Class的属性是："</span>);</div><div class="line">		Field[] fields = testClass.getDeclaredFields();</div><div class="line">		<span class="keyword">for</span>(Field f : fields)&#123;</div><div class="line">			name = f.toString();</div><div class="line">			name = name.replaceAll(target, <span class="string">""</span>);</div><div class="line">			System.out.println(name);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		Method[] methods = testClass.getMethods();</div><div class="line">		System.out.println(<span class="string">"Class的所有方法是："</span>);</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;methods.length; i++)&#123;</div><div class="line">			name = methods[i].toString();</div><div class="line">			name = name.replaceAll(target, <span class="string">""</span>);</div><div class="line">			System.out.println(name);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		ClassLoader loader = testClass.getClassLoader();<span class="comment">// 如果对象是基本类型或者是void，则返回null</span></div><div class="line">		System.out.println(<span class="string">"Class的类加载器是："</span> + loader);</div></pre></td></tr></table></figure></p>
-<p>这只是一个简单的思路介绍，重要的是从0到1的过程，至于怎么从1到n，这需要更多的努力。</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F10%2Fjava%E5%8F%8D%E5%B0%84%E4%B9%8BClass%E5%88%9D%E7%BA%A7%E7%94%A8%E6%B3%95%2F</url>
+      <content type="text"><![CDATA[Class类Class类的实例表示java应用运行时的类或接口（每个java类在运行的时候都会在JVM里表现为一个Class对象，可以通过类名.Class，类型.getClass()，Class.forName(&quot;包.类名&quot;)等方法获取Class对象） Class类的特点Class类的父类是Object，事实上，任何java类，不管是jdk里面的还是自定义的，都是Class类的对象，同时，所有的数据类型、关键字、方法等等，一切的一切都是Class类的对象。这是前提，很关键 Class类的运行原理java种创建对象时不是通过类直接创建的，一个类的对象被创建之前，首先JVM会加载该类的字节码文件（.class文件），也就是编译后的java程序文件；加载完成后，JVM会自动的为该类创建自己的Class对象，再通过Class对象创建目标对象 使用Class的目的很简单的一句话，可以利用反射机制重新获取到Object对象，这个是动态加载类以及对象的，是在程序运行时才会发生的动作，至于反射机制的具体应用，先挖个坑，以后填 API文档的仿制按照Class类的特性，java种的一切都是Class类的对象，我们可以获取到这些“对象”的信息，比如任意类的属性、构造方法、所有方法等等信息，诚然，我们甚至可以做出一个API文档12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152public static void main(String[] args) throws ClassNotFoundException&#123; // 1.返回与带有给定字符串名的类或接口相关联的 Class 对象，直接导致该类被初始化 Class testClass = Class.forName("java.lang.Class"); // 2. 获取该类的实例化对象 Class testClass2 = Class.class; // 3.获取该类的实例化Class对象 Class testClass3 = new Test().getClass(); String target = "([a-zA-Z_-]+)\\."; // 需要匹配的正则表达式，表示了形如“字母+.”的模式，这样便去除了某个类的包名前缀 Class&lt;? super Object&gt; superC = testClass.getSuperclass(); String name = superC.getName(); System.out.print("Class的父类是：" + name.replaceAll(target, "") + "\n"); Constructor&lt;Class&gt;[] consClass = testClass.getDeclaredConstructors(); System.out.println("Class的构造方法有："); for(Constructor con : consClass)&#123; name = con.toString(); name = name.replaceAll(target, ""); System.out.println(name); &#125; Class&lt;Class&gt;[] classes = testClass.getClasses(); System.out.println("Clsass所有的成员的公共类和接口："); if(classes.length==0) System.out.println("null"); for(Class cla : classes)&#123; name = cla.toString(); name = name.replaceAll(target, ""); System.out.println(name); &#125; System.out.println("Class的属性是："); Field[] fields = testClass.getDeclaredFields(); for(Field f : fields)&#123; name = f.toString(); name = name.replaceAll(target, ""); System.out.println(name); &#125; Method[] methods = testClass.getMethods(); System.out.println("Class的所有方法是："); for(int i=0; i&lt;methods.length; i++)&#123; name = methods[i].toString(); name = name.replaceAll(target, ""); System.out.println(name); &#125; ClassLoader loader = testClass.getClassLoader();// 如果对象是基本类型或者是void，则返回null System.out.println("Class的类加载器是：" + loader); 这只是一个简单的思路介绍，重要的是从0到1的过程，至于怎么从1到n，这需要更多的努力。]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[深入理解HashMap]]></title>
-      <url>http://yoursite.com/2017/03/05/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3HashMap/</url>
-      <content type="html"><![CDATA[<h1 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h1><p>哈希，译作散列，或哈希。就是把任意长度的输入，通过散列算法（hash算法），变换成固定长度的输出，这个输出的值就是哈希值。显然这是一个映射的过程。</p>
-<h1 id="hashCode"><a href="#hashCode" class="headerlink" title="hashCode()"></a>hashCode()</h1><p>再来看一看HashCode，这是一个方法，该方法返回一个特殊的值，在java中会返回一个整数，用来判断是否是两个相同的对象，和equals方法有紧密的联系：</p>
-<ul>
-<li>HashCode主要用于提供快捷的查找，在HashTable和HashMap中都有使用，HashCode是用来在散列存储结构中确定对象的存储地址的</li>
-<li>如果使用equals(Objetc)方法，两个对象相等，那么这两个对象调用hashCode方法返回的值一定是相等的</li>
-<li>如果两个对象中的equals方法被重写了，那么一定也要按照同样的方法来重写hashCode方法（这是为了保持hashCode方法的常规协定，规定了相等对象必须有相同的hashCode值）</li>
-<li>借用网上看来的文章的一句话：两个对象的hashCode相同，不代表就是同一个对象/两个对象相同，在hash存储结构中，这只说明了两个对象发生了冲突，被分配在了同一个桶里面。java判断两个对象是否相同还会判断对象引用中存储的地址是否相同（默认）</li>
-</ul>
-<h1 id="Hash函数"><a href="#Hash函数" class="headerlink" title="Hash函数"></a>Hash函数</h1><p>hash函数，用来计算出哈希值的函数，通常情况下，每一个对象都有自己单独的哈希值，通过hash函数计算出后，可以做到唯一识别。虽然有可能会有冲突的情况出现，出现了同一个hash值，但概率是微乎其微再来n个微乎其微…..<br>hash函数的用途有这么几个：可以这么说，hash就是找到一种数据内容和数据存放地址之间的映射关系。</p>
-<ul>
-<li>文件校验：通过对文件摘要，可以对文件进行校验，一定程度上能检测并纠正数据传输中的信道误码，但不能防止对数据的恶意破坏</li>
-<li>数字签名：在数字签名协议中，用的最多的单向散列函数可以产生一个机构的数字签名</li>
-<li>数据结构中提供快速查找的功能：常用的数据结构HashMap和HashTable会使用到Hash函数来产生hash值，是组成HashMap优越性能必不可少的一环</li>
-</ul>
-<h1 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h1><p>在分析这个HashMap之前我们先来看一看数组和链表，我们都知道，数组提供了很好的查找性能，因为数组空间是连续的，查找起来很方便，但是在数据的插入和删除时，性能就不佳了；再看链表，它的存储空间是离散的，所以在数据的插入删除时，性能很高，但是当论到查找时，其性能就不行了。<br>综上所述，我们总是在面对问题时，根据自己的需求来使用不同的数据结构，这是权衡和妥协的结果。那么我们如果能使用到一种数据结构，它提供良好的查找性能，又可以很方便的插入删除。于是乎，把这两种数据结构组合起来就有了我们这个HashTable。<br>↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓<br><img src="/2017/03/05/深入理解HashMap/hash.png" alt="hash"><br>从图中可以看出，这是由数组和链表组成的数据结构，在数组中每个元素存储的是一个链表的头指针，把一个个数据存放到相应的位置，就需要由hash函数来计算了，一般是采用<strong>hash(value)%length计算出元素应该放到对应下标的数组中的位置</strong>。比如，如果value为5，数组长度为10，则计算出的下标位置就是5%10=5，这个值应该放到下标为5的元素中。当然了，如果俩个值计算出存放的位置相同了，就<strong>以后存入的值为头节点，以链表的形式存入，以此类推</strong></p>
-<p>现在回过头来看看HashMap，它其实也是一个线性的数组实现的，所以可以理解为其存储的数据结构就是一个线性数组。但是有一点我们需要注意的就是，HashMap是按照键值对来存取数据的，这一点怎么可能通过数组或是链表来实现呢？</p>
-<p>深入到HashMap的源码中去看，对照着资料，发现在HashMap中存取数据的关键有一个叫做Map.Entry的内部接口很是关键，再去看Entry，发现它被定义为<code>Entry&lt;Key,Value&gt;</code>，而<strong>Map.Entry<k,v>就是一个键值对的实体</k,v></strong>。如果说HashMap是依靠于数组存储，那么这个数据就是Entry[]，Map存储的内容都在Entry[]里面<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">/**</span></div><div class="line"> * The table, resized as necessary. Length MUST Always be a power of two.</div><div class="line"> */</div><div class="line"><span class="keyword">transient</span> Entry[] table;</div></pre></td></tr></table></figure></p>
-<h2 id="HashMap存取的实现"><a href="#HashMap存取的实现" class="headerlink" title="HashMap存取的实现"></a>HashMap存取的实现</h2><p>在“线性数组”的基础上如何做到随机存储呢：重点是确定键值对的存储位置，这里是希望HashMap里面的元素尽量离散分布，使每个位置上的元素只有一个。当使用hash算法求出这个位置时，马上就可以获取对应位置的值，而不用取遍历链表。也与hash方法的离散性能密切相关<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// hash jdk1.8</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(Object key)</span> </span>&#123;  </div><div class="line">     <span class="keyword">int</span> h;</div><div class="line">     <span class="comment">// h = key.hashCode() 为第一步 取hashCode值</span></div><div class="line">     <span class="comment">// h ^ (h &gt;&gt;&gt; 16)  为第二步 高位参与运算</span></div><div class="line">     <span class="keyword">return</span> (key == <span class="keyword">null</span>) ? <span class="number">0</span> : (h = key.hashCode()) ^ (h &gt;&gt;&gt; <span class="number">16</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>简单说起来，这里的Hash算法本质上就是三步：<strong>取key的hashCode的值、高位运算、取模运算</strong><br>对于任意对象，只要hashCode返回值相同，那么程序调用方法所计算的Hash码时一样的，把hash值对数组的长度取模运算，这样元素的分布相对来说是比较均匀的。在上面的方法中，通过<strong>把hashCode返回值高16位和低16位与计算，达到了hashCode返回值取模数组长度的效果</strong>。因为在HashMap底层数组中，length总是2的n次方（不够的用null填充），此时<strong>使用hashCode返回值与数组长度进行与运算</strong>依然达到了上述的效果，这是jdk1.7中的实现方法，在1.8中高16位与低16位进行与运算是优化的算法，能保证在hashCode返回值很大时，高低Bit都会参与到hash运算中，并且不会产生较大的开销</p>
-<h3 id="put"><a href="#put" class="headerlink" title="put"></a>put</h3><p>我们知道HashMap中<strong>键 Key</strong>一定是唯一的，那么当再次往HashMap中存入键相同的键值对时，上一次存入的键值对就会被<strong>覆盖</strong>。但是如果两个键值对的index值一样时，HashMap会把先存入的值放入链表的尾部，<strong>最新加入的值则是该线性数组中每个下标对应的链表的首元素</strong>，以此类推。<br><strong>需要注意到的是，jdk1.8新增了HashMap链表中节点的个数对于8个时，转为红黑树的存储方式</strong><br>查看HashMap中的put方法源码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"> <span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</div><div class="line"> 		<span class="comment">// 进行hash运算</span></div><div class="line">        <span class="keyword">return</span> putVal(hash(key), key, value, <span class="keyword">false</span>, <span class="keyword">true</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">final</span> V <span class="title">putVal</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">boolean</span> onlyIfAbsent,</span></span></div><div class="line">                   <span class="keyword">boolean</span> evict) &#123;</div><div class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; <span class="keyword">int</span> n, i;</div><div class="line">        <span class="comment">// 判断键值对数组table是否为空或null，否则进行resize扩容</span></div><div class="line">        <span class="keyword">if</span> ((tab = table) == <span class="keyword">null</span> || (n = tab.length) == <span class="number">0</span>)</div><div class="line">            n = (tab = resize()).length;</div><div class="line">        <span class="comment">// 根据键值key计算hash得到插入位置的索引</span></div><div class="line">        <span class="keyword">if</span> ((p = tab[i = (n - <span class="number">1</span>) &amp; hash]) == <span class="keyword">null</span>)<span class="comment">// p被赋值</span></div><div class="line">            tab[i] = newNode(hash, key, value, <span class="keyword">null</span>);</div><div class="line">        <span class="keyword">else</span> &#123;</div><div class="line">            Node&lt;K,V&gt; e; K k;</div><div class="line">            <span class="comment">// 判断键值对中key是否存在（相同），存在直接覆盖，相同指hashCode和equals</span></div><div class="line">            <span class="keyword">if</span> (p.hash == hash &amp;&amp;</div><div class="line">                ((k = p.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</div><div class="line">                e = p;</div><div class="line">            <span class="comment">// 判断是否为树，是的话直接插入新结点</span></div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (p <span class="keyword">instanceof</span> TreeNode)</div><div class="line">                e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(<span class="keyword">this</span>, tab, hash, key, value);</div><div class="line">            <span class="comment">// 链表</span></div><div class="line">            <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> binCount = <span class="number">0</span>; ; ++binCount) &#123;</div><div class="line">                    <span class="keyword">if</span> ((e = p.next) == <span class="keyword">null</span>) &#123;</div><div class="line">                        p.next = newNode(hash, key, value, <span class="keyword">null</span>);</div><div class="line">                        <span class="comment">// 如果链表的长度大于8就 转化为红黑树处理</span></div><div class="line">                        <span class="keyword">if</span> (binCount &gt;= TREEIFY_THRESHOLD - <span class="number">1</span>) <span class="comment">// -1 for 1st</span></div><div class="line">                            treeifyBin(tab, hash);</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    &#125;</div><div class="line">                    <span class="comment">// key已经存在，直接覆盖</span></div><div class="line">                    <span class="keyword">if</span> (e.hash == hash &amp;&amp;</div><div class="line">                        ((k = e.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    p = e;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (e != <span class="keyword">null</span>) &#123; <span class="comment">// 存在key的映射</span></div><div class="line">                V oldValue = e.value;</div><div class="line">                <span class="keyword">if</span> (!onlyIfAbsent || oldValue == <span class="keyword">null</span>)</div><div class="line">                    e.value = value;</div><div class="line">                afterNodeAccess(e);</div><div class="line">                <span class="keyword">return</span> oldValue;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        ++modCount;</div><div class="line">        <span class="comment">// 插入成功判断是否超出了最大容量，是就进行扩容</span></div><div class="line">        <span class="keyword">if</span> (++size &gt; threshold)</div><div class="line">            resize();</div><div class="line">        afterNodeInsertion(evict);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<p>reszie的源码是将原来数组的容量扩大一倍，<strong>这个过程是一个十分消耗性能的过程，所以在使用中最好定一个预定的最大值，避免HashMap进行频繁的扩容</strong>。默认的负载因子是0.75</p>
-<h3 id="get"><a href="#get" class="headerlink" title="get"></a>get</h3><p>首结点都是Entry类型的键值对<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">    <span class="function"><span class="keyword">public</span> V <span class="title">get</span><span class="params">(Object key)</span> </span>&#123;</div><div class="line">        Node&lt;K,V&gt; e;</div><div class="line">        <span class="keyword">return</span> (e = getNode(hash(key), key)) == <span class="keyword">null</span> ? <span class="keyword">null</span> : e.value;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">final</span> Node&lt;K,V&gt; <span class="title">getNode</span><span class="params">(<span class="keyword">int</span> hash, Object key)</span> </span>&#123;</div><div class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; first, e; <span class="keyword">int</span> n; K k;</div><div class="line">        <span class="keyword">if</span> ((tab = table) != <span class="keyword">null</span> &amp;&amp; (n = tab.length) &gt; <span class="number">0</span> &amp;&amp;</div><div class="line">            (first = tab[(n - <span class="number">1</span>) &amp; hash]) != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">if</span> (first.hash == hash &amp;&amp; <span class="comment">// 先检查链表中的首结点</span></div><div class="line">                ((k = first.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</div><div class="line">                <span class="keyword">return</span> first; <span class="comment">// 判断出了与key相同（hashCode和equals）</span></div><div class="line">            <span class="keyword">if</span> ((e = first.next) != <span class="keyword">null</span>) &#123;</div><div class="line">            	<span class="comment">// 继续根据hash查找</span></div><div class="line">                <span class="keyword">if</span> (first <span class="keyword">instanceof</span> TreeNode)</div><div class="line">                    <span class="keyword">return</span> ((TreeNode&lt;K,V&gt;)first).getTreeNode(hash, key);</div><div class="line">                <span class="comment">// 不在首结点，不在红黑树，只能遍历链表</span></div><div class="line">                <span class="keyword">do</span> &#123;</div><div class="line">                    <span class="keyword">if</span> (e.hash == hash &amp;&amp;</div><div class="line">                        ((k = e.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</div><div class="line">                        <span class="keyword">return</span> e;</div><div class="line">                &#125; <span class="keyword">while</span> ((e = e.next) != <span class="keyword">null</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<h3 id="null-key"><a href="#null-key" class="headerlink" title="null key"></a>null key</h3><p>null key总是放在Entry[]数组的第一个元素<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> V <span class="title">putForNullKey</span><span class="params">(V value)</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span> (Entry&lt;K,V&gt; e = table[<span class="number">0</span>]; e != <span class="keyword">null</span>; e = e.next) &#123;</div><div class="line">            <span class="keyword">if</span> (e.key == <span class="keyword">null</span>) &#123;</div><div class="line">                V oldValue = e.value;</div><div class="line">                e.value = value;</div><div class="line">                e.recordAccess(<span class="keyword">this</span>);</div><div class="line">                <span class="keyword">return</span> oldValue;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        modCount++;</div><div class="line">        addEntry(<span class="number">0</span>, <span class="keyword">null</span>, value, <span class="number">0</span>);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">private</span> V <span class="title">getForNullKey</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">for</span> (Entry&lt;K,V&gt; e = table[<span class="number">0</span>]; e != <span class="keyword">null</span>; e = e.next) &#123;</div><div class="line">            <span class="keyword">if</span> (e.key == <span class="keyword">null</span>)</div><div class="line">                <span class="keyword">return</span> e.value;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<h3 id="获得索引值index"><a href="#获得索引值index" class="headerlink" title="获得索引值index"></a>获得索引值index</h3><p>HashMap存取时需要计算索引index来确认到Entry[]数组取元素的位置，也就是获取数组下标的过程<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">/**</span></div><div class="line"> * Returns index for hash code h.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">indexFor</span><span class="params">(<span class="keyword">int</span> h, <span class="keyword">int</span> length)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> h &amp; (length-<span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>按位取并，作用上相当于取模：<code>index = hashcode % table.length</code></p>
-<h3 id="hashtable初始大小"><a href="#hashtable初始大小" class="headerlink" title="hashtable初始大小"></a>hashtable初始大小</h3><p>在调用HashMap的无参构造方法时，初始大小是16。当后续大小改变时，table初始大小总是2的n次方（没有填充满就空着）</p>
-<h2 id="Hash冲突"><a href="#Hash冲突" class="headerlink" title="Hash冲突"></a>Hash冲突</h2><p>我们总是希望整个HashMap是一个尽量离散的优秀结构，用尽量少的空间存储尽量多的数据，且其查找增删的性能依据很高效。这个是一个复杂的平衡过程，和负载因子相关，和解决hash冲突的办法相关：hash冲突是指两个key被分配到了同一个桶中</p>
-<ul>
-<li>开放定址法（线性探查再散列、二次探查再散列、为随机探查再散列）</li>
-<li>再哈希法</li>
-<li>链地址法（拉链法）</li>
-<li>建立一个公共的溢出桶<br><strong>java中的HashMap使用的就是拉链法，如前面图所示</strong></li>
-</ul>
-<h2 id="再散列过程-rehash"><a href="#再散列过程-rehash" class="headerlink" title="再散列过程 rehash"></a>再散列过程 rehash</h2><p>当哈希表的容量超过默认的大小时，就需要将所有的元素换一个新的“桶”来存储，这个新的桶中的键值对存放的位置会发生改变，需要重新根据新桶的大小来重新计算各个键值对的索引位置，这个过程就叫做rehash</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>此次深入探究java中的HashMap查阅了不少资料和源码，感谢先行者的指引，这里仅是个人愚见，如有异议，欢迎联系<br><a href="http://blog.csdn.net/vking_wang/article/details/14166593" target="_blank" rel="external">HashMap实现原理分析</a><br><a href="http://www.importnew.com/20386.html" target="_blank" rel="external">java8重新认识HahsMap</a></p>
-<p><img src="/2017/03/05/深入理解HashMap/lianhong.jpg" alt="lianhong"></p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F05%2F%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3HashMap%2F</url>
+      <content type="text"><![CDATA[Hash哈希，译作散列，或哈希。就是把任意长度的输入，通过散列算法（hash算法），变换成固定长度的输出，这个输出的值就是哈希值。显然这是一个映射的过程。 hashCode()再来看一看HashCode，这是一个方法，该方法返回一个特殊的值，在java中会返回一个整数，用来判断是否是两个相同的对象，和equals方法有紧密的联系： HashCode主要用于提供快捷的查找，在HashTable和HashMap中都有使用，HashCode是用来在散列存储结构中确定对象的存储地址的 如果使用equals(Objetc)方法，两个对象相等，那么这两个对象调用hashCode方法返回的值一定是相等的 如果两个对象中的equals方法被重写了，那么一定也要按照同样的方法来重写hashCode方法（这是为了保持hashCode方法的常规协定，规定了相等对象必须有相同的hashCode值） 借用网上看来的文章的一句话：两个对象的hashCode相同，不代表就是同一个对象/两个对象相同，在hash存储结构中，这只说明了两个对象发生了冲突，被分配在了同一个桶里面。java判断两个对象是否相同还会判断对象引用中存储的地址是否相同（默认） Hash函数hash函数，用来计算出哈希值的函数，通常情况下，每一个对象都有自己单独的哈希值，通过hash函数计算出后，可以做到唯一识别。虽然有可能会有冲突的情况出现，出现了同一个hash值，但概率是微乎其微再来n个微乎其微…..hash函数的用途有这么几个：可以这么说，hash就是找到一种数据内容和数据存放地址之间的映射关系。 文件校验：通过对文件摘要，可以对文件进行校验，一定程度上能检测并纠正数据传输中的信道误码，但不能防止对数据的恶意破坏 数字签名：在数字签名协议中，用的最多的单向散列函数可以产生一个机构的数字签名 数据结构中提供快速查找的功能：常用的数据结构HashMap和HashTable会使用到Hash函数来产生hash值，是组成HashMap优越性能必不可少的一环 HashMap在分析这个HashMap之前我们先来看一看数组和链表，我们都知道，数组提供了很好的查找性能，因为数组空间是连续的，查找起来很方便，但是在数据的插入和删除时，性能就不佳了；再看链表，它的存储空间是离散的，所以在数据的插入删除时，性能很高，但是当论到查找时，其性能就不行了。综上所述，我们总是在面对问题时，根据自己的需求来使用不同的数据结构，这是权衡和妥协的结果。那么我们如果能使用到一种数据结构，它提供良好的查找性能，又可以很方便的插入删除。于是乎，把这两种数据结构组合起来就有了我们这个HashTable。↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓从图中可以看出，这是由数组和链表组成的数据结构，在数组中每个元素存储的是一个链表的头指针，把一个个数据存放到相应的位置，就需要由hash函数来计算了，一般是采用hash(value)%length计算出元素应该放到对应下标的数组中的位置。比如，如果value为5，数组长度为10，则计算出的下标位置就是5%10=5，这个值应该放到下标为5的元素中。当然了，如果俩个值计算出存放的位置相同了，就以后存入的值为头节点，以链表的形式存入，以此类推 现在回过头来看看HashMap，它其实也是一个线性的数组实现的，所以可以理解为其存储的数据结构就是一个线性数组。但是有一点我们需要注意的就是，HashMap是按照键值对来存取数据的，这一点怎么可能通过数组或是链表来实现呢？ 深入到HashMap的源码中去看，对照着资料，发现在HashMap中存取数据的关键有一个叫做Map.Entry的内部接口很是关键，再去看Entry，发现它被定义为Entry&lt;Key,Value&gt;，而Map.Entry就是一个键值对的实体。如果说HashMap是依靠于数组存储，那么这个数据就是Entry[]，Map存储的内容都在Entry[]里面1234 /** * The table, resized as necessary. Length MUST Always be a power of two. */transient Entry[] table; HashMap存取的实现在“线性数组”的基础上如何做到随机存储呢：重点是确定键值对的存储位置，这里是希望HashMap里面的元素尽量离散分布，使每个位置上的元素只有一个。当使用hash算法求出这个位置时，马上就可以获取对应位置的值，而不用取遍历链表。也与hash方法的离散性能密切相关1234567// hash jdk1.8static final int hash(Object key) &#123; int h; // h = key.hashCode() 为第一步 取hashCode值 // h ^ (h &gt;&gt;&gt; 16) 为第二步 高位参与运算 return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);&#125; 简单说起来，这里的Hash算法本质上就是三步：取key的hashCode的值、高位运算、取模运算对于任意对象，只要hashCode返回值相同，那么程序调用方法所计算的Hash码时一样的，把hash值对数组的长度取模运算，这样元素的分布相对来说是比较均匀的。在上面的方法中，通过把hashCode返回值高16位和低16位与计算，达到了hashCode返回值取模数组长度的效果。因为在HashMap底层数组中，length总是2的n次方（不够的用null填充），此时使用hashCode返回值与数组长度进行与运算依然达到了上述的效果，这是jdk1.7中的实现方法，在1.8中高16位与低16位进行与运算是优化的算法，能保证在hashCode返回值很大时，高低Bit都会参与到hash运算中，并且不会产生较大的开销 put我们知道HashMap中键 Key一定是唯一的，那么当再次往HashMap中存入键相同的键值对时，上一次存入的键值对就会被覆盖。但是如果两个键值对的index值一样时，HashMap会把先存入的值放入链表的尾部，最新加入的值则是该线性数组中每个下标对应的链表的首元素，以此类推。需要注意到的是，jdk1.8新增了HashMap链表中节点的个数对于8个时，转为红黑树的存储方式查看HashMap中的put方法源码：12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455 public V put(K key, V value) &#123; // 进行hash运算 return putVal(hash(key), key, value, false, true);&#125;final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) &#123; Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i; // 判断键值对数组table是否为空或null，否则进行resize扩容 if ((tab = table) == null || (n = tab.length) == 0) n = (tab = resize()).length; // 根据键值key计算hash得到插入位置的索引 if ((p = tab[i = (n - 1) &amp; hash]) == null)// p被赋值 tab[i] = newNode(hash, key, value, null); else &#123; Node&lt;K,V&gt; e; K k; // 判断键值对中key是否存在（相同），存在直接覆盖，相同指hashCode和equals if (p.hash == hash &amp;&amp; ((k = p.key) == key || (key != null &amp;&amp; key.equals(k)))) e = p; // 判断是否为树，是的话直接插入新结点 else if (p instanceof TreeNode) e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value); // 链表 else &#123; for (int binCount = 0; ; ++binCount) &#123; if ((e = p.next) == null) &#123; p.next = newNode(hash, key, value, null); // 如果链表的长度大于8就 转化为红黑树处理 if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st treeifyBin(tab, hash); break; &#125; // key已经存在，直接覆盖 if (e.hash == hash &amp;&amp; ((k = e.key) == key || (key != null &amp;&amp; key.equals(k)))) break; p = e; &#125; &#125; if (e != null) &#123; // 存在key的映射 V oldValue = e.value; if (!onlyIfAbsent || oldValue == null) e.value = value; afterNodeAccess(e); return oldValue; &#125; &#125; ++modCount; // 插入成功判断是否超出了最大容量，是就进行扩容 if (++size &gt; threshold) resize(); afterNodeInsertion(evict); return null; &#125; reszie的源码是将原来数组的容量扩大一倍，这个过程是一个十分消耗性能的过程，所以在使用中最好定一个预定的最大值，避免HashMap进行频繁的扩容。默认的负载因子是0.75 get首结点都是Entry类型的键值对1234567891011121314151617181920212223242526 public V get(Object key) &#123; Node&lt;K,V&gt; e; return (e = getNode(hash(key), key)) == null ? null : e.value; &#125; final Node&lt;K,V&gt; getNode(int hash, Object key) &#123; Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; first, e; int n; K k; if ((tab = table) != null &amp;&amp; (n = tab.length) &gt; 0 &amp;&amp; (first = tab[(n - 1) &amp; hash]) != null) &#123; if (first.hash == hash &amp;&amp; // 先检查链表中的首结点 ((k = first.key) == key || (key != null &amp;&amp; key.equals(k)))) return first; // 判断出了与key相同（hashCode和equals） if ((e = first.next) != null) &#123; // 继续根据hash查找 if (first instanceof TreeNode) return ((TreeNode&lt;K,V&gt;)first).getTreeNode(hash, key); // 不在首结点，不在红黑树，只能遍历链表 do &#123; if (e.hash == hash &amp;&amp; ((k = e.key) == key || (key != null &amp;&amp; key.equals(k)))) return e; &#125; while ((e = e.next) != null); &#125; &#125; return null; &#125; null keynull key总是放在Entry[]数组的第一个元素123456789101112131415161718192021private V putForNullKey(V value) &#123; for (Entry&lt;K,V&gt; e = table[0]; e != null; e = e.next) &#123; if (e.key == null) &#123; V oldValue = e.value; e.value = value; e.recordAccess(this); return oldValue; &#125; &#125; modCount++; addEntry(0, null, value, 0); return null; &#125; private V getForNullKey() &#123; for (Entry&lt;K,V&gt; e = table[0]; e != null; e = e.next) &#123; if (e.key == null) return e.value; &#125; return null; &#125; 获得索引值indexHashMap存取时需要计算索引index来确认到Entry[]数组取元素的位置，也就是获取数组下标的过程123456 /** * Returns index for hash code h. */static int indexFor(int h, int length) &#123; return h &amp; (length-1);&#125; 按位取并，作用上相当于取模：index = hashcode % table.length hashtable初始大小在调用HashMap的无参构造方法时，初始大小是16。当后续大小改变时，table初始大小总是2的n次方（没有填充满就空着） Hash冲突我们总是希望整个HashMap是一个尽量离散的优秀结构，用尽量少的空间存储尽量多的数据，且其查找增删的性能依据很高效。这个是一个复杂的平衡过程，和负载因子相关，和解决hash冲突的办法相关：hash冲突是指两个key被分配到了同一个桶中 开放定址法（线性探查再散列、二次探查再散列、为随机探查再散列） 再哈希法 链地址法（拉链法） 建立一个公共的溢出桶java中的HashMap使用的就是拉链法，如前面图所示 再散列过程 rehash当哈希表的容量超过默认的大小时，就需要将所有的元素换一个新的“桶”来存储，这个新的桶中的键值对存放的位置会发生改变，需要重新根据新桶的大小来重新计算各个键值对的索引位置，这个过程就叫做rehash 总结此次深入探究java中的HashMap查阅了不少资料和源码，感谢先行者的指引，这里仅是个人愚见，如有异议，欢迎联系HashMap实现原理分析java8重新认识HahsMap]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[Servlet重定向与转发区别]]></title>
-      <url>http://yoursite.com/2017/03/02/Servlet%E9%87%8D%E5%AE%9A%E5%90%91%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%8C%BA%E5%88%AB/</url>
-      <content type="html"><![CDATA[<h1 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h1><p>servlet在对客户端请求的数据处理之后，会向客户端返回相应的响应结果。这个响应结果可以是由当前servlet对象的PrintWriter输出流直接输出到页面上的信息，也可以是一个新的URL地址对应的信息。<br>在servlet中通过两种方式完成对新URL地址的转向：重定向和请求转发。</p>
-<h2 id="URL与URI区别"><a href="#URL与URI区别" class="headerlink" title="URL与URI区别"></a>URL与URI区别</h2><p>一图胜千言系列  ↓↓↓<br><img src="/2017/03/02/Servlet重定向与转发区别/url.png" alt="url"></p>
-<h1 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h1><p>由原请求地址重新定位到某个新地址，原有的请求失效，客户端看到的是新的请求返回的响应结果，客户端浏览器地址栏变为新的请求地址。其中第二次请求是由客户端浏览器自动发出。<br><img src="/2017/03/02/Servlet重定向与转发区别/redirect.png" alt="redirect"></p>
-<h1 id="请求转发"><a href="#请求转发" class="headerlink" title="请求转发"></a>请求转发</h1><p>请求转发是将请求再转发到其他地址，转发过程中使用的是同一个请求，转发后浏览器地址栏内容不变。<br><img src="/2017/03/02/Servlet重定向与转发区别/dispatcher.png" alt="dispatcher"></p>
-<h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><ul>
-<li>转发只能将请求转发给同一个web应用（项目工程）中的其他组件（servlet程序）；重定向可以重定向到任意的地址，网络地址或是文件地址（跨项目文件夹）</li>
-<li>重定向访问结束后，浏览器地址栏URL发生变化，变成了重定向后的URL；转发则不变</li>
-<li>重定向对浏览器的请求直接做出响应，结果就是告诉浏览器去重新发出另一个新的URL访问请求；请求转发在服务器端内部将请求转发给另一个资源，浏览器不知道服务器程序内部发生了转发过程</li>
-<li>请求转发调用者与被调用者之间共享相同的请求对象，属于同一个请求和响应过程；重定向则是不同的请求和响应过程</li>
-</ul>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> servlet </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F03%2F02%2FServlet%E9%87%8D%E5%AE%9A%E5%90%91%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%8C%BA%E5%88%AB%2F</url>
+      <content type="text"><![CDATA[RTservlet在对客户端请求的数据处理之后，会向客户端返回相应的响应结果。这个响应结果可以是由当前servlet对象的PrintWriter输出流直接输出到页面上的信息，也可以是一个新的URL地址对应的信息。在servlet中通过两种方式完成对新URL地址的转向：重定向和请求转发。 URL与URI区别一图胜千言系列 ↓↓↓ 重定向由原请求地址重新定位到某个新地址，原有的请求失效，客户端看到的是新的请求返回的响应结果，客户端浏览器地址栏变为新的请求地址。其中第二次请求是由客户端浏览器自动发出。 请求转发请求转发是将请求再转发到其他地址，转发过程中使用的是同一个请求，转发后浏览器地址栏内容不变。 区别 转发只能将请求转发给同一个web应用（项目工程）中的其他组件（servlet程序）；重定向可以重定向到任意的地址，网络地址或是文件地址（跨项目文件夹） 重定向访问结束后，浏览器地址栏URL发生变化，变成了重定向后的URL；转发则不变 重定向对浏览器的请求直接做出响应，结果就是告诉浏览器去重新发出另一个新的URL访问请求；请求转发在服务器端内部将请求转发给另一个资源，浏览器不知道服务器程序内部发生了转发过程 请求转发调用者与被调用者之间共享相同的请求对象，属于同一个请求和响应过程；重定向则是不同的请求和响应过程]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[alter和update以及drop和delete区别]]></title>
-      <url>http://yoursite.com/2017/02/28/alter%E5%92%8Cupdate%E4%BB%A5%E5%8F%8Adrop%E5%92%8Cdelete%E5%8C%BA%E5%88%AB/</url>
-      <content type="html"><![CDATA[<h1 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h1><p>使用MySQL时，很多语法相似，容易记浑，比如alter和update，比如drop和delete。</p>
-<h1 id="alter和update区别"><a href="#alter和update区别" class="headerlink" title="alter和update区别"></a>alter和update区别</h1><ul>
-<li>alter是对表的结构进行的操作，比如增加删除表的字段，或者是修改字段的顺序</li>
-<li>update是对表中的数据进行的操作，比如依据某个字段修改当前记录中另一个字段的值</li>
-</ul>
-<h1 id="drop和delete区别"><a href="#drop和delete区别" class="headerlink" title="drop和delete区别"></a>drop和delete区别</h1><ul>
-<li>drop是对表本体进行的操作，比如删除整张表。如果需要对表的结构进行增删，使用alter</li>
-<li>delete是对表的数据进行的操作，比如删除某一条记录</li>
-</ul>
-<p>总的来说，如果你不想要这张表了，用drop，如果你还想用这张表，只是删除一些数据，用delete</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> MySQL </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F28%2Falter%E5%92%8Cupdate%E4%BB%A5%E5%8F%8Adrop%E5%92%8Cdelete%E5%8C%BA%E5%88%AB%2F</url>
+      <content type="text"><![CDATA[RT使用MySQL时，很多语法相似，容易记浑，比如alter和update，比如drop和delete。 alter和update区别 alter是对表的结构进行的操作，比如增加删除表的字段，或者是修改字段的顺序 update是对表中的数据进行的操作，比如依据某个字段修改当前记录中另一个字段的值 drop和delete区别 drop是对表本体进行的操作，比如删除整张表。如果需要对表的结构进行增删，使用alter delete是对表的数据进行的操作，比如删除某一条记录 总的来说，如果你不想要这张表了，用drop，如果你还想用这张表，只是删除一些数据，用delete]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[MySQL使用手册]]></title>
-      <url>http://yoursite.com/2017/02/28/MySQL%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url>
-      <content type="html"><![CDATA[<h1 id="MySQL语法总结"><a href="#MySQL语法总结" class="headerlink" title="MySQL语法总结"></a>MySQL语法总结</h1><h2 id="MySQL结构："><a href="#MySQL结构：" class="headerlink" title="MySQL结构："></a>MySQL结构：</h2><p>数据库中存放数据都是依托与一张张的数据表存在的，我们通过数据库可以高效的利用数据；而我们对数据的操作就是对数据库中的表的操作。</p>
-<h2 id="SQL数据类型："><a href="#SQL数据类型：" class="headerlink" title="SQL数据类型："></a>SQL数据类型：</h2><p>字符型：<code>&lt;varchar&gt; VS &lt;char&gt;</code><br>文本型：<code>&lt;text&gt;</code><br>数值型：<code>&lt;int&gt; VS &lt;smallint&gt; VS &lt;tinyint&gt;</code><br>浮点型：<code>&lt;float&gt; VS &lt;decinal&gt;</code><br>逻辑型：<code>&lt;bit&gt;</code><br>日期型：<code>&lt;datetime&gt; VS &lt;smalldatetime&gt;</code></p>
-<h2 id="MySQL基本操作（格式）："><a href="#MySQL基本操作（格式）：" class="headerlink" title="MySQL基本操作（格式）："></a>MySQL基本操作（格式）：</h2><h3 id="登陆"><a href="#登陆" class="headerlink" title="登陆"></a>登陆</h3><p><code>mysql -u root -p</code><br>默认没有密码，直接回车，也可以自行修改密码。<br>操作数据库中的表单时，一定要先<code>USE &lt;数据库名&gt;</code>来进入该数据库</p>
-<h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><ul>
-<li>创建数据库：<code>CREATE databases &lt;数据库名&gt;;</code></li>
-<li>创建表单：<code>CREATE table &lt;表名&gt;;</code></li>
-</ul>
-<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p><strong>单表查询</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">SELECT &lt;字段名一，字段名二，...&gt;</div><div class="line">FROM &lt;表名&gt;</div><div class="line">WHERE &lt;查询条件&gt;;</div></pre></td></tr></table></figure></p>
-<ul>
-<li>查询所有数据库：<code>SHOW DATABASE;</code></li>
-<li>选中某个数据库进行操作：<code>USE &lt;数据库名&gt;</code></li>
-<li>查询某数据库中所有的表：<code>SHOW TABLES;</code></li>
-<li>查询表中某字段的数据：<code>SELECT &lt;字段名一,字段名二....&gt; FROM &lt;表名&gt;;</code></li>
-<li>查询某记录：<code>SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt;;</code><ul>
-<li>（多个）查询条件：<code>&lt;字段名&gt; =值 &amp;&amp; &lt;字段名&gt; =值</code></li>
-</ul>
-</li>
-<li>查询表中的所有记录：<code>SELECT * FROM &lt;表名&gt;;</code></li>
-<li>查询表结构字段名（不包含外键）：<code>DESC &lt;表名&gt;;</code></li>
-<li>查询表创建时（修改后）的SQL语句：<code>SHOW CREATE TABLE &lt;表名&gt;;</code>可以用来查看外键信息</li>
-</ul>
-<p><strong>连接查询</strong>：可以使用表的别名（eg：table1 A）</p>
-<ul>
-<li>内连接-等值连接：指使用等号”=”比较两个表的连接列的值，相当于两表执行笛卡尔后，取两表连结列值相等的记录-<code>SELECT &lt;表名A.字段名(*)&gt;,&lt;表名B.字段名(*)&gt; FROM &lt;表名A&gt; INNER JOIN &lt;表名B&gt; ON &lt;表名A.字段名&gt; = &lt;表名B.字段名&gt;;</code></li>
-<li>内连接-非等值连接：<code>SELECT &lt;表名A.字段名(*)&gt;,&lt;表名B.字段名(*)&gt; FROM &lt;表名A&gt; INNER JOIN &lt;表名B&gt; ON &lt;表名A.字段名&gt; &gt;(或者&lt;) &lt;表名B.字段名&gt;;</code></li>
-<li>外连接-左外连接：指将左表的所有记录与右表符合条件的记录匹配，返回的结果除内连接的结果，同时如果有左表不符合条件的记录，就在右表相应列中填NULL-<code>SELECT &lt;表名A.字段名(*)&gt;,&lt;表名B.字段名(*)&gt; FROM &lt;表名A&gt; LEFT JOIN &lt;表名B&gt; ON &lt;表名A.字段名&gt; = &lt;表名B.字段名&gt;</code></li>
-<li>外连接-右外连接：<code>SELECT &lt;表名A.字段名(*)&gt;,&lt;表名B.字段名(*)&gt; FROM &lt;表名A&gt; RIGHT JOIN &lt;表名B&gt; ON &lt;表名A.字段名&gt; = &lt;表名B.字段名&gt;</code></li>
-<li>自然连接：MySQL中的自然连接是自动将两个表中相同名称的列进行记录匹配<code>SELECT &lt;表名A.字段名&gt;,&lt;表名B.字段名&gt; FROM &lt;表名A&gt; NATURAL JOIN &lt;表名B&gt;;</code></li>
-<li>自连接：用别的表实现自身表的连接-<code>SELECT &lt;表名B.字段名(*)&gt; FROM &lt;表名A.字段名(*)&gt;,&lt;表名B.字段名(*)&gt; WHERE &lt;表名A.字段名&gt; = &lt;表名B.字段名&gt; AND &lt;查询条件&gt;;</code></li>
-</ul>
-<p><strong>嵌套查询</strong>：将一个查询块嵌套在另一个查询块的WHERE子句或者HAVING短语的条件中的查询</p>
-<ul>
-<li>含IN的子查询：可以多层嵌套-<code>SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;字段名&gt; IN (SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt;);</code></li>
-<li>含ANY的子查询：查询的条件符合另一个查询结果的任一个即可-<code>SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;字段名&gt; &lt;ANY(或者是&gt;ANY、=ANY) (SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt;)</code></li>
-<li>含EXISTS的子查询：EXISTS代表存在量词∃。带有EXISTS谓词的子查询不返回任何数据，只产生逻辑值true或者false-<code>SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;字段名&gt; EXISTS (SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt;)</code></li>
-</ul>
-<p><strong>集合查询</strong>：SELECT语句的查询结果是元组的集合，所以多个SELECT语句的结果可进行集合操作。集合操作主要包括并操作UNION、交操作INTERSECT、差操作EXCEPT，在MySQL替换过来就是<code>OR</code>、<code>AND</code>、<code>EXISTS/IN</code></p>
-<ul>
-<li>集合并查询：实质上是进行两次查询操作然后将结果取并集-<code>SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt; UNION  SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt;</code>，可以使用语句取代-<code>SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt; OR &lt;查询条件&gt;</code></li>
-<li>集合交查询：MySQL不支持直接的交集查询，使用替代语句-<code>SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt; AND &lt;查询条件&gt;</code></li>
-<li>集合差查询：MySQL不支持直接的差集查询-<code>SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt; AND &lt;查询条件&gt;</code>，具体使用时逻辑符号会变。或者使用<code>IN</code>或者<code>EXISTS</code></li>
-</ul>
-<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><ul>
-<li>按照某字段升序排列：<code>SELECT * FROM &lt;表名&gt; ORDER BY &lt;字段名&gt; LIMIT &lt;待排列的记录数&gt;;</code></li>
-<li>降序排列：<code>SELECT * FROM &lt;表名&gt; ORDER BY &lt;字段名&gt; DESC LIMIT &lt;待排列的记录数&gt;;</code></li>
-</ul>
-<h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><ul>
-<li>插入记录：<code>INSERT INTO &lt;表名&gt; VALUES(&#39;...&#39;,&#39;&#39;,&#39;&#39;,....);</code></li>
-<li>插入某一字段：<code>ALTER TABLE &lt;表名&gt; ADD &lt;字段名&gt; &lt;字段类型&gt; ;</code></li>
-</ul>
-<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><ul>
-<li>删除数据库：<code>DROP DATABASE &lt;数据库名&gt;;</code></li>
-<li>删除未被外键关联的表：<code>DROP TABLE IF EXISTS &lt;表名&gt;;</code></li>
-<li>删除已经外键关联的表：先删除子表再删除父表</li>
-<li>删除表中的某一条记录：<code>DELETE FROM &lt;表名&gt; WHERE &lt;字段=值&gt;;</code></li>
-<li>删除表中的某一字段：<code>ALTER TABLE &lt;表名&gt; DROP &lt;字段名&gt;;</code></li>
-<li>删除外键约束：<code>ALTER TABLE &lt;表名&gt; DROP FOREIGN KEY &lt;外键名&gt;</code></li>
-</ul>
-<h3 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h3><ul>
-<li>修改表名：<code>ALTER TABLE &lt;旧表名&gt; RENAME TO &lt;新表名&gt;;</code></li>
-<li>修改表中的字段名：<code>ALTER TABLE &lt;表名&gt; CHANGE &lt;旧字段名&gt; &lt;新字段名&gt; &lt;数据类型&gt;;</code></li>
-<li>修改表中字段的数据类型：<code>ALTER TABLE &lt;表名&gt; MODIFY &lt;字段名&gt; &lt;新数据类型&gt;;</code></li>
-<li>修改表中字段的顺序：<code>ALTER TABLE &lt;表名&gt; MODIFY &lt;字段名&gt; &lt;数据类型&gt; FIRST/AFTER &lt;字段名&gt;;</code></li>
-<li>修改表中某一记录某一字段的值：<code>UPDATE &lt;表名&gt; SET &lt;字段名&gt;=&lt;新值&gt; WHERE &lt;查询条件&gt;;</code></li>
-<li>在表都创建之后添加外键：<code>ALTER TABLE &lt;需要添加外键的表名&gt; ADD CONSTRAINT &lt;外键名&gt; FOREIGN KEY(需添加外键的表的字段名) REFERENCE &lt;被作为外键的表名&gt; (被作为外键的字段名);</code></li>
-</ul>
-<h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><p>index索引可以有重复的值，而unique和primary key索引列中的值时唯一的</p>
-<ul>
-<li>ALTER创建索引（可同时添加多个表的索引列）<ul>
-<li><code>ALTER TABLE &lt;表名&gt; ADD INDEX &lt;索引名（可省缺）&gt;(索引字段名);</code></li>
-<li><code>ALTER TABLE &lt;表名&gt; ADD UNIQUE(索引字段名);</code></li>
-<li><code>ALTER TABLE &lt;表名&gt; ADD PRIMARY KEY(索引字段名);</code></li>
-</ul>
-</li>
-<li>CREATE增加索引<ul>
-<li><code>CREATE INDEX &lt;索引名&gt; ON &lt;表名&gt; (索引字段名);</code></li>
-<li><code>CREATE INDEX &lt;索引名&gt; ON &lt;表名&gt; (索引字段名);</code></li>
-</ul>
-</li>
-<li>查询索引：<code>SHOW INDEX FROM &lt;表名&gt;;</code>或者<code>SHOW KEYS FROM &lt;表名&gt;;</code></li>
-<li>删除索引：<code>DROP INDEX &lt;索引名&gt; ON &lt;表名&gt;;</code>或者<code>ALTER TABLE &lt;表名&gt; DROP INDEX &lt;索引名&gt;</code>或者<code>ALTER TABLE &lt;表名&gt; DROP PRIMARY KEY;</code></li>
-</ul>
-<h3 id="设置约束关系"><a href="#设置约束关系" class="headerlink" title="设置约束关系"></a>设置约束关系</h3><p><strong>主键</strong>，又称主码，主键约束就是作为主键的字段在记录中是唯一存在的，不可重复，并且也不许为空。就像我们每个人都有自己唯一的身份ID一样，唯一标识。利用这个特性，我们可以在数据库中快速的查询定位到一条记录。</p>
-<ul>
-<li>设置主键：创建表的时候，在定义字段以及数据类型的后面直接加上<code>PRIMARY KEY (默认值)</code>；或者在定义完所有的字段以及数据类型后，加上<code>PRIMARY KEY (&lt;字段名一,....&gt;)</code></li>
-</ul>
-<p><strong>外键</strong>，表中的一个或多个字段，可以不是本表的主键，但<strong>必须是另一个表的主键</strong>。外键用来在两个表中建立连接关系，对于有关联关系的两个表而言，相关联字段中主键所在的表为父表，外键所在的表为子表。</p>
-<ul>
-<li>设置外键：在表中所有字段都定义后（包括外键名），加上<code>CONSTRAINT &lt;外键约束名&gt; FOREIGN KEY(外键名) REFERENCE&lt;关联的外表名(外表的字段名)&gt;;</code></li>
-</ul>
-<p><strong>注意的是，这里的外键约束名与外键名是不同的意思</strong><br><strong>同一个数据库中，外键约束名和外键名一定不可以重复！！！</strong> /(ㄒoㄒ)/~~</p>
-<h3 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h3><p>视图包含行和列，其中的字段来自一个或多个数据库中的真实的表中的字段，一起组合成一个类似真实的表。可以像基本表一样，进行增删改查的操作。记录进行改动后，视图与基本表都会更新</p>
-<ul>
-<li><p>创建视图：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">CREATE VIEW &lt;视图名&gt;(字段名一,字段名二,...(可选)) as</div><div class="line">SELECT &lt;字段名一,字段名二,...&gt;</div><div class="line">FROM &lt;表名&gt;</div><div class="line">WHERE &lt;查询条件&gt;;</div></pre></td></tr></table></figure>
-</li>
-<li><p>删除视图：<code>DROP VIEW &lt;视图名&gt;;</code></p>
-</li>
-<li>查询视图：<code>SELECT * FROM &lt;视图名&gt;;</code>或者<code>SLECT &lt;字段名&gt; FROM &lt;视图名&gt;;</code></li>
-<li>修改视图：可以向上述修改字段/记录的方式一样来修改视图，并且修改结果各个实际的表也会生效，也可以按下面的方法修改↓↓↓↓↓<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">CREATE OR REPLACE VIEW &lt;视图名&gt;(字段名一,字段名二,...(可选)) as</div><div class="line">SELECT &lt;字段名一,字段名二,...&gt;</div><div class="line">FROM &lt;表名&gt;</div><div class="line">WHERE &lt;查询条件&gt;;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="添加注释-备注"><a href="#添加注释-备注" class="headerlink" title="添加注释/备注"></a>添加注释/备注</h3><ul>
-<li>给表添加描述：<code>ALTER TABLE &lt;表名&gt; COMMENT=&#39;这里是表的注释&#39;</code></li>
-<li>给列添加描述：<code>ALTER TABLE &lt;表名&gt; MODIFY &#39;&lt;字段名&gt;&#39; DATETIME DEFAULT NULL COMMENT &#39;字段描述&#39;</code></li>
-</ul>
-<h2 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h2><p>谈一谈<strong>外键约束关系</strong>：<br>在两个相关联的表中，一个表的主键是另一个表的非主键字段，这个字段中的值可能有很多。就拿学生选课来说，某一个课程可能有很多学生选，学生的主键是学号，那么该课程的表中，学号这一外键就会有很多值，同时，也把课程的数据表和学生的数据表关联了起来。<br>呐，在这个例子中，课程的表就是子表，学生的数据表就是父表。倘若，父表的值改变了，那么一定需要修改子表的值，而子表想去修改外键的值是没有权限的；但是，子表可以删除带有外键值的记录。这之中就有一种很明显的约束关系。</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> MySQL </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F28%2FMySQL%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C%2F</url>
+      <content type="text"><![CDATA[MySQL语法总结MySQL结构：数据库中存放数据都是依托与一张张的数据表存在的，我们通过数据库可以高效的利用数据；而我们对数据的操作就是对数据库中的表的操作。 SQL数据类型：字符型：&lt;varchar&gt; VS &lt;char&gt;文本型：&lt;text&gt;数值型：&lt;int&gt; VS &lt;smallint&gt; VS &lt;tinyint&gt;浮点型：&lt;float&gt; VS &lt;decinal&gt;逻辑型：&lt;bit&gt;日期型：&lt;datetime&gt; VS &lt;smalldatetime&gt; MySQL基本操作（格式）：登陆mysql -u root -p默认没有密码，直接回车，也可以自行修改密码。操作数据库中的表单时，一定要先USE &lt;数据库名&gt;来进入该数据库 创建 创建数据库：CREATE databases &lt;数据库名&gt;; 创建表单：CREATE table &lt;表名&gt;; 查询单表查询：123SELECT &lt;字段名一，字段名二，...&gt;FROM &lt;表名&gt;WHERE &lt;查询条件&gt;; 查询所有数据库：SHOW DATABASE; 选中某个数据库进行操作：USE &lt;数据库名&gt; 查询某数据库中所有的表：SHOW TABLES; 查询表中某字段的数据：SELECT &lt;字段名一,字段名二....&gt; FROM &lt;表名&gt;; 查询某记录：SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt;; （多个）查询条件：&lt;字段名&gt; =值 &amp;&amp; &lt;字段名&gt; =值 查询表中的所有记录：SELECT * FROM &lt;表名&gt;; 查询表结构字段名（不包含外键）：DESC &lt;表名&gt;; 查询表创建时（修改后）的SQL语句：SHOW CREATE TABLE &lt;表名&gt;;可以用来查看外键信息 连接查询：可以使用表的别名（eg：table1 A） 内连接-等值连接：指使用等号”=”比较两个表的连接列的值，相当于两表执行笛卡尔后，取两表连结列值相等的记录-SELECT &lt;表名A.字段名(*)&gt;,&lt;表名B.字段名(*)&gt; FROM &lt;表名A&gt; INNER JOIN &lt;表名B&gt; ON &lt;表名A.字段名&gt; = &lt;表名B.字段名&gt;; 内连接-非等值连接：SELECT &lt;表名A.字段名(*)&gt;,&lt;表名B.字段名(*)&gt; FROM &lt;表名A&gt; INNER JOIN &lt;表名B&gt; ON &lt;表名A.字段名&gt; &gt;(或者&lt;) &lt;表名B.字段名&gt;; 外连接-左外连接：指将左表的所有记录与右表符合条件的记录匹配，返回的结果除内连接的结果，同时如果有左表不符合条件的记录，就在右表相应列中填NULL-SELECT &lt;表名A.字段名(*)&gt;,&lt;表名B.字段名(*)&gt; FROM &lt;表名A&gt; LEFT JOIN &lt;表名B&gt; ON &lt;表名A.字段名&gt; = &lt;表名B.字段名&gt; 外连接-右外连接：SELECT &lt;表名A.字段名(*)&gt;,&lt;表名B.字段名(*)&gt; FROM &lt;表名A&gt; RIGHT JOIN &lt;表名B&gt; ON &lt;表名A.字段名&gt; = &lt;表名B.字段名&gt; 自然连接：MySQL中的自然连接是自动将两个表中相同名称的列进行记录匹配SELECT &lt;表名A.字段名&gt;,&lt;表名B.字段名&gt; FROM &lt;表名A&gt; NATURAL JOIN &lt;表名B&gt;; 自连接：用别的表实现自身表的连接-SELECT &lt;表名B.字段名(*)&gt; FROM &lt;表名A.字段名(*)&gt;,&lt;表名B.字段名(*)&gt; WHERE &lt;表名A.字段名&gt; = &lt;表名B.字段名&gt; AND &lt;查询条件&gt;; 嵌套查询：将一个查询块嵌套在另一个查询块的WHERE子句或者HAVING短语的条件中的查询 含IN的子查询：可以多层嵌套-SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;字段名&gt; IN (SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt;); 含ANY的子查询：查询的条件符合另一个查询结果的任一个即可-SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;字段名&gt; &lt;ANY(或者是&gt;ANY、=ANY) (SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt;) 含EXISTS的子查询：EXISTS代表存在量词∃。带有EXISTS谓词的子查询不返回任何数据，只产生逻辑值true或者false-SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;字段名&gt; EXISTS (SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt;) 集合查询：SELECT语句的查询结果是元组的集合，所以多个SELECT语句的结果可进行集合操作。集合操作主要包括并操作UNION、交操作INTERSECT、差操作EXCEPT，在MySQL替换过来就是OR、AND、EXISTS/IN 集合并查询：实质上是进行两次查询操作然后将结果取并集-SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt; UNION SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt;，可以使用语句取代-SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt; OR &lt;查询条件&gt; 集合交查询：MySQL不支持直接的交集查询，使用替代语句-SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt; AND &lt;查询条件&gt; 集合差查询：MySQL不支持直接的差集查询-SELECT &lt;字段一,字段二...&gt; FROM &lt;表名&gt; WHERE &lt;查询条件&gt; AND &lt;查询条件&gt;，具体使用时逻辑符号会变。或者使用IN或者EXISTS 排序 按照某字段升序排列：SELECT * FROM &lt;表名&gt; ORDER BY &lt;字段名&gt; LIMIT &lt;待排列的记录数&gt;; 降序排列：SELECT * FROM &lt;表名&gt; ORDER BY &lt;字段名&gt; DESC LIMIT &lt;待排列的记录数&gt;; 插入 插入记录：INSERT INTO &lt;表名&gt; VALUES(&#39;...&#39;,&#39;&#39;,&#39;&#39;,....); 插入某一字段：ALTER TABLE &lt;表名&gt; ADD &lt;字段名&gt; &lt;字段类型&gt; ; 删除 删除数据库：DROP DATABASE &lt;数据库名&gt;; 删除未被外键关联的表：DROP TABLE IF EXISTS &lt;表名&gt;; 删除已经外键关联的表：先删除子表再删除父表 删除表中的某一条记录：DELETE FROM &lt;表名&gt; WHERE &lt;字段=值&gt;; 删除表中的某一字段：ALTER TABLE &lt;表名&gt; DROP &lt;字段名&gt;; 删除外键约束：ALTER TABLE &lt;表名&gt; DROP FOREIGN KEY &lt;外键名&gt; 修改 修改表名：ALTER TABLE &lt;旧表名&gt; RENAME TO &lt;新表名&gt;; 修改表中的字段名：ALTER TABLE &lt;表名&gt; CHANGE &lt;旧字段名&gt; &lt;新字段名&gt; &lt;数据类型&gt;; 修改表中字段的数据类型：ALTER TABLE &lt;表名&gt; MODIFY &lt;字段名&gt; &lt;新数据类型&gt;; 修改表中字段的顺序：ALTER TABLE &lt;表名&gt; MODIFY &lt;字段名&gt; &lt;数据类型&gt; FIRST/AFTER &lt;字段名&gt;; 修改表中某一记录某一字段的值：UPDATE &lt;表名&gt; SET &lt;字段名&gt;=&lt;新值&gt; WHERE &lt;查询条件&gt;; 在表都创建之后添加外键：ALTER TABLE &lt;需要添加外键的表名&gt; ADD CONSTRAINT &lt;外键名&gt; FOREIGN KEY(需添加外键的表的字段名) REFERENCE &lt;被作为外键的表名&gt; (被作为外键的字段名); 索引index索引可以有重复的值，而unique和primary key索引列中的值时唯一的 ALTER创建索引（可同时添加多个表的索引列） ALTER TABLE &lt;表名&gt; ADD INDEX &lt;索引名（可省缺）&gt;(索引字段名); ALTER TABLE &lt;表名&gt; ADD UNIQUE(索引字段名); ALTER TABLE &lt;表名&gt; ADD PRIMARY KEY(索引字段名); CREATE增加索引 CREATE INDEX &lt;索引名&gt; ON &lt;表名&gt; (索引字段名); CREATE INDEX &lt;索引名&gt; ON &lt;表名&gt; (索引字段名); 查询索引：SHOW INDEX FROM &lt;表名&gt;;或者SHOW KEYS FROM &lt;表名&gt;; 删除索引：DROP INDEX &lt;索引名&gt; ON &lt;表名&gt;;或者ALTER TABLE &lt;表名&gt; DROP INDEX &lt;索引名&gt;或者ALTER TABLE &lt;表名&gt; DROP PRIMARY KEY; 设置约束关系主键，又称主码，主键约束就是作为主键的字段在记录中是唯一存在的，不可重复，并且也不许为空。就像我们每个人都有自己唯一的身份ID一样，唯一标识。利用这个特性，我们可以在数据库中快速的查询定位到一条记录。 设置主键：创建表的时候，在定义字段以及数据类型的后面直接加上PRIMARY KEY (默认值)；或者在定义完所有的字段以及数据类型后，加上PRIMARY KEY (&lt;字段名一,....&gt;) 外键，表中的一个或多个字段，可以不是本表的主键，但必须是另一个表的主键。外键用来在两个表中建立连接关系，对于有关联关系的两个表而言，相关联字段中主键所在的表为父表，外键所在的表为子表。 设置外键：在表中所有字段都定义后（包括外键名），加上CONSTRAINT &lt;外键约束名&gt; FOREIGN KEY(外键名) REFERENCE&lt;关联的外表名(外表的字段名)&gt;; 注意的是，这里的外键约束名与外键名是不同的意思同一个数据库中，外键约束名和外键名一定不可以重复！！！ /(ㄒoㄒ)/~~ 视图视图包含行和列，其中的字段来自一个或多个数据库中的真实的表中的字段，一起组合成一个类似真实的表。可以像基本表一样，进行增删改查的操作。记录进行改动后，视图与基本表都会更新 创建视图： 1234CREATE VIEW &lt;视图名&gt;(字段名一,字段名二,...(可选)) asSELECT &lt;字段名一,字段名二,...&gt;FROM &lt;表名&gt;WHERE &lt;查询条件&gt;; 删除视图：DROP VIEW &lt;视图名&gt;; 查询视图：SELECT * FROM &lt;视图名&gt;;或者SLECT &lt;字段名&gt; FROM &lt;视图名&gt;; 修改视图：可以向上述修改字段/记录的方式一样来修改视图，并且修改结果各个实际的表也会生效，也可以按下面的方法修改↓↓↓↓↓1234CREATE OR REPLACE VIEW &lt;视图名&gt;(字段名一,字段名二,...(可选)) asSELECT &lt;字段名一,字段名二,...&gt;FROM &lt;表名&gt;WHERE &lt;查询条件&gt;; 添加注释/备注 给表添加描述：ALTER TABLE &lt;表名&gt; COMMENT=&#39;这里是表的注释&#39; 给列添加描述：ALTER TABLE &lt;表名&gt; MODIFY &#39;&lt;字段名&gt;&#39; DATETIME DEFAULT NULL COMMENT &#39;字段描述&#39; 心得谈一谈外键约束关系：在两个相关联的表中，一个表的主键是另一个表的非主键字段，这个字段中的值可能有很多。就拿学生选课来说，某一个课程可能有很多学生选，学生的主键是学号，那么该课程的表中，学号这一外键就会有很多值，同时，也把课程的数据表和学生的数据表关联了起来。呐，在这个例子中，课程的表就是子表，学生的数据表就是父表。倘若，父表的值改变了，那么一定需要修改子表的值，而子表想去修改外键的值是没有权限的；但是，子表可以删除带有外键值的记录。这之中就有一种很明显的约束关系。]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[Eclipse编写jsp自动导入包]]></title>
-      <url>http://yoursite.com/2017/02/27/Eclipse%E7%BC%96%E5%86%99jsp%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5%E5%8C%85/</url>
-      <content type="html"><![CDATA[<h1 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h1><p>使用eclipse我们会需要一个自动补全剩余代码的功能，这使得我们可以在输完一些变量或者方法甚至是包的时候，可以方便快捷的选择我们想要输入的内容。very convenient！~</p>
-<p>这个关键性的组合按键就是：<br><code>alt + /</code></p>
-<p>当然了，这个在写java程序的时候可以使用，在写jsp程序的时候，依然是这个组合键 QvQ</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> eclipse </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F27%2FEclipse%E7%BC%96%E5%86%99jsp%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5%E5%8C%85%2F</url>
+      <content type="text"><![CDATA[RT使用eclipse我们会需要一个自动补全剩余代码的功能，这使得我们可以在输完一些变量或者方法甚至是包的时候，可以方便快捷的选择我们想要输入的内容。very convenient！~ 这个关键性的组合按键就是：alt + / 当然了，这个在写java程序的时候可以使用，在写jsp程序的时候，依然是这个组合键 QvQ]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[java中几个获取长度的方法区别]]></title>
-      <url>http://yoursite.com/2017/02/27/java%E4%B8%AD%E5%87%A0%E4%B8%AA%E8%8E%B7%E5%8F%96%E9%95%BF%E5%BA%A6%E7%9A%84%E6%96%B9%E6%B3%95%E5%8C%BA%E5%88%AB/</url>
-      <content type="html"><![CDATA[<h1 id="length和length-和size"><a href="#length和length-和size" class="headerlink" title="length和length()和size()"></a>length和length()和size()</h1><h2 id="length"><a href="#length" class="headerlink" title="length"></a>length</h2><p>length是数组的属性，直接使用<code>.</code>来进行访问，用来获取数组的长度。</p>
-<h2 id="length-1"><a href="#length-1" class="headerlink" title="length()"></a>length()</h2><p>length()是一个方法，针对的是String类型，用来获取字符串的长度。</p>
-<h2 id="size"><a href="#size" class="headerlink" title="size()"></a>size()</h2><p>size()是方法，用于获取泛型集合的大小，以便了解其中的元素个数。</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F27%2Fjava%E4%B8%AD%E5%87%A0%E4%B8%AA%E8%8E%B7%E5%8F%96%E9%95%BF%E5%BA%A6%E7%9A%84%E6%96%B9%E6%B3%95%E5%8C%BA%E5%88%AB%2F</url>
+      <content type="text"><![CDATA[length和length()和size()lengthlength是数组的属性，直接使用.来进行访问，用来获取数组的长度。 length()length()是一个方法，针对的是String类型，用来获取字符串的长度。 size()size()是方法，用于获取泛型集合的大小，以便了解其中的元素个数。]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[java线程]]></title>
-      <url>http://yoursite.com/2017/02/27/java%E7%BA%BF%E7%A8%8B/</url>
-      <content type="html"><![CDATA[<h1 id="java线程体会"><a href="#java线程体会" class="headerlink" title="java线程体会"></a>java线程体会</h1><h2 id="为什么需要使用线程："><a href="#为什么需要使用线程：" class="headerlink" title="为什么需要使用线程："></a>为什么需要使用线程：</h2><p>​    我们知道，一般程序都是以一个由上至下的运行方式运行的，不完成上一步的时候，是无法进入下一步的执行的。可是我们有时候需要在一个程序同时去做两个不同的任务，各自之间互不干涉，那么根据程序的执行过程，该如何解决呢？</p>
-<p>​    答案就是使用<strong>线程</strong>，所谓线程，就是一个程序中最小的执行单元，一个程序在运行时就是一个进程，一个进程可以包含多个线程，这样就允许了一个程序同时去做不同的任务。所以总结的说，我们<strong>需要使用线程来让程序在同一时间做不同的事情，并且互不干涉。</strong></p>
-<p>注：</p>
-<ul>
-<li><strong>程序</strong>是包含了所有执行文件、数据文件、图像文件以及各种文档的资源集合，存储在电脑磁盘里</li>
-<li><strong>进程</strong>是一个程序在运行时所需要的所有资源集合，包含了代码、数据、堆栈、变量等，就像一台电脑。</li>
-<li><strong>线程</strong>是进程的子集，每一个线程可以看作是进程中的一个执行单元，就像CPU。</li>
-</ul>
-<hr>
-<h2 id="线程的基本特点："><a href="#线程的基本特点：" class="headerlink" title="线程的基本特点："></a>线程的基本特点：</h2><p>​    在不同的语言中，线程有不同的实现方式，但都有共同的基本特征：</p>
-<ul>
-<li>没有属于自己的内存空间，所有使用的空间都是由进程统一安排分配</li>
-<li>​在线程中使用的数据会存放到属于自己的栈中，但栈中的数据我们是知道的，是不会保留下来的 :cry:</li>
-<li>线程的上下文切换是比进程要快很多倍的，而且新建一个线锁需要的时间开销也是少于进程的；但有优点就一定会有缺点，线程的开销是很大的，每创建一个线程都至少要分配512KB甚至是1MB字节的内存，还有的线程及进程的区别可以去看有关操作系统的书</li>
-</ul>
-<hr>
-<h2 id="使用线程的方法："><a href="#使用线程的方法：" class="headerlink" title="使用线程的方法："></a>使用线程的方法：</h2><ul>
-<li>继承Thread类</li>
-<li>实现Runnable接口</li>
-</ul>
-<p>虽然都可以实现线程的控制，但是我们在实际中却用到第二种方法比较多，原因就是<strong>我们有时候需要继承不止一个类</strong>，这时如果我们不去实现Runnable接口，我们该如何使这个类编程线程类呢？:happy:</p>
-<hr>
-<h2 id="实现线程类需要注意的地方："><a href="#实现线程类需要注意的地方：" class="headerlink" title="实现线程类需要注意的地方："></a>实现线程类需要注意的地方：</h2><ul>
-<li><p>我们想让线程去做的任务都写在run方法里</p>
-</li>
-<li><p>线程类创建后我们需要去启动线程，而不是调用run方法，不然就仍旧还是方法调用</p>
-</li>
-<li><p>启动线程的方法</p>
-<p>   实现Runnable接口：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ball</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</div><div class="line">    System.out.println(<span class="string">"hello thread"</span>);</div><div class="line">    <span class="comment">//我们想使用多线程实现的内容</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">UseBall</span> </span>&#123;</div><div class="line">  Ball ball = <span class="keyword">new</span> Ball();</div><div class="line">  <span class="keyword">new</span> Thread(ball).start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>   继承Thrad类：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ball</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</div><div class="line">    System.out.println(<span class="string">"hello thread"</span>);</div><div class="line">    <span class="comment">//我们想使用多线程实现的内容</span></div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">UseBall</span> </span>&#123;</div><div class="line">  Ball ball = <span class="keyword">new</span> Ball();</div><div class="line">  ball.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>使用线程进行操作的时候注意添加异常操作</p>
-</li>
-</ul>
-<hr>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>​    综上所述，线程的使用方法以及一些特点就在这里了。<strong>个人理解其使用的条件就是想让程序同时完成不同的任务时，使用多线程实现。</strong></p>
-<p>​    多线程是java重要的的特点之一，利用多线程我们可以完成很多特殊的功能，比如：弹球游戏、坦克大战和聊天室等等。</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F27%2Fjava%E7%BA%BF%E7%A8%8B%2F</url>
+      <content type="text"><![CDATA[java线程体会为什么需要使用线程：​ 我们知道，一般程序都是以一个由上至下的运行方式运行的，不完成上一步的时候，是无法进入下一步的执行的。可是我们有时候需要在一个程序同时去做两个不同的任务，各自之间互不干涉，那么根据程序的执行过程，该如何解决呢？ ​ 答案就是使用线程，所谓线程，就是一个程序中最小的执行单元，一个程序在运行时就是一个进程，一个进程可以包含多个线程，这样就允许了一个程序同时去做不同的任务。所以总结的说，我们需要使用线程来让程序在同一时间做不同的事情，并且互不干涉。 注： 程序是包含了所有执行文件、数据文件、图像文件以及各种文档的资源集合，存储在电脑磁盘里 进程是一个程序在运行时所需要的所有资源集合，包含了代码、数据、堆栈、变量等，就像一台电脑。 线程是进程的子集，每一个线程可以看作是进程中的一个执行单元，就像CPU。 线程的基本特点：​ 在不同的语言中，线程有不同的实现方式，但都有共同的基本特征： 没有属于自己的内存空间，所有使用的空间都是由进程统一安排分配 ​在线程中使用的数据会存放到属于自己的栈中，但栈中的数据我们是知道的，是不会保留下来的 :cry: 线程的上下文切换是比进程要快很多倍的，而且新建一个线锁需要的时间开销也是少于进程的；但有优点就一定会有缺点，线程的开销是很大的，每创建一个线程都至少要分配512KB甚至是1MB字节的内存，还有的线程及进程的区别可以去看有关操作系统的书 使用线程的方法： 继承Thread类 实现Runnable接口 虽然都可以实现线程的控制，但是我们在实际中却用到第二种方法比较多，原因就是我们有时候需要继承不止一个类，这时如果我们不去实现Runnable接口，我们该如何使这个类编程线程类呢？:happy: 实现线程类需要注意的地方： 我们想让线程去做的任务都写在run方法里 线程类创建后我们需要去启动线程，而不是调用run方法，不然就仍旧还是方法调用 启动线程的方法 实现Runnable接口： 1234567891011class Ball implements Runnable&#123; public void run()&#123; System.out.println("hello thread"); //我们想使用多线程实现的内容 &#125;&#125;class UseBall &#123; Ball ball = new Ball(); new Thread(ball).start();&#125; 继承Thrad类： 1234567891011class Ball extends Thread&#123; public void run()&#123; System.out.println("hello thread"); //我们想使用多线程实现的内容 &#125;&#125;class UseBall &#123; Ball ball = new Ball(); ball.start();&#125; 使用线程进行操作的时候注意添加异常操作 总结：​ 综上所述，线程的使用方法以及一些特点就在这里了。个人理解其使用的条件就是想让程序同时完成不同的任务时，使用多线程实现。 ​ 多线程是java重要的的特点之一，利用多线程我们可以完成很多特殊的功能，比如：弹球游戏、坦克大战和聊天室等等。]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[writeUTF学习]]></title>
-      <url>http://yoursite.com/2017/02/27/writeUTF%E5%AD%A6%E4%B9%A0/</url>
-      <content type="html"><![CDATA[<h1 id="流式输出对象的writeUTF-方法"><a href="#流式输出对象的writeUTF-方法" class="headerlink" title="流式输出对象的writeUTF()方法"></a>流式输出对象的writeUTF()方法</h1><p>记录如何使用字节数组来进行数据的传输</p>
-<h2 id="InputStream-OutputStream"><a href="#InputStream-OutputStream" class="headerlink" title="InputStream / OutputStream"></a>InputStream / OutputStream</h2><p>作为所有输入输出流的父类，其方法read和write</p>
-<h2 id="DataInputStream-DataOutputStream"><a href="#DataInputStream-DataOutputStream" class="headerlink" title="DataInputStream / DataOutputStream"></a>DataInputStream / DataOutputStream</h2><p>处理流，包含了很多对数据的处理方法readInt，readFully和writeInt，write。另外因为是处理流，需要套在节点流上使用，故构造方法需要一个参数InputStream / OutputStream</p>
-<h2 id="InputStraemReader"><a href="#InputStraemReader" class="headerlink" title="InputStraemReader"></a>InputStraemReader</h2><p>该类一个接收System.in输入的内容</p>
-<h2 id="BufferedReader"><a href="#BufferedReader" class="headerlink" title="BufferedReader"></a>BufferedReader</h2><p>可以将InputStreamReader流中的内容当成字符串整行的读取出来</p>
-<h2 id="flush-close"><a href="#flush-close" class="headerlink" title="flush() / close()"></a>flush() / close()</h2><p>所有的输出流在写完后最好都强制刷新一下缓冲flush，程序接收后把整个输入输出流关掉</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F27%2FwriteUTF%E5%AD%A6%E4%B9%A0%2F</url>
+      <content type="text"><![CDATA[流式输出对象的writeUTF()方法记录如何使用字节数组来进行数据的传输 InputStream / OutputStream作为所有输入输出流的父类，其方法read和write DataInputStream / DataOutputStream处理流，包含了很多对数据的处理方法readInt，readFully和writeInt，write。另外因为是处理流，需要套在节点流上使用，故构造方法需要一个参数InputStream / OutputStream InputStraemReader该类一个接收System.in输入的内容 BufferedReader可以将InputStreamReader流中的内容当成字符串整行的读取出来 flush() / close()所有的输出流在写完后最好都强制刷新一下缓冲flush，程序接收后把整个输入输出流关掉]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[socket通信字节流or字符流]]></title>
-      <url>http://yoursite.com/2017/02/27/socket%E9%80%9A%E4%BF%A1%E5%AD%97%E8%8A%82%E6%B5%81or%E5%AD%97%E7%AC%A6%E6%B5%81/</url>
-      <content type="html"><![CDATA[<h1 id="socket通信选择字节流还是字符流？"><a href="#socket通信选择字节流还是字符流？" class="headerlink" title="socket通信选择字节流还是字符流？"></a>socket通信选择字节流还是字符流？</h1><p>字符流处理的单元为2个字节的Unicode字符，分别操作字符、字符数组或字符串，而字节流处理单元为1个字节，操作字节和字节数组。所以字符流是由Java虚拟机将字节转化为2个字节的Unicode字符为单位的字符而成的，所以它对多国语言支持性比较好！如果是音频文件、图片、歌曲，就用字节流好点，如果是关系到中文（文本）的，用字符流好点。</p>
-<p> 所有文件的储存是都是字节（byte）的储存，在磁盘上保留的并不是文件的字符而是先把字符编码成字节，再储存这些字节到磁盘。在读取文件（特别是文本文件）时，也是一个字节一个字节地读取以形成字节序列</p>
-<p>1.字节流可用于任何类型的对象，包括二进制对象，而字符流只能处理字符或者字符串；<br>2.字节流提供了处理任何类型的IO操作的功能，但它不能直接处理Unicode字符，而字符流就可以</p>
-<hr>
-<p>字节流是最基本的，所有的InputStrem和OutputStream的子类都是,主要用在处理二进制数据，它是按字节来处理的 但实际中很多的数据是文本，又提出了字符流的概念，它是按虚拟机的encode来处理，也就是要进行字符集的转化。这两个之间通过 InputStreamReader,OutputStreamWriter来关联，实际上是通过byte[]和String来关联，在实际开发中出现的汉字问题实际上都是在字符流和字节流之间转化不统一而造成的 </p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> java </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F27%2Fsocket%E9%80%9A%E4%BF%A1%E5%AD%97%E8%8A%82%E6%B5%81or%E5%AD%97%E7%AC%A6%E6%B5%81%2F</url>
+      <content type="text"><![CDATA[socket通信选择字节流还是字符流？字符流处理的单元为2个字节的Unicode字符，分别操作字符、字符数组或字符串，而字节流处理单元为1个字节，操作字节和字节数组。所以字符流是由Java虚拟机将字节转化为2个字节的Unicode字符为单位的字符而成的，所以它对多国语言支持性比较好！如果是音频文件、图片、歌曲，就用字节流好点，如果是关系到中文（文本）的，用字符流好点。 所有文件的储存是都是字节（byte）的储存，在磁盘上保留的并不是文件的字符而是先把字符编码成字节，再储存这些字节到磁盘。在读取文件（特别是文本文件）时，也是一个字节一个字节地读取以形成字节序列 1.字节流可用于任何类型的对象，包括二进制对象，而字符流只能处理字符或者字符串；2.字节流提供了处理任何类型的IO操作的功能，但它不能直接处理Unicode字符，而字符流就可以 字节流是最基本的，所有的InputStrem和OutputStream的子类都是,主要用在处理二进制数据，它是按字节来处理的 但实际中很多的数据是文本，又提出了字符流的概念，它是按虚拟机的encode来处理，也就是要进行字符集的转化。这两个之间通过 InputStreamReader,OutputStreamWriter来关联，实际上是通过byte[]和String来关联，在实际开发中出现的汉字问题实际上都是在字符流和字节流之间转化不统一而造成的]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[linux终端配色方案]]></title>
-      <url>http://yoursite.com/2017/02/27/linux%E7%BB%88%E7%AB%AF%E9%85%8D%E8%89%B2%E6%96%B9%E6%A1%88/</url>
-      <content type="html"><![CDATA[<h1 id="Ubuntu终端配色"><a href="#Ubuntu终端配色" class="headerlink" title="Ubuntu终端配色"></a>Ubuntu终端配色</h1><p>骚年，看到单调的黑色背景的终端是不是感觉很乏味？<br>试试这个教程吧，可以使终端变的beautiful~</p>
-<h2 id="First"><a href="#First" class="headerlink" title="First"></a>First</h2><p>使用快捷键<code>ctrl + alt + T</code>打开终端<br>键入<code>gedit ~/.bashrc</code><br>会弹出一个编辑文本，复制粘贴下面的代码到<strong>文件的最后部分</strong>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">PS1=&apos;$&#123;debian_chroot:+($debian_chroot)&#125;\[\033[01;35;01m\]\u\[\033[00;00;01m\]@\[\033[01;35;01m\]\h\[\033[00;31;01m\]:\[\033[00;00;01m\]\w \[\033[01;32;01m\]\$ \[\033[01;01;01m\]&apos;</div></pre></td></tr></table></figure></p>
-<p><strong>注意代码两边的冒号<code>‘</code></strong>。<br>保存后退出即可。</p>
-<h2 id="Second"><a href="#Second" class="headerlink" title="Second"></a>Second</h2><p>关闭终端后重新打开终端，可以看到，终端的配色方案已经有了变化。<br>然后，在终端中点击鼠标右键，选择下面的选项<br><img src="/2017/02/27/linux终端配色方案/caidan.png" alt="caidan"><br>然后选择<code>Background</code>标签，勾选上<code>Transparent background</code>选项，这是打开终端背景透明的选项。<br><img src="/2017/02/27/linux终端配色方案/caidan2.png" alt="caidan2"></p>
-<h2 id="Final"><a href="#Final" class="headerlink" title="Final"></a>Final</h2><p>设置后透明度之后，点击close即可，这时你的终端就会变的很好(炫)看(闪)了。<br><img src="/2017/02/27/linux终端配色方案/zhongduan.png" alt="zhongduan"></p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> ubuntu </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F27%2Flinux%E7%BB%88%E7%AB%AF%E9%85%8D%E8%89%B2%E6%96%B9%E6%A1%88%2F</url>
+      <content type="text"><![CDATA[Ubuntu终端配色骚年，看到单调的黑色背景的终端是不是感觉很乏味？试试这个教程吧，可以使终端变的beautiful~ First使用快捷键ctrl + alt + T打开终端键入gedit ~/.bashrc会弹出一个编辑文本，复制粘贴下面的代码到文件的最后部分：1PS1=&apos;$&#123;debian_chroot:+($debian_chroot)&#125;\[\033[01;35;01m\]\u\[\033[00;00;01m\]@\[\033[01;35;01m\]\h\[\033[00;31;01m\]:\[\033[00;00;01m\]\w \[\033[01;32;01m\]\$ \[\033[01;01;01m\]&apos; 注意代码两边的冒号‘。保存后退出即可。 Second关闭终端后重新打开终端，可以看到，终端的配色方案已经有了变化。然后，在终端中点击鼠标右键，选择下面的选项然后选择Background标签，勾选上Transparent background选项，这是打开终端背景透明的选项。 Final设置后透明度之后，点击close即可，这时你的终端就会变的很好(炫)看(闪)了。]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[github上传项目]]></title>
-      <url>http://yoursite.com/2017/02/27/github%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE/</url>
-      <content type="html"><![CDATA[<h1 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h1><p>今天下午突发奇想，打开了小站，然后顺便打开了github，于是想上传曾经做过的项目，本来想按照之前传博客的方法去传项目，然后发现，好像哪里不太对劲，仔细一看教程，确实不太一样。<br>于是乎就去找github上传本地项目的方法，下面总结一下自己的试坑过程。</p>
-<h2 id="First-创建本地仓库"><a href="#First-创建本地仓库" class="headerlink" title="First-创建本地仓库"></a>First-创建本地仓库</h2><p>首先要在自己的本地磁盘内创建一个文件夹，名字自己随便取，用来当作自己本地存放项目并且用来和github交互的仓库。<br><img src="/2017/02/27/github上传项目/wenjianjia.png" alt="wenjianjia"><br>我这里创建一个名为 mygit的文件夹。</p>
-<h2 id="Second-在github上创建项目仓库"><a href="#Second-在github上创建项目仓库" class="headerlink" title="Second-在github上创建项目仓库"></a>Second-在github上创建项目仓库</h2><p>登陆自己的github，然后新建仓库，项目名字自己取，我这里取了<code>try</code>这个名字。<br><img src="/2017/02/27/github上传项目/chuangjiancangku.png" alt="chuangjiancangku"><br>勾选项和我的设置保持一致即可。</p>
-<h2 id="Third-设置ssh密钥"><a href="#Third-设置ssh密钥" class="headerlink" title="Third-设置ssh密钥"></a>Third-设置ssh密钥</h2><p>git shell程序随便选一个安装，打开shell后，输入命令：<br><code>ssh-keygen -C &#39;your@email.address&#39; -t rsa</code><br>注意的是，这个 ‘ ‘ 中的内容就是你的github账号，因为一般是用邮箱注册的。<br>然后不需要管弹出什么内容，什么请输入密码啊什么的，联系按三个回车键，然后在你的电脑的用户目录下找一个名为<code>.ssh</code>的文件夹。<br><img src="/2017/02/27/github上传项目/ssh.png" alt="ssh"><br>打开其中的<code>id_rsa.pub</code>文件，然后复制全部的内容。<br>接着打开你github项目设置里面，左侧栏有一个选项<code>SSH and GPG Keys</code>，打开后，点击右上角的<code>new SSH key</code>按钮，title栏随便输入提示性，key栏把刚才复制的内容全部粘贴进去。确认后会显示一把绿色的小钥匙。</p>
-<p>完成上述步骤后，在git shell中输入命令<code>ssg -T git@github.com</code>，注意，这里需要是大写的<code>-T</code>，不知道怎么回事，我输入小写的t就是不行。正确的显示结果如下：<br><img src="/2017/02/27/github上传项目/link.png" alt="link"><br>则表明已经成功连接至你的github库了。</p>
-<h2 id="Fouth-“装填”项目文件"><a href="#Fouth-“装填”项目文件" class="headerlink" title="Fouth-“装填”项目文件"></a>Fouth-“装填”项目文件</h2><p>在git shell运行命令：<code>git clone https://github.com/your name/you program name.git</code><br>其实后面的链接就是你打开你的github项目中的仓库后，网页中网址链接，复制粘贴即可。<br>这个时候会在你本地仓库目录中生成文件夹，名字就是你的项目的名字，同时还会有一个隐藏的<code>.git</code>文件。在我举的这个例子中，这个文件夹就是<code>try</code>。<br>然后，只需要把想要上传到仓库中的项目文件全部放到这个文件夹中就好了，我的话就是把项目文件放入到<code>try</code>文件夹中就好。</p>
-<p>然后，在git shell中输入以下命令：<br><code>git init</code><br><code>git add xxx</code>  （注意这个名字就是想上传文件夹的名字，没有<code>&#39; &#39;</code>）<br><code>git commit -m &#39;your-program-name&#39;</code>  （这里有<code>&#39; &#39;</code>，内容也是想上传文件夹的名字），一定注意要先add文件<br><strong>注意这里可能会有错误</strong>，↓↓↓↓↓↓↓↓↓↓↓↓↓↓<br><img src="/2017/02/27/github上传项目/commit_error.png" alt="commit_error"><br>那就使用<code>git commit -am &quot;your-program-name&quot;</code>这条命令再继续</p>
-<p>如果正确，会有类似的显示结果：<br><img src="/2017/02/27/github上传项目/gitinit.png" alt="gitinit"><br>然后继续输入<br><code>git remote add origin https://github.com/your-name/you-program-name.git</code><br>这里可能会出现错误↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓<br><img src="/2017/02/27/github上传项目/remote_error.png" alt="remote_error"><br>那就使用<code>git remote rm origin</code>，在继续下一步<br>then<br><code>git pull origin master</code><br>这里会即进入Vi编辑器的界面，是需要你输入merge的理由，随便写，不会vim编辑器语法的我后面讲。<br><code>git push origin master</code><br>如果步骤都正确，会有这样的过程和结果：<br><img src="/2017/02/27/github上传项目/gitend.png" alt="gitend"></p>
-<h1 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h1><p>这里简单说一下vim编辑器的使用吧，本次操作只需要两个命令即可：<br><code>i</code> 开始进行编辑内容<br><code>:wq</code> 编辑完成后，按<code>Esc</code>，进入命令界面，输入:wq，表示保存及退出</p>
-<h1 id="Final"><a href="#Final" class="headerlink" title="Final"></a>Final</h1><p>到此为止，已经正确上传了项目到你自己的github中，以后也可以重复上面除了新建ssh密钥的步骤外别的操作来继续上传。当然了，如果只需要修改部分文件或者是上传部分文件，又或者是有其他github的操作，请自行移步git使用教程。<br>当然了，以后我自己也会进行某些内容更新。QvQ<br><img src="/2017/02/27/github上传项目/xiexie.jpg" alt="xiexie"></p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> github </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F27%2Fgithub%E4%B8%8A%E4%BC%A0%E9%A1%B9%E7%9B%AE%2F</url>
+      <content type="text"><![CDATA[RT今天下午突发奇想，打开了小站，然后顺便打开了github，于是想上传曾经做过的项目，本来想按照之前传博客的方法去传项目，然后发现，好像哪里不太对劲，仔细一看教程，确实不太一样。于是乎就去找github上传本地项目的方法，下面总结一下自己的试坑过程。 First-创建本地仓库首先要在自己的本地磁盘内创建一个文件夹，名字自己随便取，用来当作自己本地存放项目并且用来和github交互的仓库。我这里创建一个名为 mygit的文件夹。 Second-在github上创建项目仓库登陆自己的github，然后新建仓库，项目名字自己取，我这里取了try这个名字。勾选项和我的设置保持一致即可。 Third-设置ssh密钥git shell程序随便选一个安装，打开shell后，输入命令：ssh-keygen -C &#39;your@email.address&#39; -t rsa注意的是，这个 ‘ ‘ 中的内容就是你的github账号，因为一般是用邮箱注册的。然后不需要管弹出什么内容，什么请输入密码啊什么的，联系按三个回车键，然后在你的电脑的用户目录下找一个名为.ssh的文件夹。打开其中的id_rsa.pub文件，然后复制全部的内容。接着打开你github项目设置里面，左侧栏有一个选项SSH and GPG Keys，打开后，点击右上角的new SSH key按钮，title栏随便输入提示性，key栏把刚才复制的内容全部粘贴进去。确认后会显示一把绿色的小钥匙。 完成上述步骤后，在git shell中输入命令ssg -T git@github.com，注意，这里需要是大写的-T，不知道怎么回事，我输入小写的t就是不行。正确的显示结果如下：则表明已经成功连接至你的github库了。 Fouth-“装填”项目文件在git shell运行命令：git clone https://github.com/your name/you program name.git其实后面的链接就是你打开你的github项目中的仓库后，网页中网址链接，复制粘贴即可。这个时候会在你本地仓库目录中生成文件夹，名字就是你的项目的名字，同时还会有一个隐藏的.git文件。在我举的这个例子中，这个文件夹就是try。然后，只需要把想要上传到仓库中的项目文件全部放到这个文件夹中就好了，我的话就是把项目文件放入到try文件夹中就好。 然后，在git shell中输入以下命令：git initgit add xxx （注意这个名字就是想上传文件夹的名字，没有&#39; &#39;）git commit -m &#39;your-program-name&#39; （这里有&#39; &#39;，内容也是想上传文件夹的名字），一定注意要先add文件注意这里可能会有错误，↓↓↓↓↓↓↓↓↓↓↓↓↓↓那就使用git commit -am &quot;your-program-name&quot;这条命令再继续 如果正确，会有类似的显示结果：然后继续输入git remote add origin https://github.com/your-name/you-program-name.git这里可能会出现错误↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓那就使用git remote rm origin，在继续下一步thengit pull origin master这里会即进入Vi编辑器的界面，是需要你输入merge的理由，随便写，不会vim编辑器语法的我后面讲。git push origin master如果步骤都正确，会有这样的过程和结果： Attention这里简单说一下vim编辑器的使用吧，本次操作只需要两个命令即可：i 开始进行编辑内容:wq 编辑完成后，按Esc，进入命令界面，输入:wq，表示保存及退出 Final到此为止，已经正确上传了项目到你自己的github中，以后也可以重复上面除了新建ssh密钥的步骤外别的操作来继续上传。当然了，如果只需要修改部分文件或者是上传部分文件，又或者是有其他github的操作，请自行移步git使用教程。当然了，以后我自己也会进行某些内容更新。QvQ]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[hexo生成博文插入图片]]></title>
-      <url>http://yoursite.com/2017/02/26/hexo%E7%94%9F%E6%88%90%E5%8D%9A%E6%96%87%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87/</url>
-      <content type="html"><![CDATA[<h1 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h1><p>十分痛苦，是因为突然发现上传的博客里面的图片居然显示不来，excuse me???<br><img src="/2017/02/26/hexo生成博文插入图片/juewang.jpg" alt="juewang.jpg"><br>笋干shabi了<br>怎么办，上网google解决之道，然后又试了很多坑…….<br><img src="/2017/02/26/hexo生成博文插入图片/zenmeban.jpg" alt="zenmeban.jpg"><br>更加绝望了…..<br>然后，看到了这个：<a href="http://www.jianshu.com/p/c2ba9533088a" target="_blank" rel="external">dalao指导</a><br>hhhh，再试一次…..<img src="/2017/02/26/hexo生成博文插入图片/meibanfa.jpg" alt="更加juewang"></p>
-<p>然而，居然可以了….excuse me??</p>
-<p>好吧，总结一下这个牛批的解决办法：</p>
-<h2 id="First"><a href="#First" class="headerlink" title="First"></a>First</h2><p>1 把主页配置文件<code>_config.yml</code> 里的<code>post_asset_folder:</code>这个选项设置为<code>true</code></p>
-<p>2 在你的hexo目录下执行这样一句话<code>npm install hexo-asset-image --save</code>，这是下载安装一个可以上传本地图片的插件，来自dalao：<a href="https://github.com/CodeFalling/hexo-asset-image" target="_blank" rel="external">dalao的git</a></p>
-<p>3 等待一小段时间后，再运行<code>hexo n &quot;xxxx&quot;</code>来生成md博文时，<code>/source/_posts</code>文件夹内除了<code>xxxx.md</code>文件还有一个<strong>同名的文件夹</strong></p>
-<h2 id="Second"><a href="#Second" class="headerlink" title="Second"></a>Second</h2><p>4 最后在<code>xxxx.md</code>中想引入图片时，先把图片复制到xxxx这个文件夹中，然后只需要在xxxx.md中按照markdown的格式引入图片：</p>
-<p><code>![你想输入的替代文字](xxxx/图片名.jpg)</code></p>
-<p><strong>注意：</strong>xxxx是这个md文件的名字，也是同名文件夹的名字，你想引入的图片就只需要放入xxxx这个文件夹内就好了，很像引用相对路径。</p>
-<p>5 最后检查一下，<code>hexo g</code>生成页面后，进入<code>public\2017\02\26\index.html</code>文件中查看相关字段，可以发现，html标签内的语句是<code>&lt;img src=&quot;2017/02/26/xxxx/图片名.jpg&quot;&gt;</code>，而不是<code>&lt;img src=&quot;xxxx/图片名.jpg&gt;</code>。这很重要，关乎你的网页是否可以真正加载你想插入的图片。</p>
-<h2 id="总结一下这个跳（试）坑的过程"><a href="#总结一下这个跳（试）坑的过程" class="headerlink" title="总结一下这个跳（试）坑的过程"></a>总结一下这个跳（试）坑的过程</h2><p>首先是有句mmp想讲，实在是有点坑</p>
-<p><img src="/2017/02/26/hexo生成博文插入图片/haoqi.jpg" alt="haoqi"></p>
-<p>但是，似乎又多了一项学（zhuang）习（bi）技巧<img src="/2017/02/26/hexo生成博文插入图片/bang.jpg" alt="bang"></p>
-<p>hhh，先到这里，后面还有一个坑就是，想引入某些dalao 的链接时，如果链接里包含中文，那么再写入md文件里生成网页后这个链接就打不开了…..</p>
-<p>待老夫研究后再填坑，后面如果有时间，就把自己搭建网站的过程码一下。</p>
-<p><img src="/2017/02/26/hexo生成博文插入图片/xiexie.jpg" alt="xiexie"></p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> hexo </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F26%2Fhexo%E7%94%9F%E6%88%90%E5%8D%9A%E6%96%87%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87%2F</url>
+      <content type="text"><![CDATA[RT十分痛苦，是因为突然发现上传的博客里面的图片居然显示不来，excuse me???笋干shabi了怎么办，上网google解决之道，然后又试了很多坑…….更加绝望了…..然后，看到了这个：dalao指导hhhh，再试一次….. 然而，居然可以了….excuse me?? 好吧，总结一下这个牛批的解决办法： First1 把主页配置文件_config.yml 里的post_asset_folder:这个选项设置为true 2 在你的hexo目录下执行这样一句话npm install hexo-asset-image --save，这是下载安装一个可以上传本地图片的插件，来自dalao：dalao的git 3 等待一小段时间后，再运行hexo n &quot;xxxx&quot;来生成md博文时，/source/_posts文件夹内除了xxxx.md文件还有一个同名的文件夹 Second4 最后在xxxx.md中想引入图片时，先把图片复制到xxxx这个文件夹中，然后只需要在xxxx.md中按照markdown的格式引入图片： ![你想输入的替代文字](xxxx/图片名.jpg) 注意：xxxx是这个md文件的名字，也是同名文件夹的名字，你想引入的图片就只需要放入xxxx这个文件夹内就好了，很像引用相对路径。 5 最后检查一下，hexo g生成页面后，进入public\2017\02\26\index.html文件中查看相关字段，可以发现，html标签内的语句是&lt;img src=&quot;2017/02/26/xxxx/图片名.jpg&quot;&gt;，而不是&lt;img src=&quot;xxxx/图片名.jpg&gt;。这很重要，关乎你的网页是否可以真正加载你想插入的图片。 总结一下这个跳（试）坑的过程首先是有句mmp想讲，实在是有点坑 但是，似乎又多了一项学（zhuang）习（bi）技巧 hhh，先到这里，后面还有一个坑就是，想引入某些dalao 的链接时，如果链接里包含中文，那么再写入md文件里生成网页后这个链接就打不开了….. 待老夫研究后再填坑，后面如果有时间，就把自己搭建网站的过程码一下。]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[Final]]></title>
-      <url>http://yoursite.com/2017/02/21/Final/</url>
-      <content type="html"><![CDATA[<h1 id="第一天的总结"><a href="#第一天的总结" class="headerlink" title="第一天的总结"></a>第一天的总结</h1><p>差不多先折腾到这里吧，大概已有的功能呢，有添加博客和归档的标签，以后还会完成自己的个人简历 Q^Q</p>
-<p>说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书：</p>
-<p><code>https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程</code></p>
-<p>暂时的尝试先到此为止，明后天看看能不能再去抢个腾讯的服务器吧，fightting！骚年</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> life </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F21%2FFinal%2F</url>
+      <content type="text"><![CDATA[第一天的总结差不多先折腾到这里吧，大概已有的功能呢，有添加博客和归档的标签，以后还会完成自己的个人简历 Q^Q 说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书： https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程 暂时的尝试先到此为止，明后天看看能不能再去抢个腾讯的服务器吧，fightting！骚年]]></content>
     </entry>
+
     
     <entry>
       <title><![CDATA[f__k? this day]]></title>
-      <url>http://yoursite.com/2017/02/21/fuck/</url>
-      <content type="html"><![CDATA[<h1 id="Today"><a href="#Today" class="headerlink" title="Today"></a>Today</h1><p>今天是特别的一天，忙碌了一整天的时间来学习搭建个人网站博客。到现在为止，略有小成，先写下这一篇随笔，然后全当做实验了。 </p>
-<p>ps:没有大腿抱确实一个人折腾好累<br>pss:折腾完又有种莫名的兴奋感……QvQ</p>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> life </tag>
-            
-        </tags>
-        
+      <url>%2F2017%2F02%2F21%2Ffuck%2F</url>
+      <content type="text"><![CDATA[Today今天是特别的一天，忙碌了一整天的时间来学习搭建个人网站博客。到现在为止，略有小成，先写下这一篇随笔，然后全当做实验了。 ps:没有大腿抱确实一个人折腾好累pss:折腾完又有种莫名的兴奋感……QvQ]]></content>
     </entry>
+
     
   
   
