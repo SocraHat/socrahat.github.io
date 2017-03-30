@@ -95,7 +95,7 @@ SQL数据类型：字符型：&amp;lt;varchar&amp;gt; VS &amp;lt;char&amp;gt;文
 <meta property="og:site_name" content="Socra">
 <meta property="og:description" content="MySQL语法总结MySQL结构：数据库中存放数据都是依托与一张张的数据表存在的，我们通过数据库可以高效的利用数据；而我们对数据的操作就是对数据库中的表的操作。
 SQL数据类型：字符型：&amp;lt;varchar&amp;gt; VS &amp;lt;char&amp;gt;文本型：&amp;lt;text&amp;gt;数值型：&amp;lt;int&amp;gt; VS &amp;lt;smallint&amp;gt; VS &amp;lt;tinyint&amp;gt;浮点型：&amp;l">
-<meta property="og:updated_time" content="2017-03-30T01:59:37.612Z">
+<meta property="og:updated_time" content="2017-03-30T02:40:51.968Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL使用手册">
 <meta name="twitter:description" content="MySQL语法总结MySQL结构：数据库中存放数据都是依托与一张张的数据表存在的，我们通过数据库可以高效的利用数据；而我们对数据的操作就是对数据库中的表的操作。
@@ -317,7 +317,7 @@ SQL数据类型：字符型：&amp;lt;varchar&amp;gt; VS &amp;lt;char&amp;gt;文
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-03-30T09:59:37+08:00">
+              <time title="更新于" itemprop="dateModified" datetime="2017-03-30T10:40:51+08:00">
                 2017-03-30
               </time>
             
@@ -424,19 +424,19 @@ SQL数据类型：字符型：&amp;lt;varchar&amp;gt; VS &amp;lt;char&amp;gt;文
 <li>修改表中字段的数据类型：<code>ALTER TABLE &lt;表名&gt; MODIFY &lt;字段名&gt; &lt;新数据类型&gt;;</code></li>
 <li>修改表中字段的顺序：<code>ALTER TABLE &lt;表名&gt; MODIFY &lt;字段名&gt; &lt;数据类型&gt; FIRST/AFTER &lt;字段名&gt;;</code></li>
 <li>修改表中某一记录某一字段的值：<code>UPDATE &lt;表名&gt; SET &lt;字段名&gt;=&lt;新值&gt; WHERE &lt;查询条件&gt;;</code></li>
-<li>在表都创建之后添加外键：<code>ALTER TABLE &lt;需要添加外键的表名&gt; ADD CONSTRAINT &lt;外键名&gt; FOREIGN KEY(需添加外键的表的字段名) REFERENCE &lt;被作为外键的表名&gt; (被作为外键的字段名);</code></li>
+<li>在表都创建之后添加外键：<code>ALTER TABLE &lt;需要添加外键的表名&gt; ADD CONSTRAINT &lt;外键名&gt; FOREIGN KEY(&lt;需添加外键的表的字段名&gt;) REFERENCES &lt;被作为外键的表名&gt; (&lt;被作为外键的字段名&gt;);</code></li>
 </ul>
 <h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><p>index索引可以有重复的值，而unique和primary key索引列中的值时唯一的</p>
 <ul>
 <li>ALTER创建索引（可同时添加多个表的索引列）<ul>
 <li><code>ALTER TABLE &lt;表名&gt; ADD INDEX &lt;索引名（可省缺）&gt;(索引字段名);</code></li>
-<li><code>ALTER TABLE &lt;表名&gt; ADD UNIQUE(索引字段名);</code></li>
-<li><code>ALTER TABLE &lt;表名&gt; ADD PRIMARY KEY(索引字段名);</code></li>
+<li><code>ALTER TABLE &lt;表名&gt; ADD UNIQUE(&lt;索引字段名&gt;);</code></li>
+<li><code>ALTER TABLE &lt;表名&gt; ADD PRIMARY KEY(&lt;索引字段名&gt;);</code></li>
 </ul>
 </li>
 <li>CREATE增加索引<ul>
-<li><code>CREATE INDEX &lt;索引名&gt; ON &lt;表名&gt; (索引字段名);</code></li>
-<li><code>CREATE INDEX &lt;索引名&gt; ON &lt;表名&gt; (索引字段名);</code></li>
+<li><code>CREATE INDEX &lt;索引名&gt; ON &lt;表名&gt; (&lt;索引字段名&gt;);</code></li>
+<li><code>CREATE INDEX &lt;索引名&gt; ON &lt;表名&gt; (&lt;索引字段名&gt;);</code></li>
 </ul>
 </li>
 <li>查询索引：<code>SHOW INDEX FROM &lt;表名&gt;;</code>或者<code>SHOW KEYS FROM &lt;表名&gt;;</code></li>
@@ -448,7 +448,7 @@ SQL数据类型：字符型：&amp;lt;varchar&amp;gt; VS &amp;lt;char&amp;gt;文
 </ul>
 <p><strong>外键</strong>，表中的一个或多个字段，可以不是本表的主键，但<strong>必须是另一个表的主键</strong>。外键用来在两个表中建立连接关系，对于有关联关系的两个表而言，相关联字段中主键所在的表为父表，外键所在的表为子表。</p>
 <ul>
-<li>设置外键：在表中所有字段都定义后（包括外键名），加上<code>CONSTRAINT &lt;外键约束名&gt; FOREIGN KEY(外键名) REFERENCE&lt;关联的外表名(外表的字段名)&gt;;</code></li>
+<li>设置外键：在表中所有字段都定义后（包括外键名），加上<code>CONSTRAINT &lt;外键约束名&gt; FOREIGN KEY(外键名) REFERENCES &lt;关联的外表名(外表的字段名)&gt;;</code></li>
 </ul>
 <p><strong>注意的是，这里的外键约束名与外键名是不同的意思</strong><br><strong>同一个数据库中，外键约束名和外键名一定不可以重复！！！</strong> /(ㄒoㄒ)/~~</p>
 <h3 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h3><p>视图包含行和列，其中的字段来自一个或多个数据库中的真实的表中的字段，一起组合成一个类似真实的表。可以像基本表一样，进行增删改查的操作。记录进行改动后，视图与基本表都会更新</p>
