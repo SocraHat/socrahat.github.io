@@ -104,7 +104,7 @@ First-创建本地仓库首先要在自己的本地磁盘内创建一个文件�
 <meta property="og:image" content="http://yoursite.com/2017/02/27/github上传项目/remote_error.png">
 <meta property="og:image" content="http://yoursite.com/2017/02/27/github上传项目/gitend.png">
 <meta property="og:image" content="http://yoursite.com/2017/02/27/github上传项目/xiexie.jpg">
-<meta property="og:updated_time" content="2017-03-24T15:34:53.853Z">
+<meta property="og:updated_time" content="2017-04-09T03:57:35.704Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="github上传项目">
 <meta name="twitter:description" content="RT今天下午突发奇想，打开了小站，然后顺便打开了github，于是想上传曾经做过的项目，本来想按照之前传博客的方法去传项目，然后发现，好像哪里不太对劲，仔细一看教程，确实不太一样。于是乎就去找github上传本地项目的方法，下面总结一下自己的试坑过程。
@@ -327,8 +327,8 @@ First-创建本地仓库首先要在自己的本地磁盘内创建一个文件�
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-03-24T23:34:53+08:00">
-                2017-03-24
+              <time title="更新于" itemprop="dateModified" datetime="2017-04-09T11:57:35+08:00">
+                2017-04-09
               </time>
             
           </span>
@@ -379,7 +379,7 @@ First-创建本地仓库首先要在自己的本地磁盘内创建一个文件�
 <p>然后，在git shell中输入以下命令：<br><code>git init</code><br><code>git add xxx</code>  （注意这个名字就是想上传文件夹的名字，没有<code>&#39; &#39;</code>）<br><code>git commit -m &#39;your-program-name&#39;</code>  （这里有<code>&#39; &#39;</code>，内容也是想上传文件夹的名字），一定注意要先add文件<br><strong>注意这里可能会有错误</strong>，↓↓↓↓↓↓↓↓↓↓↓↓↓↓<br><img src="/2017/02/27/github上传项目/commit_error.png" alt="commit_error"><br>那就使用<code>git commit -am &quot;your-program-name&quot;</code>这条命令再继续</p>
 <p>如果正确，会有类似的显示结果：<br><img src="/2017/02/27/github上传项目/gitinit.png" alt="gitinit"><br>然后继续输入<br><code>git remote add origin https://github.com/your-name/you-program-name.git</code><br>这里可能会出现错误↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓<br><img src="/2017/02/27/github上传项目/remote_error.png" alt="remote_error"><br>那就使用<code>git remote rm origin</code>，在继续下一步<br>then<br><code>git pull origin master</code><br>这里会即进入Vi编辑器的界面，是需要你输入merge的理由，随便写，不会vim编辑器语法的我后面讲。<br><code>git push origin master</code><br>如果步骤都正确，会有这样的过程和结果：<br><img src="/2017/02/27/github上传项目/gitend.png" alt="gitend"></p>
 <h1 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h1><p>这里简单说一下vim编辑器的使用吧，本次操作只需要两个命令即可：<br><code>i</code> 开始进行编辑内容<br><code>:wq</code> 编辑完成后，按<code>Esc</code>，进入命令界面，输入:wq，表示保存及退出</p>
-<h1 id="Final"><a href="#Final" class="headerlink" title="Final"></a>Final</h1><p>到此为止，已经正确上传了项目到你自己的github中，以后也可以重复上面除了新建ssh密钥的步骤外别的操作来继续上传。当然了，如果只需要修改部分文件或者是上传部分文件，又或者是有其他github的操作，请自行移步git使用教程。<br>当然了，以后我自己也会进行某些内容更新。QvQ<br><img src="/2017/02/27/github上传项目/xiexie.jpg" alt="xiexie"></p>
+<h1 id="Final"><a href="#Final" class="headerlink" title="Final"></a>Final</h1><p>到此为止，已经正确上传了项目到你自己的github中，以后也可以重复上面除了新建ssh密钥的步骤外别的操作来继续上传。当然了，如果只需要修改部分文件或者是上传部分文件，又或者是有其他github的操作，请自行移步git使用教程。<br>当然了，以后我自己也会进行某些内容更新。QvQ<br><img src="/2017/02/27/github上传项目/xiexie.jpg" alt="xiexie"><br>2017.04.09补充：Github桌面版简化了很多步骤，方便的一批</p>
 
       
     </div>
@@ -500,7 +500,7 @@ First-创建本地仓库首先要在自己的本地磁盘内创建一个文件�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -511,7 +511,7 @@ First-创建本地仓库首先要在自己的本地磁盘内创建一个文件�
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
