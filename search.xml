@@ -89,7 +89,7 @@
     <entry>
       <title><![CDATA[HashMap和HashTable的区别]]></title>
       <url>%2F2017%2F03%2F16%2FHashMap%E5%92%8CHashTable%E7%9A%84%E5%8C%BA%E5%88%AB%2F</url>
-      <content type="text"><![CDATA[日常昨天听说了这么一道题，往HashMap中读写10w条字符串，如何处理可以消耗更少的cpu资源。后面感觉有点蹊跷，不知所以后面问了dalao黄一下，问题是没有解决，但是言语之间似乎有这么一个信息，HashMap和HashTable在存储数据时是有区别的我是想啊，要么HashTable对数据量大的情况下有更好的存储性能？？？，要么是HashTable有更好的并行性？？？ of cause，查一下嘛 区别大概主要的意思是有这么几点区别：两者继承自不同的类，HashMap是HashTable的轻量级实现（非线程安全的实现），但都完成了Map接口 ​HashMap去掉了HashTable中的contains方法，但是加上了containsValue()和containKey()方法 HashTable是同步的，而HashMap是非同步的，由于非线程安全，效率上比HashTable要高 ​HashMap允许空键值，而HashTable不允许 HashMap和HashTable采用的hash/rehash算法大致一样，性能不会差很多 后记好吧，虽然看起来差别不大，但是真的要并行式去存储会不会可以呢？（不晓得啊，其实也不是很懂并行 0.0 ），问题过两天解决了再继续更好了]]></content>
+      <content type="text"><![CDATA[日常昨天听说了这么一道题，往HashMap中读写10w条字符串，如何处理可以消耗更少的cpu资源。后面感觉有点蹊跷，不知所以后面问了dalao黄一下，问题是没有解决，但是言语之间似乎有这么一个信息，HashMap和HashTable在存储数据时是有区别的我是想啊，要么HashTable对数据量大的情况下有更好的存储性能？？？，要么是HashTable有更好的并行性？？？ of cause，查一下嘛 区别大概主要的意思是有这么几点区别：两者继承自不同的类，HashMap是HashTable的轻量级实现（非线程安全的实现），但都完成了Map接口 ​HashMap去掉了HashTable中的contains方法，但是加上了containsValue()和containKey()方法 HashTable是同步的，而HashMap是非同步的，由于非线程安全，效率上比HashTable要高 ​HashMap允许空键值，而HashTable不允许 HashMap和HashTable采用的hash/rehash算法大致一样，性能不会差很多 一些其它的小细节 HashMap和Hashtable都实现了Map接口 HashMap是非synchronized，而Hashtable是synchronized HashTable使用Enumeration，HashMap使用Iterator； HashMap的迭代器(Iterator)是fail-fast迭代器，而Hashtable的enumerator迭代器不是fail-fast的。 Hashtable直接使用对象的hashCode，HashMap重新计算hash值，而且用与代替求模 后记好吧，虽然看起来差别不大，但是真的要并行式去存储会不会可以呢？（不晓得啊，其实也不是很懂并行 0.0 ），问题过两天解决了再继续更好了]]></content>
     </entry>
 
     

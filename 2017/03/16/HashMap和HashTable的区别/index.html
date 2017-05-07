@@ -98,7 +98,7 @@ of cause，查一下嘛">
 <meta property="og:image" content="http://yoursite.com/2017/03/16/HashMap和HashTable的区别/1.jpg">
 <meta property="og:image" content="http://yoursite.com/2017/03/16/HashMap和HashTable的区别/2.jpg">
 <meta property="og:image" content="http://yoursite.com/2017/03/16/HashMap和HashTable的区别/3.jpg">
-<meta property="og:updated_time" content="2017-03-16T13:53:02.368Z">
+<meta property="og:updated_time" content="2017-05-07T12:49:42.517Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HashMap和HashTable的区别">
 <meta name="twitter:description" content="日常昨天听说了这么一道题，往HashMap中读写10w条字符串，如何处理可以消耗更少的cpu资源。后面感觉有点蹊跷，不知所以后面问了dalao黄一下，问题是没有解决，但是言语之间似乎有这么一个信息，HashMap和HashTable在存储数据时是有区别的我是想啊，要么HashTable对数据量大的情况下有更好的存储性能？？？，要么是HashTable有更好的并行性？？？
@@ -321,8 +321,8 @@ of cause，查一下嘛">
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-03-16T21:53:02+08:00">
-                2017-03-16
+              <time title="更新于" itemprop="dateModified" datetime="2017-05-07T20:49:42+08:00">
+                2017-05-07
               </time>
             
           </span>
@@ -375,6 +375,12 @@ of cause，查一下嘛">
 </ul>
 </blockquote>
 <p>HashMap和HashTable采用的hash/rehash算法大致一样，性能不会差很多</p>
+<h2 id="一些其它的小细节"><a href="#一些其它的小细节" class="headerlink" title="一些其它的小细节"></a>一些其它的小细节</h2><ul>
+<li>HashMap和Hashtable都实现了Map接口</li>
+<li>HashMap是非synchronized，而Hashtable是synchronized</li>
+<li>HashTable使用Enumeration，HashMap使用Iterator； HashMap的迭代器(Iterator)是fail-fast迭代器，而Hashtable的enumerator迭代器不是fail-fast的。</li>
+<li>Hashtable直接使用对象的hashCode，HashMap重新计算hash值，而且用与代替求模</li>
+</ul>
 <h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>好吧，虽然看起来差别不大，但是真的要并行式去存储会不会可以呢？（不晓得啊，其实也不是很懂并行 0.0 ），问题过两天解决了再继续更好了<br><img src="/2017/03/16/HashMap和HashTable的区别/3.jpg" alt="HashMap和HashTable的区别"></p>
 
       
@@ -594,7 +600,7 @@ of cause，查一下嘛">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#日常"><span class="nav-number">1.</span> <span class="nav-text">日常</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#区别"><span class="nav-number">2.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#后记"><span class="nav-number">3.</span> <span class="nav-text">后记</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#日常"><span class="nav-number">1.</span> <span class="nav-text">日常</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#区别"><span class="nav-number">2.</span> <span class="nav-text">区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一些其它的小细节"><span class="nav-number">2.1.</span> <span class="nav-text">一些其它的小细节</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#后记"><span class="nav-number">3.</span> <span class="nav-text">后记</span></a></li></ol></div>
             
 
           </div>
