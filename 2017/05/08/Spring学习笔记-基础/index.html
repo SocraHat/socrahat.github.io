@@ -1,0 +1,977 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Spring," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Spring介绍spring是一个开源的轻量级JavaEE框架，使用分层架构，主要部分是面向切面编程（AOP）和控制反转（IOC）容器代码的实现。提高复用性和松耦合，具有动态可扩展性
+Eclipse和IDEA的项目构建Eclipse普遍比Idea要好配置的多
+Eclipse
+新建一个Project，都可以
+导入外部的Jar包，组成新的Libraries
+如果是Java Web项目还需要把所有的Ja">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring学习笔记-基础">
+<meta property="og:url" content="http://yoursite.com/2017/05/08/Spring学习笔记-基础/index.html">
+<meta property="og:site_name" content="Socra">
+<meta property="og:description" content="Spring介绍spring是一个开源的轻量级JavaEE框架，使用分层架构，主要部分是面向切面编程（AOP）和控制反转（IOC）容器代码的实现。提高复用性和松耦合，具有动态可扩展性
+Eclipse和IDEA的项目构建Eclipse普遍比Idea要好配置的多
+Eclipse
+新建一个Project，都可以
+导入外部的Jar包，组成新的Libraries
+如果是Java Web项目还需要把所有的Ja">
+<meta property="og:image" content="http://yoursite.com/2017/05/08/Spring学习笔记-基础/ioc.png">
+<meta property="og:updated_time" content="2017-05-08T12:29:30.738Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring学习笔记-基础">
+<meta name="twitter:description" content="Spring介绍spring是一个开源的轻量级JavaEE框架，使用分层架构，主要部分是面向切面编程（AOP）和控制反转（IOC）容器代码的实现。提高复用性和松耦合，具有动态可扩展性
+Eclipse和IDEA的项目构建Eclipse普遍比Idea要好配置的多
+Eclipse
+新建一个Project，都可以
+导入外部的Jar包，组成新的Libraries
+如果是Java Web项目还需要把所有的Ja">
+<meta name="twitter:image" content="http://yoursite.com/2017/05/08/Spring学习笔记-基础/ioc.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/08/Spring学习笔记-基础/"/>
+
+
+
+
+
+  <title> Spring学习笔记-基础 | Socra </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Socra</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/08/Spring学习笔记-基础/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Socra">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/coffee.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Socra">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Socra" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Spring学习笔记-基础
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-08T14:47:35+08:00">
+                2017-05-08
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2017-05-08T20:29:30+08:00">
+                2017-05-08
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/05/08/Spring学习笔记-基础/" class="leancloud_visitors" data-flag-title="Spring学习笔记-基础">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Spring介绍"><a href="#Spring介绍" class="headerlink" title="Spring介绍"></a>Spring介绍</h1><p>spring是一个开源的轻量级JavaEE框架，使用分层架构，主要部分是面向切面编程（AOP）和控制反转（IOC）容器代码的实现。提高复用性和松耦合，具有动态可扩展性</p>
+<h1 id="Eclipse和IDEA的项目构建"><a href="#Eclipse和IDEA的项目构建" class="headerlink" title="Eclipse和IDEA的项目构建"></a>Eclipse和IDEA的项目构建</h1><p>Eclipse普遍比Idea要好配置的多</p>
+<h2 id="Eclipse"><a href="#Eclipse" class="headerlink" title="Eclipse"></a>Eclipse</h2><ul>
+<li>新建一个Project，都可以</li>
+<li>导入外部的Jar包，组成新的Libraries</li>
+<li>如果是Java Web项目还需要把所有的Jar包复制进<code>web/WEB-INF/lib</code>目录下</li>
+<li>在<code>src</code>目录下创建<code>applicationContext.xml</code>文件</li>
+</ul>
+<h2 id="Idea"><a href="#Idea" class="headerlink" title="Idea"></a>Idea</h2><ul>
+<li>创建Java项目，从右边栏中选择Spring4，然后勾上对号</li>
+<li>在下方选择Use Libraries，然后选择所需要的Jar包导入成Libraries</li>
+<li>一路自由设置</li>
+<li>进入项目后在<code>src</code>目录下创建<code>applicationContext.xml</code>文件</li>
+<li>为项目配置合适的<code>Artifact</code>、<code>Facets</code>和<code>Modules</code>，就是选选文件配置路径什么的，如果哪里不对或缺失，右下方会有提示，点击<code>fixed</code>就会自动调整了</li>
+</ul>
+<h1 id="配置文件的组装"><a href="#配置文件的组装" class="headerlink" title="配置文件的组装"></a>配置文件的组装</h1><p>一般来说，xml文件内容配置成这样就通用了<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">&lt;?xmlversion="1.0"encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></div><div class="line">	<span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></div><div class="line">	<span class="attr">xmlns:aop</span>=<span class="string">"http://www.springframework.org/schema/aop"</span></div><div class="line">	<span class="attr">xmlns:tx</span>=<span class="string">"http://www.springframework.org/schema/tx"</span></div><div class="line">	<span class="attr">xmlns:context</span>=<span class="string">"http://www.springframework.org/schema/context"</span></div><div class="line">	<span class="attr">xmlns:mvc</span>=<span class="string">"http://www.springframework.org/schema/mvc"</span></div><div class="line">	<span class="attr">xmlns:task</span>=<span class="string">"http://www.springframework.org/schema/task"</span></div><div class="line">	<span class="attr">xsi:schemaLocation</span>=<span class="string">"</span></div><div class="line">	http://www.springframework.org/schema/beans</div><div class="line">	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd</div><div class="line">	http://www.springframework.org/schema/aop</div><div class="line">	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd</div><div class="line">	http://www.springframework.org/schema/tx</div><div class="line">	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd</div><div class="line">	http://www.springframework.org/schema/context</div><div class="line">	http://www.springframework.org/schema/context/spring-context-3.0.xsd</div><div class="line">	http://www.springframework.org/schema/mvc</div><div class="line">	http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd</div><div class="line">	http://www.springframework.org/schema/task</div><div class="line">	http://www.springframework.org/schema/task/spring-task-3.1.xsd"&gt;</div><div class="line">	 </div><div class="line"><span class="tag">&lt;<span class="name">beans</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h1 id="IOC-DI"><a href="#IOC-DI" class="headerlink" title="IOC/DI"></a>IOC/DI</h1><p>IOC：控制反转，有的时候也称为DI，也即依赖注入。可以这样理解：</p>
+<blockquote>
+<p>IOC容器就是为了管理Bean，创建Bean的一个内存区，在这个内存区中可以将操作Bean的代码以面向接口的方式进行开发。<br>这样基于接口的多态性，程序结构的分层就更加灵活化，维护和扩展也很方便。IOC概念从技术上来讲就是将接口和实现相分离</p>
+</blockquote>
+<h2 id="IOC容器"><a href="#IOC容器" class="headerlink" title="IOC容器"></a>IOC容器</h2><p>通过IOC容器可以完全管理JavaBean，包括创建、销毁，还可以对数据库的JavaBean进行自动化的事务处理，还支持一些企业级的应用。Spring的IOC容器完全脱离了平台，用最简单的JavaBean技术实现接口与实现的分离，并对组件的调配提供很好的支持</p>
+<p>下面开始操作：</p>
+<h2 id="先准备一个JavaBean"><a href="#先准备一个JavaBean" class="headerlink" title="先准备一个JavaBean"></a>先准备一个JavaBean</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CategoryBean</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id; </div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> id;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.id = id;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>经过实验发现，如果变量的getter和setter方法命名不规范，在程序运行时会出错。所以建议遵守<br><code>set+Variale_name</code>和<code>get+Variable_name</code>来命名getter和setter方法</p>
+<h2 id="再在applicationContext-xml文件中添加Bean配置"><a href="#再在applicationContext-xml文件中添加Bean配置" class="headerlink" title="再在applicationContext.xml文件中添加Bean配置"></a>再在applicationContext.xml文件中添加Bean配置</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">....</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">name</span>=<span class="string">"cate"</span> <span class="attr">class</span>=<span class="string">"pojo.Category"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"name"</span> <span class="attr">value</span>=<span class="string">"hellosocra"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>这里需要讲解一下配置的细节：</p>
+<ul>
+<li>首先是<bean>标签中的<code>name</code>属性，这里就是创建一个名为cate的CategoryBean对象</bean></li>
+<li>xml配置文件中<bean>标签的id属性和name属性基本上没有什么区别，但是使用id会更加符合规范，因为xml中id要求是唯一的</bean></li>
+<li><code>class</code>属性的值就是CategoryBean.java的路径，要加上包名</li>
+<li><property>标签是为了给对象cate中的属性赋值的，这里会自动调用变量的getter和setter方法进行赋值，如果命名不规范，就无法赋值</property></li>
+<li><code>name</code>对应着cate的属性名，<code>value</code>就是赋值，本例赋予了name属性的值是hellosocra</li>
+<li><property>中还可以使用<code>ref</code>来给属性值进行链接，然后使用链接处的值，这也是注入值的过程</property></li>
+</ul>
+<h2 id="使用注入的对象"><a href="#使用注入的对象" class="headerlink" title="使用注入的对象"></a>使用注入的对象</h2><p>既然已经添加了注入对象的配置，现在看看如何使用注入的对象<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestSpring</span> </span>&#123;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        <span class="comment">// 1.必备的语句，可以定义为全局变量 </span></div><div class="line">        ApplicationContext context = <span class="keyword">new</span> ClassPathXmlApplicationContext(</div><div class="line">                <span class="keyword">new</span> String[] &#123; <span class="string">"applicationContext.xml"</span> &#125;);</div><div class="line"> 		</div><div class="line"> 		<span class="comment">// 2.开始使用IOC的getBean()方法来获取对象，但要主要强制类型转换</span></div><div class="line">        Category cate = (Category) context.getBean(<span class="string">"cate"</span>);</div><div class="line">        <span class="comment">// 3.使用Bean对象的方法</span></div><div class="line">        System.out.println(cate.getName());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="注解方式配置IOC"><a href="#注解方式配置IOC" class="headerlink" title="注解方式配置IOC"></a>注解方式配置IOC</h2><p>如同在学习Servlet时使用注解配置一样，这里也可使用注解配置，有下面两种</p>
+<h3 id="针对“注入对象行为”的注解"><a href="#针对“注入对象行为”的注解" class="headerlink" title="针对“注入对象行为”的注解"></a>针对“注入对象行为”的注解</h3><p>下面说的这种方式都是主要针对其中一个JavaBean是另一个JavaBean的属性时的注入</p>
+<ul>
+<li>注释之前对对象的属性的注入的配置（配置对象是注入，给对象的属性赋值同样是注入）</li>
+<li>添加<code>&lt;context:annotation-config/&gt;</code>表示spring要采用注解的方式进行配置</li>
+<li>在要注入对象的对应属性前加上<code>@Autowired</code>注解，或者在对应属性的setter方法前加上<code>@Autowired</code>注解</li>
+<li>在要注入对象中的属性（另外的JavaBean充当该bean的属性）前加上<code>@Resource(xxx=xxx)</code>注解，举个例子<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ABean</span></span>&#123;</div><div class="line">  String name ;</div><div class="line">  <span class="keyword">int</span> id;</div><div class="line">  <span class="comment">// ....getter和setter方法</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BBean</span></span>&#123;</div><div class="line">  <span class="meta">@Resource</span>(name=<span class="string">"socra"</span>,id=<span class="number">5</span>)</div><div class="line">  A a; <span class="comment">// A作为B的属性</span></div><div class="line">  <span class="keyword">int</span> no;</div><div class="line">  <span class="comment">// ....getter和setter方法</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="针对“Bean”的注解"><a href="#针对“Bean”的注解" class="headerlink" title="针对“Bean”的注解"></a>针对“Bean”的注解</h3><p>同样的，下面说的这种方式都是主要针对其中一个JavaBean是另一个JavaBean的属性时的注入</p>
+<ul>
+<li>在xml文件中把<beans>标签中所有的<bean>标签都注释掉</bean></beans></li>
+<li>添加<code>&lt;context:componment-scan base-backage=&quot;JavaBean所在的包以及Bean名&quot;&gt;</code>，表示spring所需要的Bean都在该路径下</li>
+<li>再在该包下所有的Bean类定义之前加上<code>@Compent(&quot;name&quot;)</code>，表名该类是Bean，<code>name</code>是要被注入的该Bean类的对象名</li>
+<li>若有一个类是另一个类的属性，则在该属性前加上<code>@Autowired</code>注解</li>
+<li>其余的属性可以自由赋值</li>
+</ul>
+<h2 id="IOC原理"><a href="#IOC原理" class="headerlink" title="IOC原理"></a>IOC原理</h2><p>传统的创建对象的方式：通过new关键字来创建一个对象<br>IOC方式：对象的声明周期由Spring来管理，直接从Spring那里获取一个对对象。IOC是反转控制，意即本来对象的控制权在使用者手里，现在反过来交给了Spring</p>
+<blockquote>
+<p>打个比喻：<br>传统方式：相当于你自己去菜市场new 了一直鸡，但是是生鸡，要自己拔毛，去内脏，再上花椒，酱油，烤制，经过各种工序之后，才可以食用。<br>IOC：相当于去馆子(Spring)点了一直 鸡，交到你手上的时候，已经五味俱全，你就只管吃就行了。</p>
+</blockquote>
+<p>解释的生动传神，（滑稽<br><img src="/2017/05/08/Spring学习笔记-基础/ioc.png" alt="ioc"></p>
+<h1 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h1><p>AOP：面向切面编程，意即面向一小段代码编程。AOP把功能分为核心功能和周边功能，而周边功能在Spring的AOP思想里就被定义为切面Aspect。这种能够选择性的，低耦合的把切面和核心业务功能结合在一起的编程思想，就叫做切面编程。<br>所谓AOP思想就是两种功能分别独立开发，然后再“编织”在一起</p>
+<blockquote>
+<p>AOP可以在不改变原始代码的基础上做一些功能性的增强</p>
+</blockquote>
+<p>需要额外的Jar包：<code>aspect.jar</code>和<code>aopliance.jar</code></p>
+<h2 id="准备一个核心业务Bean和切面辅助Bean"><a href="#准备一个核心业务Bean和切面辅助Bean" class="headerlink" title="准备一个核心业务Bean和切面辅助Bean"></a>准备一个核心业务Bean和切面辅助Bean</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 作为核心业务Bean</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductService</span></span>&#123;</div><div class="line">  	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dosomeService</span><span class="params">()</span></span>&#123;</div><div class="line">		System.out.println(<span class="string">"dosomeService"</span>);</div><div class="line">	&#125;	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 作为切面辅助Bean</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoggerAspect</span> </span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">log</span><span class="params">(ProceedingJoinPoint joinPoint)</span></span>&#123;</div><div class="line">		Object obj = <span class="keyword">null</span>;</div><div class="line">		System.out.println(<span class="string">"start log: "</span> + joinPoint.getSignature().getName());</div><div class="line">		<span class="keyword">try</span> &#123;</div><div class="line">			obj = joinPoint.proceed();<span class="comment">// 继续执行，本例指执行dosomeService()</span></div><div class="line">		&#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">		System.out.println(<span class="string">"end log: "</span> + joinPoint.getSignature().getName());</div><div class="line">		<span class="keyword">return</span> obj;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="添加配置"><a href="#添加配置" class="headerlink" title="添加配置"></a>添加配置</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">....</span>&gt;</span></div><div class="line">	<span class="comment">&lt;!-- 1.声明核心业务对象 --&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"s"</span> <span class="attr">class</span>=<span class="string">"service.ProductService"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line">	<span class="comment">&lt;!-- 2.声明辅助日志切面 --&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"loggerAspect"</span> <span class="attr">class</span>=<span class="string">"aspect.LoggerAspect"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></div><div class="line">	<span class="comment">&lt;!-- 5.通过aop:config把业务对象与辅助功能编制在一起 --&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></div><div class="line">		<span class="comment">&lt;!-- 3.指定核心业务功能 --&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">aop:pointcut</span> <span class="attr">id</span>=<span class="string">"loggerCutpoint"</span></span></div><div class="line">			<span class="attr">expression</span>=</div><div class="line">			<span class="string">"execution(* service.ProductService.*(..))"</span>/&gt;</div><div class="line">		<span class="comment">&lt;!-- 4.指定辅助功能 --&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">id</span>=<span class="string">"logAspect"</span> <span class="attr">ref</span>=<span class="string">"loggerAspect"</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="name">aop:around</span> <span class="attr">pointcut-ref</span>=<span class="string">"loggerCutpoint"</span> <span class="attr">method</span>=<span class="string">"log"</span>/&gt;</span></div><div class="line">		<span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></div></pre></td></tr></table></figure>
+<ul>
+<li>首先要规定好核心业务Bean还有切面辅助Bean，设置好它们的对象名以及路径</li>
+<li><aop>标签有指定好核心业务和切面辅助入口，<code>id</code>属性都是对象名</aop></li>
+<li><aop:point>中的<code>expression</code>属性的一般值为<code>execution(* package_name.Bean_name.*(..))</code>，表示核心业务Bean中的方法入口（核心业务中可以不止一个方法）</aop:point></li>
+<li><aop:aspect>标签中<code>id</code>被注入了值，<code>pointcut-ref</code>属性指定了辅助切面辅助的对象，<code>method</code>是调用辅助切面中的辅助方法</aop:aspect></li>
+</ul>
+<p>至此已经设置好了切面辅助，当从上到下，先执行核心业务功能后执行辅助业务</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>因为使用AOP，使用时和没有加入切面时的步骤是一样的，正因为如此也体现了AOP的优越特性<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestAspect</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">		<span class="comment">// TODO Auto-generated method stub</span></div><div class="line">		ApplicationContext apc = <span class="keyword">new</span> </div><div class="line">				ClassPathXmlApplicationContext(<span class="string">"applicationContext.xml"</span>);</div><div class="line">		</div><div class="line">		ProductService s = (ProductService)apc.getBean(<span class="string">"s"</span>);</div><div class="line">		s.dosomeService();</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="AOP更高级的用法"><a href="#AOP更高级的用法" class="headerlink" title="AOP更高级的用法"></a>AOP更高级的用法</h2><p>本来是想直接在这次写上的，但是，还是下次和IOC的高级用法写在一起吧，算偷个懒挖个坑。<br>哦，当然了，AOP的注释写法也下次再写好了233333</p>
+<h1 id="久违了"><a href="#久违了" class="headerlink" title="久违了"></a>久违了</h1><p>准备了很久的JavaEE学习，现在终于提上了日程，随便也要把之前遗漏的Servlet和Jsp准备准备填坑了</p>
+<p>呐现在挖坑：Servlet学习总结笔记、Jsp总结笔记、Spring更为高级的用法etc</p>
+<p>PS：首先还是总结这几个框架任意组合的配置方法，idea配置起来真的麻烦啊….F__k</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spring/" rel="tag"># Spring</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/07/Java泛型详解/" rel="next" title="Java泛型详解">
+                <i class="fa fa-chevron-left"></i> Java泛型详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          ﻿
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/coffee.jpg"
+               alt="Socra" />
+          <p class="site-author-name" itemprop="name">Socra</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/socrahat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhuo-peng-cheng-85/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-zhihu"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5643507737/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://zpencheng@126.com" target="_blank" title="Gmail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Gmail
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-link"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/sugar_rainbow" title="My CSDN" target="_blank">My CSDN</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring介绍"><span class="nav-number">1.</span> <span class="nav-text">Spring介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eclipse和IDEA的项目构建"><span class="nav-number">2.</span> <span class="nav-text">Eclipse和IDEA的项目构建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Eclipse"><span class="nav-number">2.1.</span> <span class="nav-text">Eclipse</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Idea"><span class="nav-number">2.2.</span> <span class="nav-text">Idea</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置文件的组装"><span class="nav-number">3.</span> <span class="nav-text">配置文件的组装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IOC-DI"><span class="nav-number">4.</span> <span class="nav-text">IOC/DI</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IOC容器"><span class="nav-number">4.1.</span> <span class="nav-text">IOC容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#先准备一个JavaBean"><span class="nav-number">4.2.</span> <span class="nav-text">先准备一个JavaBean</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注意"><span class="nav-number">4.2.1.</span> <span class="nav-text">注意</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#再在applicationContext-xml文件中添加Bean配置"><span class="nav-number">4.3.</span> <span class="nav-text">再在applicationContext.xml文件中添加Bean配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用注入的对象"><span class="nav-number">4.4.</span> <span class="nav-text">使用注入的对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注解方式配置IOC"><span class="nav-number">4.5.</span> <span class="nav-text">注解方式配置IOC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#针对“注入对象行为”的注解"><span class="nav-number">4.5.1.</span> <span class="nav-text">针对“注入对象行为”的注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#针对“Bean”的注解"><span class="nav-number">4.5.2.</span> <span class="nav-text">针对“Bean”的注解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IOC原理"><span class="nav-number">4.6.</span> <span class="nav-text">IOC原理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AOP"><span class="nav-number">5.</span> <span class="nav-text">AOP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备一个核心业务Bean和切面辅助Bean"><span class="nav-number">5.1.</span> <span class="nav-text">准备一个核心业务Bean和切面辅助Bean</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加配置"><span class="nav-number">5.2.</span> <span class="nav-text">添加配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">5.3.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AOP更高级的用法"><span class="nav-number">5.4.</span> <span class="nav-text">AOP更高级的用法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#久违了"><span class="nav-number">6.</span> <span class="nav-text">久违了</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Socra</span>
+</div>
+
+
+<div class="powered-by">
+  爱你呦
+</div>
+
+<div class="theme-info">
+  QvQ
+<span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+<span id="showDays"></span>
+</div>
+
+<script>
+	var birthDay = new Date('2/21/2017');
+	var now = new Date();
+	var duration = now.getTime() - birthDay.getTime();
+	var total= Math.floor(duration / (1000 * 60 * 60 * 24));
+	document.getElementById('showDays').innerHTML='now ever ' + total + ' days';
+</script>
+
+
+<div align="center">
+	<a href="http://www.amazingcounters.com"> <img border="0"  src="http://cc.amazingcounters.com/counter.php?i=3212960&c=9639193" alt="AmazingCounters.com"> 
+	</a> clicks
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8HdMboaKVDfKBOn5dI12QWiH-gzGzoHsz#<app_id>", "EsoeMbYLC0fheB5bhVAmfMQj#<app_key>");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+  
+
+</body>
+</html>
