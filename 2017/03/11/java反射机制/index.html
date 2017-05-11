@@ -101,7 +101,7 @@
 反射机制是能在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取信息的以及动态调用对象的方法的功能成为java反射机制
 
 反射是为了动态的加载j">
-<meta property="og:updated_time" content="2017-04-14T10:47:04.124Z">
+<meta property="og:updated_time" content="2017-05-11T02:35:13.915Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java反射机制">
 <meta name="twitter:description" content="前言碎语刚开始学习时其实是跳过了这么一个知识点的（因为确定难懂又暂时没什么用），后面听说了在框架中反射是基本的原理，我就又滚回来了（出来混迟早要还的，深以为然）
@@ -326,8 +326,8 @@
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-04-14T18:47:04+08:00">
-                2017-04-14
+              <time title="更新于" itemprop="dateModified" datetime="2017-05-11T10:35:13+08:00">
+                2017-05-11
               </time>
             
           </span>
@@ -386,10 +386,22 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Class testClass = Class.forName(str);<span class="comment">// str可以以字符串的形式传入</span></div></pre></td></tr></table></figure>
 </li>
 <li><p>创建一个动态代理对象并开始使用被代理对象中的方法；</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line"> 		<span class="comment">// 需要代理的真实对象</span></div><div class="line">        Object realObject = <span class="keyword">new</span> Object();</div><div class="line"></div><div class="line">        <span class="comment">// 将真实对象传入，最后是通过代理对象来调用其方法的</span></div><div class="line">        InvocationHandler handler = <span class="keyword">new</span> DynamicProxy(realObject);</div><div class="line"></div><div class="line">        <span class="comment">/*</span></div><div class="line">         * 通过Proxy的newProxyInstance方法来创建我们的代理对象</div><div class="line">         * 第一个参数 handler.getClass().getClassLoader() ，我们这里使用handler这个类的ClassLoader对象来加载代理对象</div><div class="line">         * 第二个参数realObject.getClass().getInterfaces()，这里为代理对象提供的接口是真实对象所实现的接口，表示要代理的是该真实对象，这样就能调用这组接口中的方法了</div><div class="line">         * 第三个参数handler， 将这个代理对象关联到了上方的 InvocationHandler 这个对象上</div><div class="line">         */</div><div class="line">        Object obj = (Object)Proxy.newProxyInstance(handler.getClass().getClassLoader(), realObject.getClass().getInterfaces(), handler);</div><div class="line">     </div><div class="line">        <span class="comment">// obj.xxx(); // 这样使用代理对象来直接调用被代理类的方法</span></div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line"> 		<span class="comment">// 需要代理的真实对象</span></div><div class="line">        Object realObject = <span class="keyword">new</span> Object();</div><div class="line"></div><div class="line">        <span class="comment">// 将真实对象传入，最后是通过代理对象来调用其方法的</span></div><div class="line">        InvocationHandler handler = <span class="keyword">new</span> DynamicProxy(realObject);</div><div class="line"></div><div class="line">        <span class="comment">/*</span></div><div class="line">         * 代理对象obj，通过Proxy的newProxyInstance方法来创建</div><div class="line">         * 第一个参数 handler.getClass().getClassLoader() ，我们这里使用handler这个类的ClassLoader对象来加载代理对象</div><div class="line">         * 第二个参数realObject.getClass().getInterfaces()，这里为代理对象提供的接口是真实对象所实现的接口，表示要代理的是该真实对象，这样就能调用这组接口中的方法了</div><div class="line">         * 第三个参数handler， 将这个代理对象关联到了上方的 InvocationHandler 这个对象上</div><div class="line">         */</div><div class="line">        Object obj = (Object)Proxy.newProxyInstance(handler.getClass().getClassLoader(), realObject.getClass().getInterfaces(), handler);</div><div class="line">     </div><div class="line">        obj.wait(<span class="number">10</span>); <span class="comment">// 这样使用代理对象来直接调用被代理类的wait方法，并输入参数</span></div><div class="line">	&#125;	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 </ul>
 <p>这里有需要注意的地方：<strong>Proxy的newProxyInstance方法的第二个参数，意思是代理对象去实现了被代理对像的接口</strong>，这样代理对象才可以去使用被代理对象实现接口或继承类中的方法。同时如果打印出代理对象的<code>obj.getClass().getName()</code>会显示<code>$proxy0</code>，因为这是JVM自动动态生成的代理对象（与使用时自己初始化代理对象不是一个意思，初始化主要是为了传入被代理对象），这是一种固定的命名方式。</p>
+<h2 id="总结反射顺序"><a href="#总结反射顺序" class="headerlink" title="总结反射顺序"></a>总结反射顺序</h2><ul>
+<li>创建一个代理类，实现<code>InvkcationHandler</code>接口</li>
+<li>重写<code>invoke()</code>方法，并调用<code>method.invoke()</code></li>
+<li>声明真实对象，并传入代理类</li>
+<li>声明代理对象，并初始化为<code>Proxy.newProxyInstance()</code>方法获得的实例</li>
+<li>使用代理对象调用真实对象的方法</li>
+</ul>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
+<li>一定要使用<code>Proxy.newProxyInstance(ClassLoader loader, Class&lt;?&gt;[] interfaces,  InvocationHandler h)</code>方法实例化代理对象</li>
+<li>代理类中的<code>invoce(Object proxy, Method method, Object[] args)</code>方法是由代理对象隐式调用的</li>
+<li>直接使用代理对象调用真实对象的方法即可</li>
+</ul>
 <h1 id="使用反射的利弊"><a href="#使用反射的利弊" class="headerlink" title="使用反射的利弊"></a>使用反射的利弊</h1><p><strong>优点</strong>：<br>反射提高了程序的灵活性以及扩展性，降低了耦合性（依赖关系），提高了程序的适应能力；允许程序在不知道具体类的信息的情况下，创建和控制任何类的对象。</p>
 <p><strong>缺点</strong>：</p>
 <ul>
@@ -616,7 +628,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言碎语"><span class="nav-number">1.</span> <span class="nav-text">前言碎语</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#反射机制是什么？"><span class="nav-number">2.</span> <span class="nav-text">反射机制是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#反射机制有什么用？"><span class="nav-number">3.</span> <span class="nav-text">反射机制有什么用？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#反射机制的原理"><span class="nav-number">4.</span> <span class="nav-text">反射机制的原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#反射机制的常规用法"><span class="nav-number">5.</span> <span class="nav-text">反射机制的常规用法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用反射的利弊"><span class="nav-number">6.</span> <span class="nav-text">使用反射的利弊</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言碎语"><span class="nav-number">1.</span> <span class="nav-text">前言碎语</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#反射机制是什么？"><span class="nav-number">2.</span> <span class="nav-text">反射机制是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#反射机制有什么用？"><span class="nav-number">3.</span> <span class="nav-text">反射机制有什么用？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#反射机制的原理"><span class="nav-number">4.</span> <span class="nav-text">反射机制的原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#反射机制的常规用法"><span class="nav-number">5.</span> <span class="nav-text">反射机制的常规用法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#总结反射顺序"><span class="nav-number">5.1.</span> <span class="nav-text">总结反射顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">5.2.</span> <span class="nav-text">注意</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用反射的利弊"><span class="nav-number">6.</span> <span class="nav-text">使用反射的利弊</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
