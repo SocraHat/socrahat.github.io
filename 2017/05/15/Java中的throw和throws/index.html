@@ -87,16 +87,30 @@
 
 
 
-<meta name="description" content="变量的默认初始化Java是会为类的成员变量提供默认初始化的，但是又听说局部变量不会提供默认的初始化，是这样吗？1234567891011121314151617181920212223242526272829public class TestVariable &amp;#123;		public int id;	public String name;	public char c;	public byte">
+<meta name="description" content="一些稀松平常的操作ok，一般每隔一段时间就会清清缓存，或者是拖的有点多了……
+Java中的异常这是一个要开也能开的坑，但是不是很想操作，一般情况下会使用异常，找出异常并调试bug就行了，当然了有些场景是需要自己自定义适合场景的bug的，这就需要了解一些异常的基本知识
+异常的出现多是一些外部原因，比如一些代码中没有注意到的会影响程序运行的细节
+
+发生在程序运行期间，干扰了正常的指令流程。Java通">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java变量的默认初始化">
-<meta property="og:url" content="http://yoursite.com/2017/05/07/Java变量的默认初始化/index.html">
+<meta property="og:title" content="Java中的throw和throws">
+<meta property="og:url" content="http://yoursite.com/2017/05/15/Java中的throw和throws/index.html">
 <meta property="og:site_name" content="Socra">
-<meta property="og:description" content="变量的默认初始化Java是会为类的成员变量提供默认初始化的，但是又听说局部变量不会提供默认的初始化，是这样吗？1234567891011121314151617181920212223242526272829public class TestVariable &amp;#123;		public int id;	public String name;	public char c;	public byte">
-<meta property="og:updated_time" content="2017-05-07T12:12:41.989Z">
+<meta property="og:description" content="一些稀松平常的操作ok，一般每隔一段时间就会清清缓存，或者是拖的有点多了……
+Java中的异常这是一个要开也能开的坑，但是不是很想操作，一般情况下会使用异常，找出异常并调试bug就行了，当然了有些场景是需要自己自定义适合场景的bug的，这就需要了解一些异常的基本知识
+异常的出现多是一些外部原因，比如一些代码中没有注意到的会影响程序运行的细节
+
+发生在程序运行期间，干扰了正常的指令流程。Java通">
+<meta property="og:image" content="http://yoursite.com/2017/05/15/Java中的throw和throws/exception.jpg">
+<meta property="og:updated_time" content="2017-05-15T13:13:57.905Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java变量的默认初始化">
-<meta name="twitter:description" content="变量的默认初始化Java是会为类的成员变量提供默认初始化的，但是又听说局部变量不会提供默认的初始化，是这样吗？1234567891011121314151617181920212223242526272829public class TestVariable &amp;#123;		public int id;	public String name;	public char c;	public byte">
+<meta name="twitter:title" content="Java中的throw和throws">
+<meta name="twitter:description" content="一些稀松平常的操作ok，一般每隔一段时间就会清清缓存，或者是拖的有点多了……
+Java中的异常这是一个要开也能开的坑，但是不是很想操作，一般情况下会使用异常，找出异常并调试bug就行了，当然了有些场景是需要自己自定义适合场景的bug的，这就需要了解一些异常的基本知识
+异常的出现多是一些外部原因，比如一些代码中没有注意到的会影响程序运行的细节
+
+发生在程序运行期间，干扰了正常的指令流程。Java通">
+<meta name="twitter:image" content="http://yoursite.com/2017/05/15/Java中的throw和throws/exception.jpg">
 
 
 
@@ -124,13 +138,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/05/07/Java变量的默认初始化/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/05/15/Java中的throw和throws/"/>
 
 
 
 
 
-  <title> Java变量的默认初始化 | Socra </title>
+  <title> Java中的throw和throws | Socra </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -259,7 +273,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/07/Java变量的默认初始化/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/15/Java中的throw和throws/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Socra">
@@ -283,7 +297,7 @@
             
             
               
-                Java变量的默认初始化
+                Java中的throw和throws
               
             
           </h1>
@@ -298,8 +312,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-07T19:55:38+08:00">
-                2017-05-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-15T20:05:19+08:00">
+                2017-05-15
               </time>
             
 
@@ -314,8 +328,8 @@
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-05-07T20:12:41+08:00">
-                2017-05-07
+              <time title="更新于" itemprop="dateModified" datetime="2017-05-15T21:13:57+08:00">
+                2017-05-15
               </time>
             
           </span>
@@ -328,7 +342,7 @@
 
           
           
-             <span id="/2017/05/07/Java变量的默认初始化/" class="leancloud_visitors" data-flag-title="Java变量的默认初始化">
+             <span id="/2017/05/15/Java中的throw和throws/" class="leancloud_visitors" data-flag-title="Java中的throw和throws">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -357,22 +371,48 @@
       
 
       
-        <h1 id="变量的默认初始化"><a href="#变量的默认初始化" class="headerlink" title="变量的默认初始化"></a>变量的默认初始化</h1><p>Java是会为类的成员变量提供默认初始化的，但是又听说局部变量不会提供默认的初始化，是这样吗？<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestVariable</span> </span>&#123;</div><div class="line">	</div><div class="line">	<span class="keyword">public</span> <span class="keyword">int</span> id;</div><div class="line">	<span class="keyword">public</span> String name;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">char</span> c;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">byte</span> by;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">float</span> f;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">double</span> d;</div><div class="line">	<span class="keyword">public</span> <span class="keyword">boolean</span> bo;</div><div class="line">	</div><div class="line">	<span class="comment">// 再次说明了局部变量只能有final修饰符，static都不行</span></div><div class="line">	<span class="meta">@Test</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testV</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">int</span> no;</div><div class="line">		<span class="keyword">final</span> <span class="keyword">int</span> no2;</div><div class="line">		</div><div class="line">		System.out.println(id); <span class="comment">// 0</span></div><div class="line">		System.out.println(name); <span class="comment">// null</span></div><div class="line">		System.out.println(c); <span class="comment">// 空字符</span></div><div class="line">		System.out.println(by); <span class="comment">// 0</span></div><div class="line">		System.out.println(f); <span class="comment">// 0.0</span></div><div class="line">		System.out.println(d); <span class="comment">// 0.0</span></div><div class="line">		System.out.println(bo); <span class="comment">// false</span></div><div class="line">		<span class="comment">// 局部变量没有初始化，编译就报错</span></div><div class="line"><span class="comment">//		System.out.println(no);</span></div><div class="line"><span class="comment">//		System.out.println(no2);</span></div><div class="line">	&#125;</div><div class="line">	</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>结果男默女泪，编译时就出错了</p>
-<h1 id="类的成员属性的默认初始化"><a href="#类的成员属性的默认初始化" class="headerlink" title="类的成员属性的默认初始化"></a>类的成员属性的默认初始化</h1><p>结论是会为类的普通属性成员初始化</p>
-<h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型:"></a>基本数据类型:</h2><ul>
-<li>int: 0</li>
-<li>char: 空字符</li>
-<li>byte: 0</li>
-<li>float: 0.0</li>
-<li>double: 0.0</li>
-<li>short: 0</li>
-<li>long：0</li>
-<li>boolean: false</li>
+        <h1 id="一些稀松平常的操作"><a href="#一些稀松平常的操作" class="headerlink" title="一些稀松平常的操作"></a>一些稀松平常的操作</h1><p>ok，一般每隔一段时间就会清清缓存，或者是拖的有点多了……</p>
+<h1 id="Java中的异常"><a href="#Java中的异常" class="headerlink" title="Java中的异常"></a>Java中的异常</h1><p>这是一个要开也能开的坑，但是不是很想操作，一般情况下会使用异常，找出异常并调试bug就行了，当然了有些场景是需要自己自定义适合场景的bug的，这就需要了解一些异常的基本知识</p>
+<p>异常的出现多是一些外部原因，比如一些代码中没有注意到的会影响程序运行的细节</p>
+<blockquote>
+<p>发生在程序运行期间，干扰了正常的指令流程。Java通 过API中Throwable类的众多子类描述各种不同的异常。因而，Java异常都是对象，是Throwable子类的实例，描述了出现在一段编码中的 错误条件。当条件生成时，错误将引发异常。</p>
+</blockquote>
+<p>这里有Java异常类层次结构图：↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓<br><img src="/2017/05/15/Java中的throw和throws/exception.jpg" alt="exception"></p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
+<li><code>Thorwable</code>是类不是接口，当初有搞混</li>
+<li><code>Error</code>类是程序无法处理的错误，表示运行应用中出现了很严重的问题，不过一般是因为JVM内容出现了问题，这些问题是不需要try-catch的。一般出现了Error，JVM会自动停止运行，然后通过Error的子类来描述出错的类型，比如：<strong>OutOfMemoryError和NoClassDefFoundError</strong></li>
+<li><code>Exception</code>类是程序本身（JVM）可以处理的异常，有一个重要的子类<code>RuntimeException</code>及其子类，表示JVM常用操作引发的异常，比如：<strong>空值对象的应用、除数为0和数组越界</strong></li>
+<li>错误和异常的区别是：<strong>异常能被程序本身处理，错误是无法处理的</strong></li>
 </ul>
-<h2 id="对象类型"><a href="#对象类型" class="headerlink" title="对象类型"></a>对象类型</h2><p>String: <code>null</code><br>Other Object: <code>null</code></p>
-<h1 id="局部成员的默认初始化"><a href="#局部成员的默认初始化" class="headerlink" title="局部成员的默认初始化"></a>局部成员的默认初始化</h1><p>局部变量并不会默认的初始化，而是在<strong>编译时就直接报错</strong>！！！</p>
-<h2 id="局部变量的修饰符"><a href="#局部变量的修饰符" class="headerlink" title="局部变量的修饰符"></a>局部变量的修饰符</h2><p>局部变量不允许使用修饰符，只能使用<code>final</code>,<code>static</code>都不行</p>
+<h3 id="可查异常和不可查异常"><a href="#可查异常和不可查异常" class="headerlink" title="可查异常和不可查异常"></a>可查异常和不可查异常</h3><p>这里拓展Exception的一些知识，因为算是难重点易混点</p>
+<ul>
+<li>可查异常：是编译器要求必须处理的异常，即必须使用<code>try{}catch{}</code>进行捕捉处理。除<code>RuntimeException</code>及其子类外，其它的Exception类及其子类都属于可查异常</li>
+<li>不可查异常：包括运行时异常（及其子类）和错误，这里不要求使用<code>try{}catch{}</code>捕捉处理，当然可以选择捕捉处理</li>
+</ul>
+<h3 id="运行时异常和非运行时异常"><a href="#运行时异常和非运行时异常" class="headerlink" title="运行时异常和非运行时异常"></a>运行时异常和非运行时异常</h3><p>这算是另一种异常的分类方式</p>
+<ul>
+<li>运行时异常：RuntimeException，顾名思义，运行时才会发生的异常，在敲代码阶段编译阶段是无法发现的，所以即便没有<code>try{}catch{}</code>捕捉处理也会编译通过，比如：<strong>空指针异常和数组下标越界</strong></li>
+<li>非运行时异常：也叫编译异常，这个就必须使用<code>try{}catch{}</code>来让程序自行捕捉处理了，否则会不予通过</li>
+</ul>
+<h2 id="抛出异常"><a href="#抛出异常" class="headerlink" title="抛出异常"></a>抛出异常</h2><p>使用<code>throw</code>和<code>throws</code>来抛出异常</p>
+<h2 id="捕获异常"><a href="#捕获异常" class="headerlink" title="捕获异常"></a>捕获异常</h2><p>其实不过异常有两种，一种是自己编程处理，一种是交给JVM来处理</p>
+<ul>
+<li>使用<code>try{}catch{}</code>来捕获异常</li>
+<li>直接使用<code>throws</code>来不断向上抛出异常，直到抛给JVM执行</li>
+</ul>
+<h1 id="throw"><a href="#throw" class="headerlink" title="throw"></a>throw</h1><p>其实是从网上瞄来的（滑稽<br>语法是<code>throw(异常对象)</code>，一般用于方法体中，抛出特定类型的异常</p>
+<h1 id="throws"><a href="#throws" class="headerlink" title="throws"></a>throws</h1><p>感觉diaodiao的，这个用的做多<br>语法是<code>public void function(var) throws &lt;异常类&gt;</code>，一般跟在方法名的声明后面，直接抛出异常类，然后把异常处理交给上层调用它的程序处理</p>
+<h1 id="它们的区别"><a href="#它们的区别" class="headerlink" title="它们的区别"></a>它们的区别</h1><p>卧槽我本来只是看到了两者什么区别，结果又扯了别的。说到区别，一个常用一个基本不用算不算区别（滑稽</p>
+<ul>
+<li><code>throws</code>出现在方法函数头，而<code>throw</code>出现在方法体中</li>
+<li><code>throws</code>表示出现异常的一种可能，实际并不一定会出现异常；而<code>throw</code>则是抛出异常，只要是运行到了这里，就一定会抛出异常</li>
+<li>两者都是消极处理异常的方式，只是做到了抛出或肯能抛出异常，真正对异常进行处理还是在上层调用的地方</li>
+</ul>
+<p><a href="http://blog.csdn.net/hguisu/article/details/6155636" target="_blank" rel="external">其实这里有更多详细的内容，随用随取</a><br><a href="http://blog.csdn.net/luoweifu/article/details/10721543" target="_blank" rel="external">还有这些，感谢前辈</a></p>
+<h1 id="一种熟悉的节奏？"><a href="#一种熟悉的节奏？" class="headerlink" title="一种熟悉的节奏？"></a>一种熟悉的节奏？</h1><p>不知道什么时候起，已经想把自己看到学到的东西通过某种方式记录下来了，或许是自己的记性越来越不好了，又或许真的是已经变成了一种习惯。</p>
+<p>没有遇到很多像自己一样喜欢搞一搞Java很底层很细节的东西，（或许自己本身也是被外在事物所影响，但现在确实真心的想搞清楚）每次看到一些很细枝末节的东西而自己又不知道，就会有莫名的兴奋感，细细研究左右对比仔细斟酌。良久，一句“原来是这样”，痛快的拍一下桌子，随口吐槽一句，然后再嚣张的把博文传到网上，整个过程是这么熟悉而又畅快。日后装作随意的点开一看，点击的人数比上次又多了几个，顺便暗爽原来我当时写出这样的东西，但这是发自内心的开心。</p>
+<p>啧，话又多了，自己也不明所以。话说，我要去洗袜子了</p>
+<p>PS：其实每次问题的出发点都是一个小小的线头，怪我太贪心想要它后面的毛线球？</p>
 
       
     </div>
@@ -409,8 +449,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/07/Java内部类探讨/" rel="next" title="Java内部类探讨">
-                <i class="fa fa-chevron-left"></i> Java内部类探讨
+              <a href="/2017/05/08/Spring学习笔记-基础/" rel="next" title="Spring学习笔记-基础">
+                <i class="fa fa-chevron-left"></i> Spring学习笔记-基础
               </a>
             
           </div>
@@ -419,8 +459,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/07/Java泛型详解/" rel="prev" title="Java泛型详解">
-                Java泛型详解 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/05/15/zpencheng/" rel="prev" title="zpencheng">
+                zpencheng <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -591,7 +631,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#变量的默认初始化"><span class="nav-number">1.</span> <span class="nav-text">变量的默认初始化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类的成员属性的默认初始化"><span class="nav-number">2.</span> <span class="nav-text">类的成员属性的默认初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本数据类型"><span class="nav-number">2.1.</span> <span class="nav-text">基本数据类型:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象类型"><span class="nav-number">2.2.</span> <span class="nav-text">对象类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#局部成员的默认初始化"><span class="nav-number">3.</span> <span class="nav-text">局部成员的默认初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#局部变量的修饰符"><span class="nav-number">3.1.</span> <span class="nav-text">局部变量的修饰符</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一些稀松平常的操作"><span class="nav-number">1.</span> <span class="nav-text">一些稀松平常的操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java中的异常"><span class="nav-number">2.</span> <span class="nav-text">Java中的异常</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">2.1.</span> <span class="nav-text">注意</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#可查异常和不可查异常"><span class="nav-number">2.1.1.</span> <span class="nav-text">可查异常和不可查异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时异常和非运行时异常"><span class="nav-number">2.1.2.</span> <span class="nav-text">运行时异常和非运行时异常</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#抛出异常"><span class="nav-number">2.2.</span> <span class="nav-text">抛出异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#捕获异常"><span class="nav-number">2.3.</span> <span class="nav-text">捕获异常</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#throw"><span class="nav-number">3.</span> <span class="nav-text">throw</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#throws"><span class="nav-number">4.</span> <span class="nav-text">throws</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#它们的区别"><span class="nav-number">5.</span> <span class="nav-text">它们的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一种熟悉的节奏？"><span class="nav-number">6.</span> <span class="nav-text">一种熟悉的节奏？</span></a></li></ol></div>
             
 
           </div>
