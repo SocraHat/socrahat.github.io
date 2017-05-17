@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="java," />
+  <meta name="keywords" content="Hexo, Socra" />
 
 
 
@@ -87,22 +87,12 @@
 
 
 
-<meta name="description" content="流式输出对象的writeUTF()方法记录如何使用字节数组来进行数据的传输
-InputStream / OutputStream作为所有输入输出流的父类，其方法read和write
-DataInputStream / DataOutputStream处理流，包含了很多对数据的处理方法readInt，readFully和writeInt，write。另外因为是处理流，需要套在节点流上使用，故构造方法">
-<meta property="og:type" content="article">
-<meta property="og:title" content="writeUTF学习">
-<meta property="og:url" content="http://yoursite.com/2017/02/27/writeUTF学习/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Socra">
+<meta property="og:url" content="http://yoursite.com/tags/Unicode/index.html">
 <meta property="og:site_name" content="Socra">
-<meta property="og:description" content="流式输出对象的writeUTF()方法记录如何使用字节数组来进行数据的传输
-InputStream / OutputStream作为所有输入输出流的父类，其方法read和write
-DataInputStream / DataOutputStream处理流，包含了很多对数据的处理方法readInt，readFully和writeInt，write。另外因为是处理流，需要套在节点流上使用，故构造方法">
-<meta property="og:updated_time" content="2017-02-27T15:58:29.837Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="writeUTF学习">
-<meta name="twitter:description" content="流式输出对象的writeUTF()方法记录如何使用字节数组来进行数据的传输
-InputStream / OutputStream作为所有输入输出流的父类，其方法read和write
-DataInputStream / DataOutputStream处理流，包含了很多对数据的处理方法readInt，readFully和writeInt，write。另外因为是处理流，需要套在节点流上使用，故构造方法">
+<meta name="twitter:title" content="Socra">
 
 
 
@@ -130,13 +120,13 @@ DataInputStream / DataOutputStream处理流，包含了很多对数据的处理�
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/02/27/writeUTF学习/"/>
+  <link rel="canonical" href="http://yoursite.com/tags/Unicode/"/>
 
 
 
 
 
-  <title> writeUTF学习 | Socra </title>
+  <title> 标签: Unicode | Socra </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -161,7 +151,7 @@ DataInputStream / DataOutputStream处理流，包含了很多对数据的处理�
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -255,185 +245,46 @@ DataInputStream / DataOutputStream处理流，包含了很多对数据的处理�
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/27/writeUTF学习/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="Socra">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/coffee.jpg">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="Socra">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="Socra" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                writeUTF学习
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-27T19:29:23+08:00">
-                2017-02-27
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">更新于</span>
-              
-              <time title="更新于" itemprop="dateModified" datetime="2017-02-27T23:58:29+08:00">
-                2017-02-27
-              </time>
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/02/27/writeUTF学习/" class="leancloud_visitors" data-flag-title="writeUTF学习">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <h1 id="流式输出对象的writeUTF-方法"><a href="#流式输出对象的writeUTF-方法" class="headerlink" title="流式输出对象的writeUTF()方法"></a>流式输出对象的writeUTF()方法</h1><p>记录如何使用字节数组来进行数据的传输</p>
-<h2 id="InputStream-OutputStream"><a href="#InputStream-OutputStream" class="headerlink" title="InputStream / OutputStream"></a>InputStream / OutputStream</h2><p>作为所有输入输出流的父类，其方法read和write</p>
-<h2 id="DataInputStream-DataOutputStream"><a href="#DataInputStream-DataOutputStream" class="headerlink" title="DataInputStream / DataOutputStream"></a>DataInputStream / DataOutputStream</h2><p>处理流，包含了很多对数据的处理方法readInt，readFully和writeInt，write。另外因为是处理流，需要套在节点流上使用，故构造方法需要一个参数InputStream / OutputStream</p>
-<h2 id="InputStraemReader"><a href="#InputStraemReader" class="headerlink" title="InputStraemReader"></a>InputStraemReader</h2><p>该类一个接收System.in输入的内容</p>
-<h2 id="BufferedReader"><a href="#BufferedReader" class="headerlink" title="BufferedReader"></a>BufferedReader</h2><p>可以将InputStreamReader流中的内容当成字符串整行的读取出来</p>
-<h2 id="flush-close"><a href="#flush-close" class="headerlink" title="flush() / close()"></a>flush() / close()</h2><p>所有的输出流在写完后最好都强制刷新一下缓冲flush，程序接收后把整个输入输出流关掉</p>
-
-      
+  <div id="posts" class="posts-collapse">
+    <div class="collection-title">
+      <h2 >
+        Unicode
+        <small>标签</small>
+      </h2>
     </div>
 
-    <div>
+    
       
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
         
-
-      
-    </div>
-
-    <div>
-      
+            <a class="post-title-link" href="/2017/05/17/小识字符编码/" itemprop="url">
+              
+                <span itemprop="name">小识字符编码</span>
+              
+            </a>
         
+      </h1>
 
-      
-    </div>
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2017-05-17T10:05:24+08:00"
+              content="2017-05-17" >
+          05-17
+        </time>
+      </div>
 
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/java/" rel="tag"># java</a>
-          
-        </div>
-      
-
-      
-        
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2017/02/27/socket通信字节流or字符流/" rel="next" title="socket通信字节流or字符流">
-                <i class="fa fa-chevron-left"></i> socket通信字节流or字符流
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/27/java线程/" rel="prev" title="java线程">
-                java线程 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
+    </header>
   </article>
 
 
-
-    <div class="post-spread">
-      
-    </div>
+    
   </div>
+
+  
 
           
           </div>
@@ -441,10 +292,6 @@ DataInputStream / DataOutputStream处理流，包含了很多对数据的处理�
 
 
           
-  <div class="comments" id="comments">
-    
-  </div>
-
 
         </div>
         
@@ -464,17 +311,8 @@ DataInputStream / DataOutputStream处理流，包含了很多对数据的处理�
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/coffee.jpg"
@@ -577,22 +415,6 @@ DataInputStream / DataOutputStream处理流，包含了很多对数据的处理�
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#流式输出对象的writeUTF-方法"><span class="nav-number">1.</span> <span class="nav-text">流式输出对象的writeUTF()方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#InputStream-OutputStream"><span class="nav-number">1.1.</span> <span class="nav-text">InputStream / OutputStream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DataInputStream-DataOutputStream"><span class="nav-number">1.2.</span> <span class="nav-text">DataInputStream / DataOutputStream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InputStraemReader"><span class="nav-number">1.3.</span> <span class="nav-text">InputStraemReader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BufferedReader"><span class="nav-number">1.4.</span> <span class="nav-text">BufferedReader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#flush-close"><span class="nav-number">1.5.</span> <span class="nav-text">flush() / close()</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -716,10 +538,6 @@ DataInputStream / DataOutputStream处理流，包含了很多对数据的处理�
 
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
-
-
 
   
 
