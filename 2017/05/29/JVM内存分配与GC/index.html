@@ -1,0 +1,936 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="JVM," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="=_=本来这部分是不想写的，后面想想还是算了，毕竟是最早开始研究又算是相对了解的地方，这次就顺便总结一下看书的心得吧
+JVM内存区域JVM提程序员管理了内存区域，免去了不少麻烦，但我们还是需要去了解的。这个内存区域分为了两大类五个区：方法区与Java堆、虚拟机栈与本地方法栈与程序计数器。具体的解释在很久之前研究String常量池的位置时已经有解释过了，不再赘述
+JVM内存分配说到内存分配，还是得先">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM内存分配与GC">
+<meta property="og:url" content="http://yoursite.com/2017/05/29/JVM内存分配与GC/index.html">
+<meta property="og:site_name" content="Socra">
+<meta property="og:description" content="=_=本来这部分是不想写的，后面想想还是算了，毕竟是最早开始研究又算是相对了解的地方，这次就顺便总结一下看书的心得吧
+JVM内存区域JVM提程序员管理了内存区域，免去了不少麻烦，但我们还是需要去了解的。这个内存区域分为了两大类五个区：方法区与Java堆、虚拟机栈与本地方法栈与程序计数器。具体的解释在很久之前研究String常量池的位置时已经有解释过了，不再赘述
+JVM内存分配说到内存分配，还是得先">
+<meta property="og:updated_time" content="2017-05-29T06:50:21.164Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM内存分配与GC">
+<meta name="twitter:description" content="=_=本来这部分是不想写的，后面想想还是算了，毕竟是最早开始研究又算是相对了解的地方，这次就顺便总结一下看书的心得吧
+JVM内存区域JVM提程序员管理了内存区域，免去了不少麻烦，但我们还是需要去了解的。这个内存区域分为了两大类五个区：方法区与Java堆、虚拟机栈与本地方法栈与程序计数器。具体的解释在很久之前研究String常量池的位置时已经有解释过了，不再赘述
+JVM内存分配说到内存分配，还是得先">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/29/JVM内存分配与GC/"/>
+
+
+
+
+
+  <title> JVM内存分配与GC | Socra </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Socra</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/29/JVM内存分配与GC/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Socra">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/coffee.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Socra">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Socra" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                JVM内存分配与GC
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-29T13:36:01+08:00">
+                2017-05-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2017-05-29T14:50:21+08:00">
+                2017-05-29
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/05/29/JVM内存分配与GC/" class="leancloud_visitors" data-flag-title="JVM内存分配与GC">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id=""><a href="#" class="headerlink" title="=_="></a>=_=</h1><p>本来这部分是不想写的，后面想想还是算了，毕竟是最早开始研究又算是相对了解的地方，这次就顺便总结一下看书的心得吧</p>
+<h1 id="JVM内存区域"><a href="#JVM内存区域" class="headerlink" title="JVM内存区域"></a>JVM内存区域</h1><p>JVM提程序员管理了内存区域，免去了不少麻烦，但我们还是需要去了解的。这个内存区域分为了两大类五个区：方法区与Java堆、虚拟机栈与本地方法栈与程序计数器。具体的解释在很久之前研究<a href="http://zpcheng.me/2017/03/29/JVM-String%E5%B8%B8%E9%87%8F%E6%B1%A0%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0/" target="_blank" rel="external">String常量池的位置</a>时已经有解释过了，不再赘述</p>
+<h1 id="JVM内存分配"><a href="#JVM内存分配" class="headerlink" title="JVM内存分配"></a>JVM内存分配</h1><p>说到内存分配，还是得先了解一下JVM内存的<strong>分代管理</strong>，很久之前的一次面试有提到过这个分代机制，不过当时是懵逼的。</p>
+<h2 id="JVM的分代机制"><a href="#JVM的分代机制" class="headerlink" title="JVM的分代机制"></a>JVM的分代机制</h2><p>为了方便管理Java内存中的对象，JVM采用了分代管理的机制，即把整个内存区分为了<strong>年轻代、年老代和永久代</strong></p>
+<ul>
+<li>年轻代（young gen）：这里的Java对象存活时间非常短，属于经常发生GC的区域</li>
+<li>年老代（old gen）：这里的对象是占用内存较大或者是存活时间很长的，一般这里发生的GC就是内存空间真的不足了</li>
+<li>永久代（perm gen）：其实这部分内存空间就是JVM内存区域中的<strong>方法区</strong>，里面存放了类的加载信息、静态变量、常量以及代码等信息，这里一般不会发生GC（不代表没有），一般我们所说的GC是不考虑这个区域的</li>
+</ul>
+<h1 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h1><p>垃圾回收，这部分是JVM关键又重要的一个部分，虽然不需要我们直接参与管理，但一个Java程序员不懂垃圾回收是说不过去的，况且我们可以自由的设置JVM的GC来更好的提高程序运行的性能</p>
+<h2 id="什么时候开始GC"><a href="#什么时候开始GC" class="headerlink" title="什么时候开始GC"></a>什么时候开始GC</h2><p>如何开始GC是我刚开始了解GC到一定程度时考虑的东西，毕竟说是说当内存空间不足时JVM便自动开始GC并回收内存区域，但如何得知JVM内存空间够不够呢？<br>查阅资料得知原来JVM对每个对象都有监视对象的监视器，用来监视对象的地址、大小以及使用情况，当该对象已死后，便会对该对象进行回收<br>呐，总结一下发生GC的条件：</p>
+<ul>
+<li>内存空间不足，又创建新对象并分配内存时</li>
+<li>主动调用方法来控制GC</li>
+<li>系统配置的某些参数改变，例如系统内存空间不足</li>
+</ul>
+<h3 id="主动触发GC的方法"><a href="#主动触发GC的方法" class="headerlink" title="主动触发GC的方法"></a>主动触发GC的方法</h3><ul>
+<li>对象调用finalize()方法，不保证该方法一定会执行，且最多执行一次</li>
+<li>调用System.gc()方法，会触发Full GC</li>
+<li>Runtime.gc()</li>
+</ul>
+<h2 id="如何判断对象“已死”"><a href="#如何判断对象“已死”" class="headerlink" title="如何判断对象“已死”"></a>如何判断对象“已死”</h2><p>如何判断对象“已死”是一个值得说道的地方，正确判断对象是否存货是开始GC的关键。按照常规定义，我们认为一个没有引用指向的对象便是一个已经死去的对象。这里一般有两种方法来判断对象是否还有引用指向：</p>
+<ul>
+<li>引用计数法：每有一个引用指向该对象，则其引用计数就加一</li>
+<li>可达性分析：从GC Roots为起始点开始向下遍历，从引用链搜索引用对象（由JVM自己的监视器来负责）</li>
+</ul>
+<p>主流的商用语言都采用可达性分析的方法来判断对象是否存活，其实这有一个相对详细的过程，JVM会在对象被会收前进行两次标记，两次标记完成后，该对象才是真正意义上的死亡。</p>
+<h3 id="两次标记与对象的复活"><a href="#两次标记与对象的复活" class="headerlink" title="两次标记与对象的复活"></a>两次标记与对象的复活</h3><p>JVM宣告一个对象真正死亡是需要对其进行两次标记的：如果对象经历过可达性分析后没有与GC Roots相连接的引用链，便会对其进行第一次标记，并根据其是否需要执行finalize()方法为条件进行筛选，如果需要执行便会调用finalize()方法，便会被放到一个F-Queue队列中，排队准备执行；如果不需要执行，直接进行第二次标记。</p>
+<p>说到执行finalize()方法，这就是对象复活的最后一个机会，只要在执行的方法中重新建立一个引用关联即可。否则会被当作死亡对象进行第二次标记。但JVM不保证finalize()方法执行完毕，所以最好不用这个方法来进行GC，交给JVM管理就好</p>
+<p>综上猜想，finalize()方法就是给该对象进行第二次标记并通知JVM回收</p>
+<h3 id="可作为GC-Roots的对象"><a href="#可作为GC-Roots的对象" class="headerlink" title="可作为GC Roots的对象"></a>可作为GC Roots的对象</h3><p>阿里的一次面试问到了这里，但当时没有记清楚，所有没有答好</p>
+<ul>
+<li>虚拟机栈（线程私有栈）中引用的对象</li>
+<li>方法区中类的静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>本地方法栈中JNI引用的对象</li>
+</ul>
+<h3 id="OopMap"><a href="#OopMap" class="headerlink" title="OopMap"></a>OopMap</h3><p>这个地方也是面试时提到了，但是当时把它跟GC Roots的知识点记混了，尴尬，小哥很nice的说那我们不说这个了（尬笑</p>
+<p>HotSot在使用GC Roots的理念时，采用了新的实现方式，因为原来的方式一是任务量大而是GC时间长，因而使用OopMap数据结构来记录栈上不同位置上对象的情况，其本身不存在与栈中，但是保有栈中对象的使用信息。JVM通过查询OopMap就可以得知对象的存活情况</p>
+<h2 id="GC使用的算法"><a href="#GC使用的算法" class="headerlink" title="GC使用的算法"></a>GC使用的算法</h2><p>简单说就三种：标记-清理、复制算法和标记-整理算法</p>
+<h2 id="GC的回收器"><a href="#GC的回收器" class="headerlink" title="GC的回收器"></a>GC的回收器</h2><p>年轻代：Serial、ParNew和Parallel Scavenge<br>年老代：Serial Old、Parallel Old和CMS<br>JDK1.8正式投入商用的G1</p>
+<h1 id="GC的种类"><a href="#GC的种类" class="headerlink" title="GC的种类"></a>GC的种类</h1><p>上面讲过的JVM内存分配机制只是泛泛而谈，算是一个引入，这里再结合内存分配机制与GC来看一下更为具体的内存分配机制</p>
+<ul>
+<li><strong>monitor GC</strong>：发生在新生代长的GC，（具体的GC过程日后再补</li>
+<li><strong>Full GC</strong>：发生在新生代和年老代中的GC，算是对整个活动内存的清理</li>
+</ul>
+<h2 id="发生Full-GC的条件"><a href="#发生Full-GC的条件" class="headerlink" title="发生Full GC的条件"></a>发生Full GC的条件</h2><h1 id="In-The-End"><a href="#In-The-End" class="headerlink" title="In The End"></a>In The End</h1><p>处理完这个，JVM的垃圾回收机制和内存分配机制就差不多了，本来这个是很久之前就应该写的，现在才补上，主要是觉得blog中JVM这个板块的东西有点少且有一点细节记混了，趁着端午放假，正好把JVM剩下的类加载和并发也都处理处理吧</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/17/Java8新特性/" rel="next" title="Java8新特性">
+                <i class="fa fa-chevron-left"></i> Java8新特性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          ﻿
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/coffee.jpg"
+               alt="Socra" />
+          <p class="site-author-name" itemprop="name">Socra</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/socrahat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhuo-peng-cheng-85/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-zhihu"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5643507737/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://zpencheng@126.com" target="_blank" title="Gmail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Gmail
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-link"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/sugar_rainbow" title="My CSDN" target="_blank">My CSDN</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text">=_=</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM内存区域"><span class="nav-number">2.</span> <span class="nav-text">JVM内存区域</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM内存分配"><span class="nav-number">3.</span> <span class="nav-text">JVM内存分配</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM的分代机制"><span class="nav-number">3.1.</span> <span class="nav-text">JVM的分代机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GC"><span class="nav-number">4.</span> <span class="nav-text">GC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么时候开始GC"><span class="nav-number">4.1.</span> <span class="nav-text">什么时候开始GC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主动触发GC的方法"><span class="nav-number">4.1.1.</span> <span class="nav-text">主动触发GC的方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何判断对象“已死”"><span class="nav-number">4.2.</span> <span class="nav-text">如何判断对象“已死”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#两次标记与对象的复活"><span class="nav-number">4.2.1.</span> <span class="nav-text">两次标记与对象的复活</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可作为GC-Roots的对象"><span class="nav-number">4.2.2.</span> <span class="nav-text">可作为GC Roots的对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OopMap"><span class="nav-number">4.2.3.</span> <span class="nav-text">OopMap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC使用的算法"><span class="nav-number">4.3.</span> <span class="nav-text">GC使用的算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC的回收器"><span class="nav-number">4.4.</span> <span class="nav-text">GC的回收器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GC的种类"><span class="nav-number">5.</span> <span class="nav-text">GC的种类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#发生Full-GC的条件"><span class="nav-number">5.1.</span> <span class="nav-text">发生Full GC的条件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#In-The-End"><span class="nav-number">6.</span> <span class="nav-text">In The End</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Socra</span>
+</div>
+
+
+<div class="powered-by">
+  爱你呦
+</div>
+
+<div class="theme-info">
+  QvQ
+<span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+<span id="showDays"></span>
+</div>
+
+<script>
+	var birthDay = new Date('2/21/2017');
+	var now = new Date();
+	var duration = now.getTime() - birthDay.getTime();
+	var total= Math.floor(duration / (1000 * 60 * 60 * 24));
+	document.getElementById('showDays').innerHTML='now ever ' + total + ' days';
+</script>
+
+
+<div align="center">
+	<a href="http://www.amazingcounters.com"> <img border="0"  src="http://cc.amazingcounters.com/counter.php?i=3212960&c=9639193" alt="AmazingCounters.com"> 
+	</a> clicks
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8HdMboaKVDfKBOn5dI12QWiH-gzGzoHsz#<app_id>", "EsoeMbYLC0fheB5bhVAmfMQj#<app_key>");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+  
+
+</body>
+</html>
