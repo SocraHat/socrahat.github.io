@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, Socra" />
+  <meta name="keywords" content="java," />
 
 
 
@@ -87,12 +87,28 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Socra">
-<meta property="og:url" content="http://yoursite.com/archives/page/4/index.html">
+<meta name="description" content="线程池与数据库连接池的区别看到了MyCat参数设置时注意到了连接池的设置，突然发现好几个池化的概念，就顺手搜了一下，这里附上原文链接
+线程池
+其实线程池的原理很简单，类似于操作系统中的缓冲区的概念，它的流程如下：先启动若干数量的线程，并让这些线程都处于睡眠状态，当客户端有一个新请求时，就会唤醒线程池中的某一个睡眠线程，让它来处理客户端的这个请求，当处理完这个请求后，线程又处于睡眠状态。
+
+当然为每">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java线程池与数据库连接池区别">
+<meta property="og:url" content="http://yoursite.com/2017/08/02/Java线程池与数据库连接池区别/index.html">
 <meta property="og:site_name" content="Socra">
+<meta property="og:description" content="线程池与数据库连接池的区别看到了MyCat参数设置时注意到了连接池的设置，突然发现好几个池化的概念，就顺手搜了一下，这里附上原文链接
+线程池
+其实线程池的原理很简单，类似于操作系统中的缓冲区的概念，它的流程如下：先启动若干数量的线程，并让这些线程都处于睡眠状态，当客户端有一个新请求时，就会唤醒线程池中的某一个睡眠线程，让它来处理客户端的这个请求，当处理完这个请求后，线程又处于睡眠状态。
+
+当然为每">
+<meta property="og:updated_time" content="2017-08-02T09:51:47.548Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Socra">
+<meta name="twitter:title" content="Java线程池与数据库连接池区别">
+<meta name="twitter:description" content="线程池与数据库连接池的区别看到了MyCat参数设置时注意到了连接池的设置，突然发现好几个池化的概念，就顺手搜了一下，这里附上原文链接
+线程池
+其实线程池的原理很简单，类似于操作系统中的缓冲区的概念，它的流程如下：先启动若干数量的线程，并让这些线程都处于睡眠状态，当客户端有一个新请求时，就会唤醒线程池中的某一个睡眠线程，让它来处理客户端的这个请求，当处理完这个请求后，线程又处于睡眠状态。
+
+当然为每">
 
 
 
@@ -120,13 +136,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/page/4/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/02/Java线程池与数据库连接池区别/"/>
 
 
 
 
 
-  <title> 归档 | Socra </title>
+  <title> Java线程池与数据库连接池区别 | Socra </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -151,7 +167,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  page-archive  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -245,365 +261,186 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
-
-    <span class="archive-page-counter">
-      
-      
-       
-      
-      OK! 目前共计 39 篇日志。 继续努力。
-    </span>
-
+  <div id="posts" class="posts-expand">
     
-
-      
-      
-      
-
-      
-        
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2017">2017</h2>
-        </div>
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/27/java中几个获取长度的方法区别/" itemprop="url">
-              
-                <span itemprop="name">java中几个获取长度的方法区别</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-27T19:53:13+08:00"
-              content="2017-02-27" >
-          02-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/27/java线程/" itemprop="url">
-              
-                <span itemprop="name">java线程</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-27T19:30:00+08:00"
-              content="2017-02-27" >
-          02-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/27/writeUTF学习/" itemprop="url">
-              
-                <span itemprop="name">writeUTF学习</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-27T19:29:23+08:00"
-              content="2017-02-27" >
-          02-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/27/socket通信字节流or字符流/" itemprop="url">
-              
-                <span itemprop="name">socket通信字节流or字符流</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-27T19:26:02+08:00"
-              content="2017-02-27" >
-          02-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/27/linux终端配色方案/" itemprop="url">
-              
-                <span itemprop="name">linux终端配色方案</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-27T19:24:08+08:00"
-              content="2017-02-27" >
-          02-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/27/github上传项目/" itemprop="url">
-              
-                <span itemprop="name">github上传项目</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-27T15:59:19+08:00"
-              content="2017-02-27" >
-          02-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/26/hexo生成博文插入图片/" itemprop="url">
-              
-                <span itemprop="name">hexo生成博文插入图片</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-26T13:35:25+08:00"
-              content="2017-02-26" >
-          02-26
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/21/Final/" itemprop="url">
-              
-                <span itemprop="name">Final</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-21T22:28:15+08:00"
-              content="2017-02-21" >
-          02-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/21/fuck/" itemprop="url">
-              
-                <span itemprop="name">f__k? this day</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-21T20:54:07+08:00"
-              content="2017-02-21" >
-          02-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-  </section>
 
   
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/archives/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/3/">3</a><span class="page-number current">4</span>
-  </nav>
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/02/Java线程池与数据库连接池区别/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Socra">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/coffee.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Socra">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Socra" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Java线程池与数据库连接池区别
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-02T17:35:19+08:00">
+                2017-08-02
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2017-08-02T17:51:47+08:00">
+                2017-08-02
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/08/02/Java线程池与数据库连接池区别/" class="leancloud_visitors" data-flag-title="Java线程池与数据库连接池区别">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
 
 
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="线程池与数据库连接池的区别"><a href="#线程池与数据库连接池的区别" class="headerlink" title="线程池与数据库连接池的区别"></a>线程池与数据库连接池的区别</h1><p>看到了MyCat参数设置时注意到了连接池的设置，突然发现好几个池化的概念，就顺手搜了一下，这里附上<a href="http://bepatient.iteye.com/blog/688353" target="_blank" rel="external">原文链接</a></p>
+<h1 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h1><blockquote>
+<p>其实线程池的原理很简单，类似于操作系统中的缓冲区的概念，它的流程如下：先启动若干数量的线程，并让这些线程都处于睡眠状态，当客户端有一个新请求时，就会唤醒线程池中的某一个睡眠线程，让它来处理客户端的这个请求，当处理完这个请求后，线程又处于睡眠状态。</p>
+</blockquote>
+<p>当然为每一个请求单独的创建线程是很方便的，但是并发量很大时，如果为每一个请求都创建新的线程，那么耗费CPU时间和内存是很惊人的，同时反复创建、销毁线程带来的结果将是一场灾难</p>
+<h1 id="连接池"><a href="#连接池" class="headerlink" title="连接池"></a>连接池</h1><blockquote>
+<p>数据库连接是一种关键的有限的昂贵的资源，这一点在多用户的网页应用程序中体现得尤为突出。    一个数据库连接对象均对应一个物理数据库连接，每次操作都打开一个物理连接，使用完都关闭连接，这样造成系统的 性能低下。 数据库连接池的解决方案是在应用程序启动时建立足够的数据库连接，并讲这些连接组成一个连接池(简单说：在一个“池”里放了好多半成品的数据库联接对象)，由应用程序动态地对池中的连接进行申请、使用和释放。对于多于连接池中连接数的并发请求，应该在请求队列中排队等待。并且应用程序可以根据池中连接的使用率，动态增加或减少池中的连接数。<br>连接池技术尽可能多地重用了消耗内存地资源，大大节省了内存，提高了服务器地服务效率，能够支持更多的客户服务。通过使用连接池，将大大提高程序运行效率，同时，我们可以通过其自身的管理机制来监视数据库连接的数量、使用情况等。<br>1) 最小连接数是连接池一直保持的数据库连接，所以如果应用程序对数据库连接的使用量不大，将会有大量的数据库连接资源被浪费；<br>2) 最大连接数是连接池能申请的最大连接数，如果数据库连接请求超过此数，后面的数据库连接请求将被加入到等待队列中，这会影响之后的数据库操作。</p>
+</blockquote>
+<p>注意到还有一个概念是空闲连接，说的就是长连接时，有一个最大保持时间，目的是在达到一定时间不工作后对资源进行的回收</p>
+<h1 id="以我看来"><a href="#以我看来" class="headerlink" title="以我看来"></a>以我看来</h1><p>记得还有一个博客提到了<strong>对象池</strong>的概念，ta理解的数据路连接池就是保存了很多数据库连接对象的对象池。</p>
+<p>我也觉得有道理，其实说白了，池化（缓冲）的作用就是在系统初始化时预先准备好资源，有请求时分配对象去使用，空闲时就进行回收但不销毁；这样做的目的是减少了对象反复创建、销毁所花费的时间，这在并发量很大的情况下是很吃资源的</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/02/spring加载方式及原理/" rel="next" title="spring加载方式及原理">
+                <i class="fa fa-chevron-left"></i> spring加载方式及原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           
           </div>
@@ -611,6 +448,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -630,8 +471,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/coffee.jpg"
@@ -734,6 +584,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#线程池与数据库连接池的区别"><span class="nav-number">1.</span> <span class="nav-text">线程池与数据库连接池的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线程池"><span class="nav-number">2.</span> <span class="nav-text">线程池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#连接池"><span class="nav-number">3.</span> <span class="nav-text">连接池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#以我看来"><span class="nav-number">4.</span> <span class="nav-text">以我看来</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -857,11 +723,9 @@
 
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
 
 
   

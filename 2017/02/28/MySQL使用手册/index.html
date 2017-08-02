@@ -95,7 +95,7 @@ SQL数据类型：字符型：&amp;lt;varchar&amp;gt; VS &amp;lt;char&amp;gt;文
 <meta property="og:site_name" content="Socra">
 <meta property="og:description" content="MySQL语法总结MySQL结构：数据库中存放数据都是依托与一张张的数据表存在的，我们通过数据库可以高效的利用数据；而我们对数据的操作就是对数据库中的表的操作。
 SQL数据类型：字符型：&amp;lt;varchar&amp;gt; VS &amp;lt;char&amp;gt;文本型：&amp;lt;text&amp;gt;数值型：&amp;lt;int&amp;gt; VS &amp;lt;smallint&amp;gt; VS &amp;lt;tinyint&amp;gt;浮点型：&amp;l">
-<meta property="og:updated_time" content="2017-03-30T02:40:51.968Z">
+<meta property="og:updated_time" content="2017-06-05T00:54:51.851Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL使用手册">
 <meta name="twitter:description" content="MySQL语法总结MySQL结构：数据库中存放数据都是依托与一张张的数据表存在的，我们通过数据库可以高效的利用数据；而我们对数据的操作就是对数据库中的表的操作。
@@ -317,8 +317,8 @@ SQL数据类型：字符型：&amp;lt;varchar&amp;gt; VS &amp;lt;char&amp;gt;文
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-03-30T10:40:51+08:00">
-                2017-03-30
+              <time title="更新于" itemprop="dateModified" datetime="2017-06-05T08:54:51+08:00">
+                2017-06-05
               </time>
             
           </span>
@@ -380,6 +380,7 @@ SQL数据类型：字符型：&amp;lt;varchar&amp;gt; VS &amp;lt;char&amp;gt;文
 <li>查询表中的所有记录：<code>SELECT * FROM &lt;表名&gt;;</code></li>
 <li>查询表结构字段名（不包含外键）：<code>DESC &lt;表名&gt;;</code></li>
 <li>查询表创建时（修改后）的SQL语句：<code>SHOW CREATE TABLE &lt;表名&gt;;</code>可以用来查看外键信息</li>
+<li>查询从指定位置开始、一定数量的记录：<code>SELECT &lt;列名&gt; FROM &lt;表名&gt; LIMIT &lt;查询数量&gt; OFFSET &lt;开始位置&gt; ;</code></li>
 </ul>
 <p><strong>连接查询</strong>：可以使用表的别名（eg：table1 A）</p>
 <ul>
@@ -588,7 +589,7 @@ SQL数据类型：字符型：&amp;lt;varchar&amp;gt; VS &amp;lt;char&amp;gt;文
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-count">39</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
