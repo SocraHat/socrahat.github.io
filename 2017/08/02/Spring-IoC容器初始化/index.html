@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="java," />
+  <meta name="keywords" content="Spring," />
 
 
 
@@ -87,28 +87,41 @@
 
 
 
-<meta name="description" content="线程池与数据库连接池的区别看到了MyCat参数设置时注意到了连接池的设置，突然发现好几个池化的概念，就顺手搜了一下，这里附上原文链接
-线程池
-其实线程池的原理很简单，类似于操作系统中的缓冲区的概念，它的流程如下：先启动若干数量的线程，并让这些线程都处于睡眠状态，当客户端有一个新请求时，就会唤醒线程池中的某一个睡眠线程，让它来处理客户端的这个请求，当处理完这个请求后，线程又处于睡眠状态。
+<meta name="description" content="Spring Ioc容器IoC容器最主要是对Bean对象的创建和依赖管里注入，是整个Spring IoC功能的核心
+基本结构Spring IoC结构很复杂，多个类继承实现关系混乱，但最基础的有三个
 
-当然为每">
+BeanFactory，对IoC容器的基本行为做出了定义
+BeanDefinition，在IOC中可识别Bean资源文件的描述
+BeanDefinitionReader，加载Bean资源文件
+
+Ioc">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java线程池与数据库连接池区别">
-<meta property="og:url" content="http://yoursite.com/2017/08/02/Java线程池与数据库连接池区别/index.html">
+<meta property="og:title" content="Spring-IoC容器初始化">
+<meta property="og:url" content="http://yoursite.com/2017/08/02/Spring-IoC容器初始化/index.html">
 <meta property="og:site_name" content="Socra">
-<meta property="og:description" content="线程池与数据库连接池的区别看到了MyCat参数设置时注意到了连接池的设置，突然发现好几个池化的概念，就顺手搜了一下，这里附上原文链接
-线程池
-其实线程池的原理很简单，类似于操作系统中的缓冲区的概念，它的流程如下：先启动若干数量的线程，并让这些线程都处于睡眠状态，当客户端有一个新请求时，就会唤醒线程池中的某一个睡眠线程，让它来处理客户端的这个请求，当处理完这个请求后，线程又处于睡眠状态。
+<meta property="og:description" content="Spring Ioc容器IoC容器最主要是对Bean对象的创建和依赖管里注入，是整个Spring IoC功能的核心
+基本结构Spring IoC结构很复杂，多个类继承实现关系混乱，但最基础的有三个
 
-当然为每">
-<meta property="og:updated_time" content="2017-08-02T09:51:47.548Z">
+BeanFactory，对IoC容器的基本行为做出了定义
+BeanDefinition，在IOC中可识别Bean资源文件的描述
+BeanDefinitionReader，加载Bean资源文件
+
+Ioc">
+<meta property="og:image" content="http://yoursite.com/2017/08/02/Spring-IoC容器初始化/beanfactory.png">
+<meta property="og:image" content="http://yoursite.com/2017/08/02/Spring-IoC容器初始化/beandefinition.png">
+<meta property="og:image" content="http://yoursite.com/2017/08/02/Spring-IoC容器初始化/xmlprase.png">
+<meta property="og:updated_time" content="2017-08-02T16:35:18.273Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java线程池与数据库连接池区别">
-<meta name="twitter:description" content="线程池与数据库连接池的区别看到了MyCat参数设置时注意到了连接池的设置，突然发现好几个池化的概念，就顺手搜了一下，这里附上原文链接
-线程池
-其实线程池的原理很简单，类似于操作系统中的缓冲区的概念，它的流程如下：先启动若干数量的线程，并让这些线程都处于睡眠状态，当客户端有一个新请求时，就会唤醒线程池中的某一个睡眠线程，让它来处理客户端的这个请求，当处理完这个请求后，线程又处于睡眠状态。
+<meta name="twitter:title" content="Spring-IoC容器初始化">
+<meta name="twitter:description" content="Spring Ioc容器IoC容器最主要是对Bean对象的创建和依赖管里注入，是整个Spring IoC功能的核心
+基本结构Spring IoC结构很复杂，多个类继承实现关系混乱，但最基础的有三个
 
-当然为每">
+BeanFactory，对IoC容器的基本行为做出了定义
+BeanDefinition，在IOC中可识别Bean资源文件的描述
+BeanDefinitionReader，加载Bean资源文件
+
+Ioc">
+<meta name="twitter:image" content="http://yoursite.com/2017/08/02/Spring-IoC容器初始化/beanfactory.png">
 
 
 
@@ -136,13 +149,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/08/02/Java线程池与数据库连接池区别/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/02/Spring-IoC容器初始化/"/>
 
 
 
 
 
-  <title> Java线程池与数据库连接池区别 | Socra </title>
+  <title> Spring-IoC容器初始化 | Socra </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -271,7 +284,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/02/Java线程池与数据库连接池区别/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/02/Spring-IoC容器初始化/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Socra">
@@ -295,7 +308,7 @@
             
             
               
-                Java线程池与数据库连接池区别
+                Spring-IoC容器初始化
               
             
           </h1>
@@ -310,7 +323,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-02T17:35:19+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-02T23:59:31+08:00">
                 2017-08-02
               </time>
             
@@ -326,8 +339,8 @@
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-08-02T17:51:47+08:00">
-                2017-08-02
+              <time title="更新于" itemprop="dateModified" datetime="2017-08-03T00:35:18+08:00">
+                2017-08-03
               </time>
             
           </span>
@@ -340,7 +353,7 @@
 
           
           
-             <span id="/2017/08/02/Java线程池与数据库连接池区别/" class="leancloud_visitors" data-flag-title="Java线程池与数据库连接池区别">
+             <span id="/2017/08/02/Spring-IoC容器初始化/" class="leancloud_visitors" data-flag-title="Spring-IoC容器初始化">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -369,17 +382,20 @@
       
 
       
-        <h1 id="线程池与数据库连接池的区别"><a href="#线程池与数据库连接池的区别" class="headerlink" title="线程池与数据库连接池的区别"></a>线程池与数据库连接池的区别</h1><p>看到了MyCat参数设置时注意到了连接池的设置，突然发现好几个池化的概念，就顺手搜了一下，这里附上<a href="http://bepatient.iteye.com/blog/688353" target="_blank" rel="external">原文链接</a></p>
-<h1 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h1><blockquote>
-<p>其实线程池的原理很简单，类似于操作系统中的缓冲区的概念，它的流程如下：先启动若干数量的线程，并让这些线程都处于睡眠状态，当客户端有一个新请求时，就会唤醒线程池中的某一个睡眠线程，让它来处理客户端的这个请求，当处理完这个请求后，线程又处于睡眠状态。</p>
-</blockquote>
-<p>当然为每一个请求单独的创建线程是很方便的，但是并发量很大时，如果为每一个请求都创建新的线程，那么耗费CPU时间和内存是很惊人的，同时反复创建、销毁线程带来的结果将是一场灾难</p>
-<h1 id="连接池"><a href="#连接池" class="headerlink" title="连接池"></a>连接池</h1><blockquote>
-<p>数据库连接是一种关键的有限的昂贵的资源，这一点在多用户的网页应用程序中体现得尤为突出。    一个数据库连接对象均对应一个物理数据库连接，每次操作都打开一个物理连接，使用完都关闭连接，这样造成系统的 性能低下。 数据库连接池的解决方案是在应用程序启动时建立足够的数据库连接，并讲这些连接组成一个连接池(简单说：在一个“池”里放了好多半成品的数据库联接对象)，由应用程序动态地对池中的连接进行申请、使用和释放。对于多于连接池中连接数的并发请求，应该在请求队列中排队等待。并且应用程序可以根据池中连接的使用率，动态增加或减少池中的连接数。<br>连接池技术尽可能多地重用了消耗内存地资源，大大节省了内存，提高了服务器地服务效率，能够支持更多的客户服务。通过使用连接池，将大大提高程序运行效率，同时，我们可以通过其自身的管理机制来监视数据库连接的数量、使用情况等。<br>1) 最小连接数是连接池一直保持的数据库连接，所以如果应用程序对数据库连接的使用量不大，将会有大量的数据库连接资源被浪费；<br>2) 最大连接数是连接池能申请的最大连接数，如果数据库连接请求超过此数，后面的数据库连接请求将被加入到等待队列中，这会影响之后的数据库操作。</p>
-</blockquote>
-<p>注意到还有一个概念是空闲连接，说的就是长连接时，有一个最大保持时间，目的是在达到一定时间不工作后对资源进行的回收</p>
-<h1 id="以我看来"><a href="#以我看来" class="headerlink" title="以我看来"></a>以我看来</h1><p>记得还有一个博客提到了<strong>对象池</strong>的概念，ta理解的数据路连接池就是保存了很多数据库连接对象的对象池。</p>
-<p>我也觉得有道理，其实说白了，池化（缓冲）的作用就是在系统初始化时预先准备好资源，有请求时分配对象去使用，空闲时就进行回收但不销毁；这样做的目的是减少了对象反复创建、销毁所花费的时间，这在并发量很大的情况下是很吃资源的</p>
+        <h1 id="Spring-Ioc容器"><a href="#Spring-Ioc容器" class="headerlink" title="Spring Ioc容器"></a>Spring Ioc容器</h1><p>IoC容器最主要是对Bean对象的创建和依赖管里注入，是整个Spring IoC功能的核心</p>
+<h1 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h1><p>Spring IoC结构很复杂，多个类继承实现关系混乱，但最基础的有三个</p>
+<ul>
+<li><code>BeanFactory</code>，对IoC容器的基本行为做出了定义<br><img src="/2017/08/02/Spring-IoC容器初始化/beanfactory.png" alt="beanFactory"></li>
+<li><code>BeanDefinition</code>，在IOC中可识别Bean资源文件的描述<br><img src="/2017/08/02/Spring-IoC容器初始化/beandefinition.png" alt="beandefinition"></li>
+<li><code>BeanDefinitionReader</code>，加载Bean资源文件<br><img src="/2017/08/02/Spring-IoC容器初始化/xmlprase.png" alt="xmlprase"></li>
+</ul>
+<h1 id="Ioc容器初始化过程"><a href="#Ioc容器初始化过程" class="headerlink" title="Ioc容器初始化过程"></a>Ioc容器初始化过程</h1><p>这里举两个简单的例子</p>
+<h2 id="XmlBeanFactory容器"><a href="#XmlBeanFactory容器" class="headerlink" title="XmlBeanFactory容器"></a>XmlBeanFactory容器</h2><p>一个较为低级的IoC容器，实现了最基本的功能<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//根据Xml配置文件创建Resource资源对象，该对象中包含了BeanDefinition的信息</span></div><div class="line"> ClassPathResource resource =<span class="keyword">new</span> ClassPathResource(<span class="string">"application-context.xml"</span>);</div><div class="line"><span class="comment">//创建DefaultListableBeanFactory</span></div><div class="line"> DefaultListableBeanFactory factory =<span class="keyword">new</span> DefaultListableBeanFactory();</div><div class="line"><span class="comment">//创建XmlBeanDefinitionReader读取器，用于载入BeanDefinition。之所以需要BeanFactory作为参数，是因为会将读取的信息回调配置给factory</span></div><div class="line"> XmlBeanDefinitionReader reader =<span class="keyword">new</span> XmlBeanDefinitionReader(factory);</div><div class="line"><span class="comment">//XmlBeanDefinitionReader执行载入BeanDefinition的方法，最后会完成Bean的载入和注册。完成后Bean就成功的放置到IOC容器当中，以后我们就可以从中取得Bean来使用</span></div><div class="line"> reader.loadBeanDefinitions(resource);</div></pre></td></tr></table></figure></p>
+<h2 id="ApplicationContext容器"><a href="#ApplicationContext容器" class="headerlink" title="ApplicationContext容器"></a>ApplicationContext容器</h2><p>更为高级的IoC容器，除基本功能外，还支持信息源，可以实现国际化、访问资源和支持应用事件<br>因具体涉及的源代码很多，原理也较难解释清除，故只列出最基本的流程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">ApplicationContext application = <span class="keyword">new</span> FileSystemXmlApplicationContext(xmlPath);</div><div class="line">			↓</div><div class="line">父类AbastractRefreshableConfigApplicationContext为容器设置Bean资源加载器</div><div class="line">			↓</div><div class="line">资源加载器resourceLoader被赋值，设置资源文件路径，然后对资源文件路径进行解析</div><div class="line">			↓</div><div class="line">调用refresh()方法，这是IoC容器初始化的入口</div><div class="line">			↓</div><div class="line">创建IoC容器，子类启动载入过程；ConfigurableListableBeanFactory beanFactory = obtainBeanFactory();</div><div class="line">			↓</div><div class="line">创建DefaultListableBeanFactory对象，装载beanFactory对象loadBeanDefinitions(beanFactory)</div><div class="line">			↓</div><div class="line">新建Xml Bean读取器XmlBeanDefinitionReader对象，加载Bean资源文件</div><div class="line">			↓</div><div class="line">resourceLoader.getSource(Location)获取资源</div><div class="line">			↓</div><div class="line">加载Bean配置文件，对xml进行解析成Document对象</div><div class="line">			↓</div><div class="line">按照Spring IoC识别的Bean规则在DefaultDefinitionDocumentReader中对Document对象进行解析</div><div class="line">			↓</div><div class="line">解析文件的&lt;Import&gt;、&lt;Alias&gt;、&lt;property&gt;、&lt;List&gt;、&lt;Set&gt;等元素，Bean资源文件最终被解析成BeanDefinition对象，是资源原件在IoC中的映射</div><div class="line">			↓</div><div class="line">BeanDefinition在IoC容器中进行注册</div></pre></td></tr></table></figure>
+<p>至此，Bean资源文件中配置的bean被解析成可以被IoC容器识别的对象且被注册管理起来，IoC容器可以进行索引、查询以及操作；被IoC容器管理起来后，也真正完成了IoC容器的初始化</p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>IoC容器中的注册就是维护了一个HashMap，保存了BeanDefinition对象，方便了后续的管理</p>
+<h1 id="困了Orz"><a href="#困了Orz" class="headerlink" title="困了Orz"></a>困了Orz</h1><p>从开始看到现在，四个多小时了，中间还喝了半瓶红葡萄酒，算是对Spring IoC容器的初始化了解了，明天再看AOP，现在真是困了…<br>睡觉</p>
 
       
     </div>
@@ -403,7 +419,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/java/" rel="tag"># java</a>
+            <a href="/tags/Spring/" rel="tag"># Spring</a>
           
         </div>
       
@@ -416,8 +432,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/02/Spring加载方式及原理/" rel="next" title="spring加载方式及原理">
-                <i class="fa fa-chevron-left"></i> spring加载方式及原理
+              <a href="/2017/08/02/Java线程池与数据库连接池区别/" rel="next" title="Java线程池与数据库连接池区别">
+                <i class="fa fa-chevron-left"></i> Java线程池与数据库连接池区别
               </a>
             
           </div>
@@ -425,10 +441,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/02/Spring-IoC容器初始化/" rel="prev" title="Spring-IoC容器初始化">
-                Spring-IoC容器初始化 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -598,7 +610,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#线程池与数据库连接池的区别"><span class="nav-number">1.</span> <span class="nav-text">线程池与数据库连接池的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线程池"><span class="nav-number">2.</span> <span class="nav-text">线程池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#连接池"><span class="nav-number">3.</span> <span class="nav-text">连接池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#以我看来"><span class="nav-number">4.</span> <span class="nav-text">以我看来</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring-Ioc容器"><span class="nav-number">1.</span> <span class="nav-text">Spring Ioc容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本结构"><span class="nav-number">2.</span> <span class="nav-text">基本结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ioc容器初始化过程"><span class="nav-number">3.</span> <span class="nav-text">Ioc容器初始化过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#XmlBeanFactory容器"><span class="nav-number">3.1.</span> <span class="nav-text">XmlBeanFactory容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ApplicationContext容器"><span class="nav-number">3.2.</span> <span class="nav-text">ApplicationContext容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注意"><span class="nav-number">3.2.1.</span> <span class="nav-text">注意</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#困了Orz"><span class="nav-number">4.</span> <span class="nav-text">困了Orz</span></a></li></ol></div>
             
 
           </div>
