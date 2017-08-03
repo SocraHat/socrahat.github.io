@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, Socra" />
+  <meta name="keywords" content="Spring," />
 
 
 
@@ -87,12 +87,25 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Socra">
-<meta property="og:url" content="http://yoursite.com/tags/hexo/index.html">
+<meta name="description" content="IoC依赖注入发生的时间首先需要明确的是在IoC容器初始化之后，IoC容器已经开始管理Bean了，但是这时还不一定对管理的Bean进行了依赖注入
+
+第一次通过getBean()方法向IoC容器所要bean时，IoC容器触发依赖注入
+当Bean配置文件的标签设置了lazy-init属性时，IoC容器在解析Bean定义时进行预实例化，触发依赖注入，也即是随着ApplicationContext文件的加">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-IoC依赖注入">
+<meta property="og:url" content="http://yoursite.com/2017/08/03/Spring-IoC依赖注入/index.html">
 <meta property="og:site_name" content="Socra">
+<meta property="og:description" content="IoC依赖注入发生的时间首先需要明确的是在IoC容器初始化之后，IoC容器已经开始管理Bean了，但是这时还不一定对管理的Bean进行了依赖注入
+
+第一次通过getBean()方法向IoC容器所要bean时，IoC容器触发依赖注入
+当Bean配置文件的标签设置了lazy-init属性时，IoC容器在解析Bean定义时进行预实例化，触发依赖注入，也即是随着ApplicationContext文件的加">
+<meta property="og:updated_time" content="2017-08-03T14:36:21.312Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Socra">
+<meta name="twitter:title" content="Spring-IoC依赖注入">
+<meta name="twitter:description" content="IoC依赖注入发生的时间首先需要明确的是在IoC容器初始化之后，IoC容器已经开始管理Bean了，但是这时还不一定对管理的Bean进行了依赖注入
+
+第一次通过getBean()方法向IoC容器所要bean时，IoC容器触发依赖注入
+当Bean配置文件的标签设置了lazy-init属性时，IoC容器在解析Bean定义时进行预实例化，触发依赖注入，也即是随着ApplicationContext文件的加">
 
 
 
@@ -120,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/hexo/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/03/Spring-IoC依赖注入/"/>
 
 
 
 
 
-  <title> 标签: hexo | Socra </title>
+  <title> Spring-IoC依赖注入 | Socra </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -151,7 +164,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -245,46 +258,185 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        hexo
-        <small>标签</small>
-      </h2>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/03/Spring-IoC依赖注入/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Socra">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/coffee.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Socra">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Socra" src="">
+    </span>
+  </span>
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Spring-IoC依赖注入
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-03T21:56:15+08:00">
+                2017-08-03
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2017-08-03T22:36:21+08:00">
+                2017-08-03
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/08/03/Spring-IoC依赖注入/" class="leancloud_visitors" data-flag-title="Spring-IoC依赖注入">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <h1 id="IoC依赖注入发生的时间"><a href="#IoC依赖注入发生的时间" class="headerlink" title="IoC依赖注入发生的时间"></a>IoC依赖注入发生的时间</h1><p>首先需要明确的是在IoC容器初始化之后，IoC容器已经开始管理Bean了，但是这时还不一定对管理的Bean进行了依赖注入</p>
+<ul>
+<li>第一次通过getBean()方法向IoC容器所要bean时，IoC容器触发依赖注入</li>
+<li>当Bean配置文件的<bean>标签设置了<code>lazy-init</code>属性时，IoC容器在解析Bean定义时进行预实例化，触发依赖注入，也即是随着ApplicationContext文件的加载而触发依赖注入，这是默认情况</bean></li>
+</ul>
+<h2 id="Bean的生命周期"><a href="#Bean的生命周期" class="headerlink" title="Bean的生命周期"></a>Bean的生命周期</h2><p>依赖注入发生的时间似乎可早可晚，这就不免让人思考一个问题，Spring中bean对象的生命周期问题，因为Spring的ApplicationContext容器在启动时会自动实例化所有singleton的Bean实例并缓存到容器中，那么这就开始了，接下来呢？</p>
+<p>其实这是一个好坑</p>
+<h1 id="依赖注入的步骤"><a href="#依赖注入的步骤" class="headerlink" title="依赖注入的步骤"></a>依赖注入的步骤</h1><p>像上一篇IoC容器的初始化过程一样，涉及到了很多源码，这里只粘出总结出的步骤<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">IoC容器初始化完成</div><div class="line">			↓</div><div class="line">AbstractBeanFactory通过getBean像IoC容器中获取bean，实际上是使用不同的模式来createBean：单例模式就是singleton的bean，原型模式就是不同的bean</div><div class="line">			↓</div><div class="line">createBeanInstance()生成bean的Java对象实例；populateBean()对bean属性的依赖关系进行注入</div><div class="line">			↓</div><div class="line">bean对象使用工厂方法和自动装配特性来进行bean实例化：</div><div class="line">  参数匹配的构造方法或者相应的工厂方法进行实例化</div><div class="line">  默认无参的构造方法使用反射和CGLIB进行实例化，bean中的方法被覆盖了就使用反射，反之就是CGLIB</div><div class="line">			↓</div><div class="line">populateBean()方法对bean的属性开始注入</div><div class="line">  属性值类型不需要转换的直接调用set方法</div><div class="line">  属性值类型需要转换的，先解析在注入</div><div class="line">			↓</div><div class="line">解析属性，各种List、Set、Map属性，解析成目标属性</div><div class="line">			↓</div><div class="line">对于集合类型的属性，解析后注入属性；非集合类型的属性，使用大量反射和内省机制（缺省办法），使用get获取旧值，再使用set赋予新值</div></pre></td></tr></table></figure></p>
+<p>至此，完成了IoC依赖注入</p>
+<h1 id="一些细节"><a href="#一些细节" class="headerlink" title="一些细节"></a>一些细节</h1><p>再看很多博客时会注意到，大家对于IoC容器的初始化完成这个一点有不同的定义，有的是认为IoC容器加载解析注册完Bean配置之后就是完成了IoC容器的初始化，有的则还会包括接下来的Bean对象的依赖注入之后才是真正的完成了IoC容器的初始化<br>从源码上来看，我个人更愿意倾向于第一种，Bean对象的依赖注入的代码与IoC加载解析注册的代码有明显的分为不同阶段，这里就统一一下</p>
 
-      <h1 class="post-title">
+      
+    </div>
+
+    <div>
+      
         
-            <a class="post-title-link" href="/2017/02/26/hexo生成博文插入图片/" itemprop="url">
-              
-                <span itemprop="name">hexo生成博文插入图片</span>
-              
-            </a>
+
+      
+    </div>
+
+    <div>
+      
         
-      </h1>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-26T13:35:25+08:00"
-              content="2017-02-26" >
-          02-26
-        </time>
-      </div>
+      
+    </div>
 
-    </header>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spring/" rel="tag"># Spring</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/03/MyCat多重规则哈希分片/" rel="next" title="MyCat多重规则哈希分片">
+                <i class="fa fa-chevron-left"></i> MyCat多重规则哈希分片
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           
           </div>
@@ -292,6 +444,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -311,8 +467,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/coffee.jpg"
@@ -415,6 +580,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#IoC依赖注入发生的时间"><span class="nav-number">1.</span> <span class="nav-text">IoC依赖注入发生的时间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bean的生命周期"><span class="nav-number">1.1.</span> <span class="nav-text">Bean的生命周期</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#依赖注入的步骤"><span class="nav-number">2.</span> <span class="nav-text">依赖注入的步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一些细节"><span class="nav-number">3.</span> <span class="nav-text">一些细节</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -538,6 +719,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
