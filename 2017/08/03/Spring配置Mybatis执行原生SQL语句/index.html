@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, Socra" />
+  <meta name="keywords" content="Mybatis," />
 
 
 
@@ -87,12 +87,16 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Socra">
-<meta property="og:url" content="http://yoursite.com/tags/MySQL/index.html">
+<meta name="description" content="为什么要怎么做有这么一个应用场景：需要在Mybatis框架上进行多个连接池的配置，然后进行多种SQL语句的测试，因为有些SQL语句的结构比较复杂，有些会涉及到很多group by、join操作还有一些聚集函数的使用，同时数据量又较大。在这种情况下，常规的Mybatis面对对象进行操作的办法就不再试适用，查看Mybatis官方手册，提供了SQL构造器的办法也会有较的工作量，所以选择直接执行SQL语句">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring配置Mybatis执行原生SQL语句">
+<meta property="og:url" content="http://yoursite.com/2017/08/03/Spring配置Mybatis执行原生SQL语句/index.html">
 <meta property="og:site_name" content="Socra">
+<meta property="og:description" content="为什么要怎么做有这么一个应用场景：需要在Mybatis框架上进行多个连接池的配置，然后进行多种SQL语句的测试，因为有些SQL语句的结构比较复杂，有些会涉及到很多group by、join操作还有一些聚集函数的使用，同时数据量又较大。在这种情况下，常规的Mybatis面对对象进行操作的办法就不再试适用，查看Mybatis官方手册，提供了SQL构造器的办法也会有较的工作量，所以选择直接执行SQL语句">
+<meta property="og:updated_time" content="2017-08-03T05:36:09.243Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Socra">
+<meta name="twitter:title" content="Spring配置Mybatis执行原生SQL语句">
+<meta name="twitter:description" content="为什么要怎么做有这么一个应用场景：需要在Mybatis框架上进行多个连接池的配置，然后进行多种SQL语句的测试，因为有些SQL语句的结构比较复杂，有些会涉及到很多group by、join操作还有一些聚集函数的使用，同时数据量又较大。在这种情况下，常规的Mybatis面对对象进行操作的办法就不再试适用，查看Mybatis官方手册，提供了SQL构造器的办法也会有较的工作量，所以选择直接执行SQL语句">
 
 
 
@@ -120,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/MySQL/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/03/Spring配置Mybatis执行原生SQL语句/"/>
 
 
 
 
 
-  <title> 标签: MySQL | Socra </title>
+  <title> Spring配置Mybatis执行原生SQL语句 | Socra </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -151,7 +155,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -245,74 +249,197 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        MySQL
-        <small>标签</small>
-      </h2>
-    </div>
-
+  <div id="posts" class="posts-expand">
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/28/alter和update以及drop和delete区别/" itemprop="url">
-              
-                <span itemprop="name">alter和update以及drop和delete区别</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-28T21:32:45+08:00"
-              content="2017-02-28" >
-          02-28
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/28/MySQL使用手册/" itemprop="url">
-              
-                <span itemprop="name">MySQL使用手册</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-28T19:51:59+08:00"
-              content="2017-02-28" >
-          02-28
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-  </div>
 
   
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/03/Spring配置Mybatis执行原生SQL语句/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Socra">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/coffee.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Socra">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Socra" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Spring配置Mybatis执行原生SQL语句
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-03T11:54:32+08:00">
+                2017-08-03
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2017-08-03T13:36:09+08:00">
+                2017-08-03
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/08/03/Spring配置Mybatis执行原生SQL语句/" class="leancloud_visitors" data-flag-title="Spring配置Mybatis执行原生SQL语句">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="为什么要怎么做"><a href="#为什么要怎么做" class="headerlink" title="为什么要怎么做"></a>为什么要怎么做</h1><p>有这么一个应用场景：需要在Mybatis框架上进行多个连接池的配置，然后进行多种SQL语句的测试，因为有些SQL语句的结构比较复杂，有些会涉及到很多<code>group by</code>、<code>join</code>操作还有一些聚集函数的使用，同时数据量又较大。<br>在这种情况下，常规的Mybatis面对对象进行操作的办法就不再试适用，查看Mybatis官方手册，提供了SQL构造器的办法也会有较的工作量，所以选择直接执行SQL语句（那为啥不用JDBC呢？笑）</p>
+<h1 id="遇到的坑"><a href="#遇到的坑" class="headerlink" title="遇到的坑"></a>遇到的坑</h1><p>凭我记忆中对Mybatis的用法，似乎并没有这么用的，去网上搜，居然真的存在这种用法，但是讲的大多含糊其辞，晕了一下午也没让我找到正确的做法（真心给跪）</p>
+<ul>
+<li><a href="http://blog.csdn.net/binyao02123202/article/details/8573352" target="_blank" rel="external">将SQL当作SqlSession执行的参数</a>：使用SqlSession的<code>selectList()</code>方法，传入的参数是SQL，当然需要在Bean的mapper xml配置文件中修改<code>parameterType</code>类型为String，同时因为String不支持getter和setter操作，手动封装一个包装类SQLAdapter</li>
+</ul>
+<p>虽然看起来似乎可以，但是还是会存在坑的，即“SqlSession对象如何调用selectList()方法来传入SQL语句？”。一开始是直接<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// sql 是原生SQL语句</span></div><div class="line">list = sqlSession.selectList(<span class="string">"selectList"</span>,sql);</div></pre></td></tr></table></figure></p>
+<p>这样还是会提示String没有setter方法而报出异常</p>
+<ul>
+<li>其实还有一个坑是关于在xml映射文件中<select>语句的返回值问题，有的查询语句是返回集合，而有的是返回整型值，直接设置<code>resultType = &quot;XXX&quot;</code>肯定是会报错的</select></li>
+<li>第三个坑是解决了上述问题后报出的<code>org.mybatis.spring.transaction.SpringManagedTransaction.getTimeout()</code>异常，上网一搜，是<code>mybatis-spring</code>的版本问题</li>
+</ul>
+<h1 id="成功的做法"><a href="#成功的做法" class="headerlink" title="成功的做法"></a>成功的做法</h1><p>试了整整一上午，反复踩坑跳坑，终于让我找到了一条正确的道路</p>
+<ul>
+<li>按照上面提到的解决步骤先进行设置，重点放在执行查询的时候，sqlSession执行方法时传入的参数要注意<strong>不能是String类型的SQL，而需要是封装类SQLAdapter对象</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">list = sqlSession.selectList(<span class="string">"selectList"</span>,<span class="keyword">new</span> SQLAdapter(sql));</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>即可解决第一个问题，可以执行部分语句</p>
+<ul>
+<li>第二个问题说白了就是针对查询的返回值类型要有合适的“容器”来接收，不能是某个具体的类型，那么直接采用超类<code>java.lang.Object</code>来最为resultType的值</li>
+<li>最后一个问题就好解决了，mybatis-spring的版本设置为3.4.0即可（原来是3.2.2），总之版本要高一些</li>
+</ul>
+<h1 id="一点想法"><a href="#一点想法" class="headerlink" title="一点想法"></a>一点想法</h1><p>其实自己学东西的时候肯定会遇到很多坑，有时比问题还坑的是网上的某些“指导”，总是会经历过心态崩溃的时候，只是希望自己不要成为误导别人的人<br>ps：遇到不会的还是要多关注官方文档啊</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Mybatis/" rel="tag"># Mybatis</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/02/Spring-IoC容器初始化/" rel="next" title="Spring-IoC容器初始化">
+                <i class="fa fa-chevron-left"></i> Spring-IoC容器初始化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           
           </div>
@@ -320,6 +447,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -339,8 +470,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/coffee.jpg"
@@ -443,6 +583,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么要怎么做"><span class="nav-number">1.</span> <span class="nav-text">为什么要怎么做</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#遇到的坑"><span class="nav-number">2.</span> <span class="nav-text">遇到的坑</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#成功的做法"><span class="nav-number">3.</span> <span class="nav-text">成功的做法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一点想法"><span class="nav-number">4.</span> <span class="nav-text">一点想法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -566,6 +722,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
