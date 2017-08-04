@@ -40,7 +40,7 @@
     <entry>
       <title><![CDATA[spring加载方式及原理]]></title>
       <url>%2F2017%2F08%2F02%2FSpring%E5%8A%A0%E8%BD%BD%E6%96%B9%E5%BC%8F%E5%8F%8A%E5%8E%9F%E7%90%86%2F</url>
-      <content type="text"></content>
+      <content type="text"><![CDATA[拆分因为这个是更早建立的，当时没有想到这个部分深入到源码时会这么的多，后面只能分开来看，当然了，也就分开总结吧，这里给出链接 Spring IoC容器初始化Spring IoC依赖注入Spring AOP感悟这个部分差不多花了好几个夜晚，从摸索着研究到开始上手，整理清除思路之后又做笔记写博客，感觉Spring的代码写的很棒，运用到了Java的特性非常之多以及如此精准，同时运用了大量的设计模式，确实是含金量很高的框架，值得我们去看看学学它的源码]]></content>
     </entry>
 
     
@@ -193,14 +193,14 @@
     
     <entry>
       <title><![CDATA[java反射机制]]></title>
-      <url>%2F2017%2F03%2F11%2Fjava%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%2F</url>
+      <url>%2F2017%2F03%2F11%2FJava%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%2F</url>
       <content type="text"><![CDATA[前言碎语刚开始学习时其实是跳过了这么一个知识点的（因为确定难懂又暂时没什么用），后面听说了在框架中反射是基本的原理，我就又滚回来了（出来混迟早要还的，深以为然） 反射机制是什么？ 反射机制是能在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取信息的以及动态调用对象的方法的功能成为java反射机制 反射是为了动态的加载java类，使得程序在编译时不需要知道某些类的具体信息，只有在运行的时候根据输入的类（补全了某些类的信息），来动态的加载该类，并运行其中的方法。 反射机制有什么用？看过一篇博客，举了这么一个通俗易懂的例子：两个程序员A和B一起工作，因为工作的原因，两个人的任务是分开完成的，同时也是为了保证工程进度；但是程序员A的任务中需要用到程序员B的代码，那么如何在保证A的任务能够进行下去同时又能保证A和B一起推进任务呢？这时就需要用到了java反射的机制。按照上面的说法，我们可以在A的代码中先对所需要B中的某个类进行代理使用，这样可以保证A的程序编译通过；然后在程序运行的时候，通过某种方式（传参数）来获取到真正想要调用的类。这样在程序运行时就会使用到该类的动态代理对象，从而完成任务。 反射机制的原理看了上面的介绍以，我就在想这是怎么实现的（感觉这个反射是为了骗过编译器啊….） 首先说一下动态加载，我们知道jvm在运行java程序前会先加载所使用到的类进行编译，而有的类是在编译时期不知道的，只有在运行的时候才会加载，此谓动态加载。在实现动态加载类时，又有一个动态的代理机制在里面：所谓动态代理，就是程序在运行的时候，对于一个接口和实现类，可以由JVM生成一个代理对象来帮助你使用接口或类中的方法（而不需要显式的去实例化一个类的对象）这样我们可以在程序中直接使用代理对象，完成操作。 反射机制的常规用法对于编译时知道类的信息的情况就不说了，上一篇Class里面有涉及，具体使用时查API文档就好，这里说编译时期不知道类的信息的情况 定义一个动态代理类，该类必须实现InvocationHandler接口 12345678910111213141516171819202122232425262728class DynamicProxy implements InvocationHandler&#123; // 这个是要代理的对象 private Object subject; // 构造方法，给要代理的对象赋初值 public DynamicProxy(Object subject) &#123; this.subject = subject; &#125; @Override public Object invoke(Object object, Method method, Object[] args) throws Throwable &#123; // 在代理真实对象前我们可以添加一些自己的操作 // blablabla... // 当代理对象调用真实对象的方法时，其会自动的跳转到代理对象的invoke方法来进行调用 method.invoke(subject, args); // 在代理真实对象后也可以添加一些操作 // blablabla... return null; &#125;&#125; 使用Class类来获取所需要代理的类；java中Class的用法 1Class testClass = Class.forName(str);// str可以以字符串的形式传入 创建一个动态代理对象并开始使用被代理对象中的方法； 12345678910111213141516171819public class Test&#123; public static void main(String[] args)&#123; // 需要代理的真实对象 Object realObject = new Object(); // 将真实对象传入，最后是通过代理对象来调用其方法的 InvocationHandler handler = new DynamicProxy(realObject); /* * 代理对象obj，通过Proxy的newProxyInstance方法来创建 * 第一个参数 handler.getClass().getClassLoader() ，我们这里使用handler这个类的ClassLoader对象来加载代理对象 * 第二个参数realObject.getClass().getInterfaces()，这里为代理对象提供的接口是真实对象所实现的接口，表示要代理的是该真实对象，这样就能调用这组接口中的方法了 * 第三个参数handler， 将这个代理对象关联到了上方的 InvocationHandler 这个对象上 */ Object obj = (Object)Proxy.newProxyInstance(handler.getClass().getClassLoader(), realObject.getClass().getInterfaces(), handler); obj.wait(10); // 这样使用代理对象来直接调用被代理类的wait方法，并输入参数 &#125; &#125; 这里有需要注意的地方：Proxy的newProxyInstance方法的第二个参数，意思是代理对象去实现了被代理对像的接口，这样代理对象才可以去使用被代理对象实现接口或继承类中的方法。同时如果打印出代理对象的obj.getClass().getName()会显示$proxy0，因为这是JVM自动动态生成的代理对象（与使用时自己初始化代理对象不是一个意思，初始化主要是为了传入被代理对象），这是一种固定的命名方式。 总结反射顺序 创建一个代理类，实现InvkcationHandler接口 重写invoke()方法，并调用method.invoke() 声明真实对象，并传入代理类 声明代理对象，并初始化为Proxy.newProxyInstance()方法获得的实例 使用代理对象调用真实对象的方法 注意 一定要使用Proxy.newProxyInstance(ClassLoader loader, Class&lt;?&gt;[] interfaces, InvocationHandler h)方法实例化代理对象 代理类中的invoce(Object proxy, Method method, Object[] args)方法是由代理对象隐式调用的 直接使用代理对象调用真实对象的方法即可 使用反射的利弊优点：反射提高了程序的灵活性以及扩展性，降低了耦合性（依赖关系），提高了程序的适应能力；允许程序在不知道具体类的信息的情况下，创建和控制任何类的对象。 缺点： 性能问题：使用反射时是一种解释操作，用于字段和方法接入时要远慢于直接代码（这事必然啊，总要能理解吧），所以反射机制主要应用于灵活性和扩展性要求很高的系统框架上，普通程序不建议使用 模糊程序内部逻辑：反射绕过了源代码的技术会带来后期的维护问题，毕竟看反射代码更难 总结其实当我们使用编译器，在对象后面加上.时，编译器会自动列出该对象中的所有属性以及方法，这里就用到了这个原理，并称之为java类的自审，可以探知到类的基本结构。 上面的内容都是我在学习时自己提出的问题，越来越感觉在学一个知识点时主动挖掘它的原理是重要的（虽然有的并不需要也并不会想到），开始萌发要看看JVM底层原理的书的念头了….]]></content>
     </entry>
 
     
     <entry>
       <title><![CDATA[java反射之Class初级用法]]></title>
-      <url>%2F2017%2F03%2F10%2Fjava%E5%8F%8D%E5%B0%84%E4%B9%8BClass%E5%88%9D%E7%BA%A7%E7%94%A8%E6%B3%95%2F</url>
+      <url>%2F2017%2F03%2F10%2FJava%E5%8F%8D%E5%B0%84%E4%B9%8BClass%E5%88%9D%E7%BA%A7%E7%94%A8%E6%B3%95%2F</url>
       <content type="text"><![CDATA[Class类Class类的实例表示java应用运行时的类或接口（每个java类在运行的时候都会在JVM里表现为一个Class对象，可以通过类名.Class，类型.getClass()，Class.forName(&quot;包.类名&quot;)等方法获取Class对象） Class类的特点Class类的父类是Object，事实上，任何java类，不管是jdk里面的还是自定义的，都是Class类的对象，同时，所有的数据类型、关键字、方法等等，一切的一切都是Class类的对象。这是前提，很关键 Class类的运行原理java种创建对象时不是通过类直接创建的，一个类的对象被创建之前，首先JVM会加载该类的字节码文件（.class文件），也就是编译后的java程序文件；加载完成后，JVM会自动的为该类创建自己的Class对象，再通过Class对象创建目标对象 使用Class的目的很简单的一句话，可以利用反射机制重新获取到Object对象，这个是动态加载类以及对象的，是在程序运行时才会发生的动作，至于反射机制的具体应用，先挖个坑，以后填 API文档的仿制按照Class类的特性，java种的一切都是Class类的对象，我们可以获取到这些“对象”的信息，比如任意类的属性、构造方法、所有方法等等信息，诚然，我们甚至可以做出一个API文档12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152public static void main(String[] args) throws ClassNotFoundException&#123; // 1.返回与带有给定字符串名的类或接口相关联的 Class 对象，直接导致该类被初始化 Class testClass = Class.forName("java.lang.Class"); // 2. 获取该类的实例化对象 Class testClass2 = Class.class; // 3.获取该类的实例化Class对象 Class testClass3 = new Test().getClass(); String target = "([a-zA-Z_-]+)\\."; // 需要匹配的正则表达式，表示了形如“字母+.”的模式，这样便去除了某个类的包名前缀 Class&lt;? super Object&gt; superC = testClass.getSuperclass(); String name = superC.getName(); System.out.print("Class的父类是：" + name.replaceAll(target, "") + "\n"); Constructor&lt;Class&gt;[] consClass = testClass.getDeclaredConstructors(); System.out.println("Class的构造方法有："); for(Constructor con : consClass)&#123; name = con.toString(); name = name.replaceAll(target, ""); System.out.println(name); &#125; Class&lt;Class&gt;[] classes = testClass.getClasses(); System.out.println("Clsass所有的成员的公共类和接口："); if(classes.length==0) System.out.println("null"); for(Class cla : classes)&#123; name = cla.toString(); name = name.replaceAll(target, ""); System.out.println(name); &#125; System.out.println("Class的属性是："); Field[] fields = testClass.getDeclaredFields(); for(Field f : fields)&#123; name = f.toString(); name = name.replaceAll(target, ""); System.out.println(name); &#125; Method[] methods = testClass.getMethods(); System.out.println("Class的所有方法是："); for(int i=0; i&lt;methods.length; i++)&#123; name = methods[i].toString(); name = name.replaceAll(target, ""); System.out.println(name); &#125; ClassLoader loader = testClass.getClassLoader();// 如果对象是基本类型或者是void，则返回null System.out.println("Class的类加载器是：" + loader); 这只是一个简单的思路介绍，重要的是从0到1的过程，至于怎么从1到n，这需要更多的努力。]]></content>
     </entry>
 
@@ -242,7 +242,7 @@
     
     <entry>
       <title><![CDATA[java中几个获取长度的方法区别]]></title>
-      <url>%2F2017%2F02%2F27%2Fjava%E4%B8%AD%E5%87%A0%E4%B8%AA%E8%8E%B7%E5%8F%96%E9%95%BF%E5%BA%A6%E7%9A%84%E6%96%B9%E6%B3%95%E5%8C%BA%E5%88%AB%2F</url>
+      <url>%2F2017%2F02%2F27%2FJava%E4%B8%AD%E5%87%A0%E4%B8%AA%E8%8E%B7%E5%8F%96%E9%95%BF%E5%BA%A6%E7%9A%84%E6%96%B9%E6%B3%95%E5%8C%BA%E5%88%AB%2F</url>
       <content type="text"><![CDATA[length和length()和size()lengthlength是数组的属性，直接使用.来进行访问，用来获取数组的长度。 length()length()是一个方法，针对的是String类型，用来获取字符串的长度。 size()size()是方法，用于获取泛型集合的大小，以便了解其中的元素个数。]]></content>
     </entry>
 
@@ -263,7 +263,7 @@
     
     <entry>
       <title><![CDATA[socket通信字节流or字符流]]></title>
-      <url>%2F2017%2F02%2F27%2Fsocket%E9%80%9A%E4%BF%A1%E5%AD%97%E8%8A%82%E6%B5%81or%E5%AD%97%E7%AC%A6%E6%B5%81%2F</url>
+      <url>%2F2017%2F02%2F27%2FSocket%E9%80%9A%E4%BF%A1%E5%AD%97%E8%8A%82%E6%B5%81or%E5%AD%97%E7%AC%A6%E6%B5%81%2F</url>
       <content type="text"><![CDATA[socket通信选择字节流还是字符流？字符流处理的单元为2个字节的字符，分别操作字符、字符数组或字符串，而字节流处理单元为1个字节，操作字节和字节数组。所以字符流是由Java虚拟机将字节转化为2个字节的字符为单位的字符而成的，所以它对多国语言支持性比较好！如果是音频文件、图片、歌曲，就用字节流好点，如果是关系到中文（文本）的，用字符流好点。 所有文件的储存是都是字节（byte）的储存，在磁盘上保留的并不是文件的字符而是先把字符编码成字节，再储存这些字节到磁盘。在读取文件（特别是文本文件）时，也是一个字节一个字节地读取以形成字节序列 1.字节流可用于任何类型的对象，包括二进制对象，而字符流只能处理字符或者字符串；2.字节流提供了处理任何类型的IO操作的功能，但它不能直接处理字符，而字符流就可以 字节流是最基本的，所有的InputStrem和OutputStream的子类都是,主要用在处理二进制数据，它是按字节来处理的 但实际中很多的数据是文本，又提出了字符流的概念，它是按虚拟机的encode来处理，也就是要进行字符集的转化。这两个之间通过 InputStreamReader,OutputStreamWriter来关联，实际上是通过byte[]和String来关联，在实际开发中出现的汉字问题实际上都是在字符流和字节流之间转化不统一而造成的]]></content>
     </entry>
 
