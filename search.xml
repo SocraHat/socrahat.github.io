@@ -241,14 +241,14 @@
 
     
     <entry>
-      <title><![CDATA[java中几个获取长度的方法区别]]></title>
+      <title><![CDATA[Java中几个获取长度的方法区别]]></title>
       <url>%2F2017%2F02%2F27%2FJava%E4%B8%AD%E5%87%A0%E4%B8%AA%E8%8E%B7%E5%8F%96%E9%95%BF%E5%BA%A6%E7%9A%84%E6%96%B9%E6%B3%95%E5%8C%BA%E5%88%AB%2F</url>
       <content type="text"><![CDATA[length和length()和size()lengthlength是数组的属性，直接使用.来进行访问，用来获取数组的长度。 length()length()是一个方法，针对的是String类型，用来获取字符串的长度。 size()size()是方法，用于获取泛型集合的大小，以便了解其中的元素个数。]]></content>
     </entry>
 
     
     <entry>
-      <title><![CDATA[java线程]]></title>
+      <title><![CDATA[Java线程]]></title>
       <url>%2F2017%2F02%2F27%2FJava%E7%BA%BF%E7%A8%8B%2F</url>
       <content type="text"><![CDATA[java线程体会为什么需要使用线程：​ 我们知道，一般程序都是以一个由上至下的运行方式运行的，不完成上一步的时候，是无法进入下一步的执行的。可是我们有时候需要在一个程序同时去做两个不同的任务，各自之间互不干涉，那么根据程序的执行过程，该如何解决呢？ ​ 答案就是使用线程，所谓线程，就是一个程序中最小的执行单元，一个程序在运行时就是一个进程，一个进程可以包含多个线程，这样就允许了一个程序同时去做不同的任务。所以总结的说，我们需要使用线程来让程序在同一时间做不同的事情，并且互不干涉。 注： 程序是包含了所有执行文件、数据文件、图像文件以及各种文档的资源集合，存储在电脑磁盘里 进程是一个程序在运行时所需要的所有资源集合，包含了代码、数据、堆栈、变量等，就像一台电脑。 线程是进程的子集，每一个线程可以看作是进程中的一个执行单元，就像CPU。 线程的基本特点：在不同的语言中，线程有不同的实现方式，但都有共同的基本特征： 没有属于自己的内存空间，所有使用的空间都是由进程统一安排分配 在线程中使用的数据会存放到属于自己的栈中，但栈中的数据我们是知道的，是不会保留下来的 :cry: 线程的上下文切换是比进程要快很多倍的，而且新建一个线锁需要的时间开销也是少于进程的；但有优点就一定会有缺点，线程的开销是很大的，每创建一个线程都至少要分配512KB甚至是1MB字节的内存，还有的线程及进程的区别可以去看有关操作系统的书 使用线程的方法： 继承Thread类 实现Runnable接口 使用使用ExecutorService（线程池接口）、Callable（重写call()方法）、Future实现有返回结果的多线程(JDK5.0以后) 虽然都可以实现线程的控制，但是我们在实际中却用到第二种方法比较多，原因就是我们有时候需要继承不止一个类，这时如果我们不去实现Runnable接口，我们该如何使这个类编程线程类呢？:happy: 实现线程类需要注意的地方： 我们想让线程去做的任务都写在run方法里 线程类创建后我们需要去启动线程，而不是调用run方法，不然就仍旧还是方法调用 启动线程的方法 实现Runnable接口： 1234567891011class Ball implements Runnable&#123; public void run()&#123; System.out.println("hello thread"); //我们想使用多线程实现的内容 &#125;&#125;class UseBall &#123; Ball ball = new Ball(); new Thread(ball).start();&#125; 继承Thrad类：1234567891011class Ball extends Thread&#123; public void run()&#123; System.out.println("hello thread"); //我们想使用多线程实现的内容 &#125;&#125;class UseBall &#123; Ball ball = new Ball(); ball.start();&#125; 使用线程进行操作的时候注意添加异常操作12345678910111213141516171819public static void main(String[] args) &#123; // TODO Auto-generated method stub ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor(); for(int i=0; i&lt;10; i++)&#123; final int index = i; singleThreadExecutor.execute(new Runnable()&#123; public void run()&#123; System.out.println(index); try &#123; Thread.sleep(2000); &#125; catch (InterruptedException e) &#123; // TODO Auto-generated catch block e.printStackTrace(); &#125; &#125; &#125;); &#125; &#125; 总结​ 综上所述，线程的使用方法以及一些特点就在这里了。个人理解其使用的条件就是想让程序同时完成不同的任务时，使用多线程实现。 ​ 多线程是java重要的的特点之一，利用多线程我们可以完成很多特殊的功能，比如：弹球游戏、坦克大战和聊天室等等。]]></content>
     </entry>
