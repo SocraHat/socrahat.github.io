@@ -93,7 +93,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/08/03/Spring配置Mybatis执行原生SQL语句/index.html">
 <meta property="og:site_name" content="Socra">
 <meta property="og:description" content="为什么要怎么做有这么一个应用场景：需要在Mybatis框架上进行多个连接池的配置，然后进行多种SQL语句的测试，因为有些SQL语句的结构比较复杂，有些会涉及到很多group by、join操作还有一些聚集函数的使用，同时数据量又较大。在这种情况下，常规的Mybatis面对对象进行操作的办法就不再试适用，查看Mybatis官方手册，提供了SQL构造器的办法也会有较的工作量，所以选择直接执行SQL语句">
-<meta property="og:updated_time" content="2017-08-03T05:36:09.243Z">
+<meta property="og:updated_time" content="2017-08-04T06:25:59.644Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring配置Mybatis执行原生SQL语句">
 <meta name="twitter:description" content="为什么要怎么做有这么一个应用场景：需要在Mybatis框架上进行多个连接池的配置，然后进行多种SQL语句的测试，因为有些SQL语句的结构比较复杂，有些会涉及到很多group by、join操作还有一些聚集函数的使用，同时数据量又较大。在这种情况下，常规的Mybatis面对对象进行操作的办法就不再试适用，查看Mybatis官方手册，提供了SQL构造器的办法也会有较的工作量，所以选择直接执行SQL语句">
@@ -314,8 +314,8 @@
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-08-03T13:36:09+08:00">
-                2017-08-03
+              <time title="更新于" itemprop="dateModified" datetime="2017-08-04T14:25:59+08:00">
+                2017-08-04
               </time>
             
           </span>
@@ -365,7 +365,7 @@
 <p>虽然看起来似乎可以，但是还是会存在坑的，即“SqlSession对象如何调用selectList()方法来传入SQL语句？”。一开始是直接<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// sql 是原生SQL语句</span></div><div class="line">list = sqlSession.selectList(<span class="string">"selectList"</span>,sql);</div></pre></td></tr></table></figure></p>
 <p>这样还是会提示String没有setter方法而报出异常</p>
 <ul>
-<li>其实还有一个坑是关于在xml映射文件中<select>语句的返回值问题，有的查询语句是返回集合，而有的是返回整型值，直接设置<code>resultType = &quot;XXX&quot;</code>肯定是会报错的</select></li>
+<li>其实还有一个坑是关于在xml映射文件中 <code>&lt;select&gt;</code> 语句的返回值问题，有的查询语句是返回集合，而有的是返回整型值，直接设置<code>resultType = &quot;XXX&quot;</code>肯定是会报错的</li>
 <li>第三个坑是解决了上述问题后报出的<code>org.mybatis.spring.transaction.SpringManagedTransaction.getTimeout()</code>异常，上网一搜，是<code>mybatis-spring</code>的版本问题</li>
 </ul>
 <h1 id="成功的做法"><a href="#成功的做法" class="headerlink" title="成功的做法"></a>成功的做法</h1><p>试了整整一上午，反复踩坑跳坑，终于让我找到了一条正确的道路</p>
