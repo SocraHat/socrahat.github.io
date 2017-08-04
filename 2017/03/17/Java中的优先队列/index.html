@@ -1,0 +1,922 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Form一个问题假设百度搜索引擎一天会搜索M亿条URL，如何根据URL被搜索的次数来找出次数最高的N个URL呢？个人有一个抽象的思路：
+
+先对所有的URL日志文档进行整合，同一类型的当作一个结点，利用B或者B+树搜索的优秀性能来处理
+再使用优先队列或者是最大值堆来进行一个排序
+
+正确与否先撇开不谈，整合同类URL的过程中会给后续排序减少大量的工作量（但究竟对于这种亿级的数据量还是只有一个朦胧的概念">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中的优先队列">
+<meta property="og:url" content="http://yoursite.com/2017/03/17/Java中的优先队列/index.html">
+<meta property="og:site_name" content="Socra">
+<meta property="og:description" content="Form一个问题假设百度搜索引擎一天会搜索M亿条URL，如何根据URL被搜索的次数来找出次数最高的N个URL呢？个人有一个抽象的思路：
+
+先对所有的URL日志文档进行整合，同一类型的当作一个结点，利用B或者B+树搜索的优秀性能来处理
+再使用优先队列或者是最大值堆来进行一个排序
+
+正确与否先撇开不谈，整合同类URL的过程中会给后续排序减少大量的工作量（但究竟对于这种亿级的数据量还是只有一个朦胧的概念">
+<meta property="og:updated_time" content="2017-08-04T03:11:18.486Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中的优先队列">
+<meta name="twitter:description" content="Form一个问题假设百度搜索引擎一天会搜索M亿条URL，如何根据URL被搜索的次数来找出次数最高的N个URL呢？个人有一个抽象的思路：
+
+先对所有的URL日志文档进行整合，同一类型的当作一个结点，利用B或者B+树搜索的优秀性能来处理
+再使用优先队列或者是最大值堆来进行一个排序
+
+正确与否先撇开不谈，整合同类URL的过程中会给后续排序减少大量的工作量（但究竟对于这种亿级的数据量还是只有一个朦胧的概念">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/17/Java中的优先队列/"/>
+
+
+
+
+
+  <title> Java中的优先队列 | Socra </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Socra</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/17/Java中的优先队列/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Socra">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/coffee.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Socra">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Socra" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Java中的优先队列
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-17T22:31:18+08:00">
+                2017-03-17
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2017-08-04T11:11:18+08:00">
+                2017-08-04
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/03/17/Java中的优先队列/" class="leancloud_visitors" data-flag-title="Java中的优先队列">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Form一个问题"><a href="#Form一个问题" class="headerlink" title="Form一个问题"></a>Form一个问题</h1><p>假设百度搜索引擎一天会搜索<strong>M亿条URL</strong>，如何根据URL被搜索的次数来找出次数最高的N个URL呢？<br>个人有一个抽象的思路：</p>
+<ul>
+<li>先对所有的URL日志文档进行整合，同一类型的当作一个结点，利用B或者B+树搜索的优秀性能来处理</li>
+<li>再使用优先队列或者是最大值堆来进行一个排序</li>
+</ul>
+<p>正确与否先撇开不谈，整合同类URL的过程中会给后续排序减少大量的工作量（但究竟对于这种亿级的数据量还是只有一个朦胧的概念）。不管怎么说，先来研究一下Java中的优先队列好了</p>
+<h1 id="优先队列和遍历层次树"><a href="#优先队列和遍历层次树" class="headerlink" title="优先队列和遍历层次树"></a>优先队列和遍历层次树</h1><p>优先队列（PriorityQueue）是不同于普通队列的先进先出的队列，每次从队列中取出的是具有最高优先权的元素。这是从Java1.5开始引入的数据结构的接口。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// TestPriorityQueue.java</span></div><div class="line"><span class="keyword">import</span> java.util.Comparator;</div><div class="line"><span class="keyword">import</span> java.util.PriorityQueue;</div><div class="line"><span class="keyword">import</span> java.util.Queue;</div><div class="line"><span class="keyword">import</span> java.util.Random;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span></span>&#123;</div><div class="line">	<span class="keyword">int</span> id;</div><div class="line">	String name;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">this</span>.id = <span class="number">0</span>;</div><div class="line">		<span class="keyword">this</span>.name = <span class="string">""</span>;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(<span class="keyword">int</span> id, String name)</span> </span>&#123;</div><div class="line">		<span class="keyword">super</span>();</div><div class="line">		<span class="keyword">this</span>.id = id;</div><div class="line">		<span class="keyword">this</span>.name = name;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> id;</div><div class="line">	&#125;</div><div class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> name;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestPriorityQueue</span> </span>&#123;</div><div class="line">	</div><div class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Comparator&lt;Student&gt; stCompare = <span class="keyword">new</span> Comparator&lt;Student&gt;()&#123;</div><div class="line">		<span class="comment">// 重写了比较器中的compare方法，否则直接把Student类型的元素加入优先队列会报错</span></div><div class="line">		<span class="meta">@Override</span></div><div class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Student st1,Student st2)</span></span>&#123;</div><div class="line">          	<span class="comment">// 针对Student的id属性进行比较</span></div><div class="line">			<span class="keyword">return</span> (<span class="keyword">int</span>)(st1.getId()-st2.getId());</div><div class="line">		&#125;</div><div class="line">	&#125;;</div><div class="line">	</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</div><div class="line">		Queue&lt;Integer&gt; number = <span class="keyword">new</span> PriorityQueue&lt;Integer&gt;();<span class="comment">// 存放int类型的数据</span></div><div class="line">		Random rand = <span class="keyword">new</span> Random();</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</div><div class="line">			<span class="comment">//因为实例化时使用了默认的比较器，所以队列新增的元素时都会自动排序</span></div><div class="line">			number.add(rand.nextInt(<span class="number">100</span>));</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">for</span>(Integer i : number)&#123;</div><div class="line">			System.out.println(i);</div><div class="line">		&#125;</div><div class="line">		System.out.println();</div><div class="line">		</div><div class="line">		<span class="comment">// ----- 下面开始排序自定义类</span></div><div class="line">		<span class="comment">// 把重写后的比较器作为参数传入优先队列</span></div><div class="line">		Queue&lt;Student&gt; students = <span class="keyword">new</span> PriorityQueue&lt;Student&gt;(<span class="number">5</span>,stCompare);</div><div class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</div><div class="line">			students.add(<span class="keyword">new</span> Student(rand.nextInt(<span class="number">10</span>),String.valueOf(i)));</div><div class="line">		&#125;</div><div class="line">      </div><div class="line">		<span class="comment">// 预计的输出结果会是：不管st.name是怎样的顺序，但是st.id一定是由小到大</span></div><div class="line">		<span class="keyword">for</span>(Student st : students)&#123;</div><div class="line">			System.out.println(st.id + <span class="string">" "</span> + st.name);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="遍历层次树"><a href="#遍历层次树" class="headerlink" title="遍历层次树"></a>遍历层次树</h2><p>怎么百度的都是概念层次树（黑人问号….），相关的知识有如何<strong>层次遍历二叉树</strong>，思路是</p>
+<ul>
+<li>使其根节点入队列，然后出队进行访问</li>
+<li>若左子节点不为空，使左子节点入队</li>
+<li>若该节点的右子节点，再使右子节点入队</li>
+<li>重复上面三个步骤，直到访问了所有节点</li>
+</ul>
+<p>大概的思路是这样，开的坑已经够多了，这个就先放后面好了 /:doge</p>
+<h1 id="又回到了HashMap高性能读写方法？"><a href="#又回到了HashMap高性能读写方法？" class="headerlink" title="又回到了HashMap高性能读写方法？"></a>又回到了HashMap高性能读写方法？</h1><p>其实是自己没有绕出这个圈，那天和dalao讨论的时候，ta认为没有什么优化的方法，毕竟HashMap已经被写好放在jar中了，若是使用，怎么会优化呢？</p>
+<p>of cause，自己撸一个HashMap实现，这就引出了一个重点，<strong>在我们讨论这个问题的时候，前提是什么？</strong>，有说可以自己撸吗？不知道，有说必须要用jdk中的HashMap吗？不知道。</p>
+<p>So，…….</p>
+<h2 id="来来来，填坑了"><a href="#来来来，填坑了" class="headerlink" title="来来来，填坑了"></a>来来来，填坑了</h2><p>上次和面试遇到这道题的那个哥们交流了一下，发现了一些意想不到的事情，起始原始的问题是“HashMap放入10W字符串，怎么做可以减少CPU消耗率”<br>他提出了一种解答方式：<strong>线程睡眠-每放一定数量的字符串后，就令线程睡眠个1s</strong><br>这…..手动笑哭，显然是延长了程序周期，但是确实CPU消耗率降下来了…….</p>
+<h1 id="日常总结"><a href="#日常总结" class="headerlink" title="日常总结"></a>日常总结</h1><p>今天被教育“凡是遇到问题的时候，第一个想到的就应该是<strong>前提条件</strong>”，没有前提条件，问题是不受约束的。看似是一个谁都懂的道理，但真的很多时候，会被<strong>自己潜意识认为的条件局限了自己的思维</strong>。就这样。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/16/HashMap和HashTable的区别/" rel="next" title="HashMap和HashTable的区别">
+                <i class="fa fa-chevron-left"></i> HashMap和HashTable的区别
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/18/指针常量和常量指针/" rel="prev" title="指针常量和常量指针">
+                指针常量和常量指针 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          ﻿
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/coffee.jpg"
+               alt="Socra" />
+          <p class="site-author-name" itemprop="name">Socra</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/socrahat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhuo-peng-cheng-85/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-zhihu"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5643507737/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://zpencheng@126.com" target="_blank" title="Gmail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Gmail
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-link"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/sugar_rainbow" title="My CSDN" target="_blank">My CSDN</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Form一个问题"><span class="nav-number">1.</span> <span class="nav-text">Form一个问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优先队列和遍历层次树"><span class="nav-number">2.</span> <span class="nav-text">优先队列和遍历层次树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#遍历层次树"><span class="nav-number">2.1.</span> <span class="nav-text">遍历层次树</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#又回到了HashMap高性能读写方法？"><span class="nav-number">3.</span> <span class="nav-text">又回到了HashMap高性能读写方法？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#来来来，填坑了"><span class="nav-number">3.1.</span> <span class="nav-text">来来来，填坑了</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#日常总结"><span class="nav-number">4.</span> <span class="nav-text">日常总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Socra</span>
+</div>
+
+
+<div class="powered-by">
+  爱你呦
+</div>
+
+<div class="theme-info">
+  QvQ
+<span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+<span id="showDays"></span>
+</div>
+
+<script>
+	var birthDay = new Date('2/21/2017');
+	var now = new Date();
+	var duration = now.getTime() - birthDay.getTime();
+	var total= Math.floor(duration / (1000 * 60 * 60 * 24));
+	document.getElementById('showDays').innerHTML='now ever ' + total + ' days';
+</script>
+
+
+<div align="center">
+	<a href="http://www.amazingcounters.com"> <img border="0"  src="http://cc.amazingcounters.com/counter.php?i=3212960&c=9639193" alt="AmazingCounters.com"> 
+	</a> clicks
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8HdMboaKVDfKBOn5dI12QWiH-gzGzoHsz#<app_id>", "EsoeMbYLC0fheB5bhVAmfMQj#<app_key>");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+  
+
+</body>
+</html>

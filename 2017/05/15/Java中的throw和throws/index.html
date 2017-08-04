@@ -1,0 +1,943 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="一些稀松平常的操作ok，一般每隔一段时间就会清清缓存，或者是拖的有点多了……
+Java中的异常这是一个要开也能开的坑，但是不是很想操作，一般情况下会使用异常，找出异常并调试bug就行了，当然了有些场景是需要自己自定义适合场景的bug的，这就需要了解一些异常的基本知识
+异常的出现多是一些外部原因，比如一些代码中没有注意到的会影响程序运行的细节
+
+发生在程序运行期间，干扰了正常的指令流程。Java通">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中的throw和throws">
+<meta property="og:url" content="http://yoursite.com/2017/05/15/Java中的throw和throws/index.html">
+<meta property="og:site_name" content="Socra">
+<meta property="og:description" content="一些稀松平常的操作ok，一般每隔一段时间就会清清缓存，或者是拖的有点多了……
+Java中的异常这是一个要开也能开的坑，但是不是很想操作，一般情况下会使用异常，找出异常并调试bug就行了，当然了有些场景是需要自己自定义适合场景的bug的，这就需要了解一些异常的基本知识
+异常的出现多是一些外部原因，比如一些代码中没有注意到的会影响程序运行的细节
+
+发生在程序运行期间，干扰了正常的指令流程。Java通">
+<meta property="og:image" content="http://yoursite.com/2017/05/15/Java中的throw和throws/exception.jpg">
+<meta property="og:updated_time" content="2017-08-04T03:11:35.910Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中的throw和throws">
+<meta name="twitter:description" content="一些稀松平常的操作ok，一般每隔一段时间就会清清缓存，或者是拖的有点多了……
+Java中的异常这是一个要开也能开的坑，但是不是很想操作，一般情况下会使用异常，找出异常并调试bug就行了，当然了有些场景是需要自己自定义适合场景的bug的，这就需要了解一些异常的基本知识
+异常的出现多是一些外部原因，比如一些代码中没有注意到的会影响程序运行的细节
+
+发生在程序运行期间，干扰了正常的指令流程。Java通">
+<meta name="twitter:image" content="http://yoursite.com/2017/05/15/Java中的throw和throws/exception.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/15/Java中的throw和throws/"/>
+
+
+
+
+
+  <title> Java中的throw和throws | Socra </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Socra</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/15/Java中的throw和throws/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Socra">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/coffee.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Socra">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Socra" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Java中的throw和throws
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-15T20:05:19+08:00">
+                2017-05-15
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2017-08-04T11:11:35+08:00">
+                2017-08-04
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/05/15/Java中的throw和throws/" class="leancloud_visitors" data-flag-title="Java中的throw和throws">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一些稀松平常的操作"><a href="#一些稀松平常的操作" class="headerlink" title="一些稀松平常的操作"></a>一些稀松平常的操作</h1><p>ok，一般每隔一段时间就会清清缓存，或者是拖的有点多了……</p>
+<h1 id="Java中的异常"><a href="#Java中的异常" class="headerlink" title="Java中的异常"></a>Java中的异常</h1><p>这是一个要开也能开的坑，但是不是很想操作，一般情况下会使用异常，找出异常并调试bug就行了，当然了有些场景是需要自己自定义适合场景的bug的，这就需要了解一些异常的基本知识</p>
+<p>异常的出现多是一些外部原因，比如一些代码中没有注意到的会影响程序运行的细节</p>
+<blockquote>
+<p>发生在程序运行期间，干扰了正常的指令流程。Java通 过API中Throwable类的众多子类描述各种不同的异常。因而，Java异常都是对象，是Throwable子类的实例，描述了出现在一段编码中的 错误条件。当条件生成时，错误将引发异常。</p>
+</blockquote>
+<p>这里有Java异常类层次结构图：↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓<br><img src="/2017/05/15/Java中的throw和throws/exception.jpg" alt="exception"></p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
+<li><code>Thorwable</code>是类不是接口，当初有搞混</li>
+<li><code>Error</code>类是程序无法处理的错误，表示运行应用中出现了很严重的问题，不过一般是因为JVM内容出现了问题，这些问题是不需要try-catch的。一般出现了Error，JVM会自动停止运行，然后通过Error的子类来描述出错的类型，比如：<strong>OutOfMemoryError和NoClassDefFoundError</strong></li>
+<li><code>Exception</code>类是程序本身（JVM）可以处理的异常，有一个重要的子类<code>RuntimeException</code>及其子类，表示JVM常用操作引发的异常，比如：<strong>空值对象的应用、除数为0和数组越界</strong></li>
+<li>错误和异常的区别是：<strong>异常能被程序本身处理，错误是无法处理的</strong></li>
+</ul>
+<h3 id="可查异常和不可查异常"><a href="#可查异常和不可查异常" class="headerlink" title="可查异常和不可查异常"></a>可查异常和不可查异常</h3><p>这里拓展Exception的一些知识，因为算是难重点易混点</p>
+<ul>
+<li>可查异常：是编译器要求必须处理的异常，即必须使用<code>try{}catch{}</code>进行捕捉处理。除<code>RuntimeException</code>及其子类外，其它的Exception类及其子类都属于可查异常</li>
+<li>不可查异常：包括运行时异常（及其子类）和错误，这里不要求使用<code>try{}catch{}</code>捕捉处理，当然可以选择捕捉处理</li>
+</ul>
+<h3 id="运行时异常和非运行时异常"><a href="#运行时异常和非运行时异常" class="headerlink" title="运行时异常和非运行时异常"></a>运行时异常和非运行时异常</h3><p>这算是另一种异常的分类方式</p>
+<ul>
+<li>运行时异常：RuntimeException，顾名思义，运行时才会发生的异常，在敲代码阶段编译阶段是无法发现的，所以即便没有<code>try{}catch{}</code>捕捉处理也会编译通过，比如：<strong>空指针异常和数组下标越界</strong></li>
+<li>非运行时异常：也叫编译异常，这个就必须使用<code>try{}catch{}</code>来让程序自行捕捉处理了，否则会不予通过</li>
+</ul>
+<h2 id="抛出异常"><a href="#抛出异常" class="headerlink" title="抛出异常"></a>抛出异常</h2><p>使用<code>throw</code>和<code>throws</code>来抛出异常</p>
+<h2 id="捕获异常"><a href="#捕获异常" class="headerlink" title="捕获异常"></a>捕获异常</h2><p>其实不过异常有两种，一种是自己编程处理，一种是交给JVM来处理</p>
+<ul>
+<li>使用<code>try{}catch{}</code>来捕获异常</li>
+<li>直接使用<code>throws</code>来不断向上抛出异常，直到抛给JVM执行</li>
+</ul>
+<h1 id="throw"><a href="#throw" class="headerlink" title="throw"></a>throw</h1><p>其实是从网上瞄来的（滑稽<br>语法是<code>throw(异常对象)</code>，一般用于方法体中，抛出特定类型的异常</p>
+<h1 id="throws"><a href="#throws" class="headerlink" title="throws"></a>throws</h1><p>感觉diaodiao的，这个用的做多<br>语法是<code>public void function(var) throws &lt;异常类&gt;</code>，一般跟在方法名的声明后面，直接抛出异常类，然后把异常处理交给上层调用它的程序处理</p>
+<h1 id="它们的区别"><a href="#它们的区别" class="headerlink" title="它们的区别"></a>它们的区别</h1><p>卧槽我本来只是看到了两者什么区别，结果又扯了别的。说到区别，一个常用一个基本不用算不算区别（滑稽</p>
+<ul>
+<li><code>throws</code>出现在方法函数头，而<code>throw</code>出现在方法体中</li>
+<li><code>throws</code>表示出现异常的一种可能，实际并不一定会出现异常；而<code>throw</code>则是抛出异常，只要是运行到了这里，就一定会抛出异常</li>
+<li>两者都是消极处理异常的方式，只是做到了抛出或肯能抛出异常，真正对异常进行处理还是在上层调用的地方</li>
+</ul>
+<p><a href="http://blog.csdn.net/hguisu/article/details/6155636" target="_blank" rel="external">其实这里有更多详细的内容，随用随取</a><br><a href="http://blog.csdn.net/luoweifu/article/details/10721543" target="_blank" rel="external">还有这些，感谢前辈</a></p>
+<h1 id="一种熟悉的节奏？"><a href="#一种熟悉的节奏？" class="headerlink" title="一种熟悉的节奏？"></a>一种熟悉的节奏？</h1><p>不知道什么时候起，已经想把自己看到学到的东西通过某种方式记录下来了，或许是自己的记性越来越不好了，又或许真的是已经变成了一种习惯。</p>
+<p>没有遇到很多像自己一样喜欢搞一搞Java很底层很细节的东西，（或许自己本身也是被外在事物所影响，但现在确实真心的想搞清楚）每次看到一些很细枝末节的东西而自己又不知道，就会有莫名的兴奋感，细细研究左右对比仔细斟酌。良久，一句“原来是这样”，痛快的拍一下桌子，随口吐槽一句，然后再嚣张的把博文传到网上，整个过程是这么熟悉而又畅快。日后装作随意的点开一看，点击的人数比上次又多了几个，顺便暗爽原来我当时写出这样的东西，但这是发自内心的开心。</p>
+<p>啧，话又多了，自己也不明所以。话说，我要去洗袜子了</p>
+<p>PS：其实每次问题的出发点都是一个小小的线头，怪我太贪心想要它后面的毛线球？</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/08/Spring学习笔记-基础/" rel="next" title="Spring学习笔记-基础">
+                <i class="fa fa-chevron-left"></i> Spring学习笔记-基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/15/zpencheng/" rel="prev" title="zpencheng">
+                zpencheng <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          ﻿
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/coffee.jpg"
+               alt="Socra" />
+          <p class="site-author-name" itemprop="name">Socra</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/socrahat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhuo-peng-cheng-85/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-zhihu"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5643507737/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://zpencheng@126.com" target="_blank" title="Gmail">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Gmail
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-link"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/sugar_rainbow" title="My CSDN" target="_blank">My CSDN</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一些稀松平常的操作"><span class="nav-number">1.</span> <span class="nav-text">一些稀松平常的操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java中的异常"><span class="nav-number">2.</span> <span class="nav-text">Java中的异常</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">2.1.</span> <span class="nav-text">注意</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#可查异常和不可查异常"><span class="nav-number">2.1.1.</span> <span class="nav-text">可查异常和不可查异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时异常和非运行时异常"><span class="nav-number">2.1.2.</span> <span class="nav-text">运行时异常和非运行时异常</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#抛出异常"><span class="nav-number">2.2.</span> <span class="nav-text">抛出异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#捕获异常"><span class="nav-number">2.3.</span> <span class="nav-text">捕获异常</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#throw"><span class="nav-number">3.</span> <span class="nav-text">throw</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#throws"><span class="nav-number">4.</span> <span class="nav-text">throws</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#它们的区别"><span class="nav-number">5.</span> <span class="nav-text">它们的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一种熟悉的节奏？"><span class="nav-number">6.</span> <span class="nav-text">一种熟悉的节奏？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Socra</span>
+</div>
+
+
+<div class="powered-by">
+  爱你呦
+</div>
+
+<div class="theme-info">
+  QvQ
+<span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+<span id="showDays"></span>
+</div>
+
+<script>
+	var birthDay = new Date('2/21/2017');
+	var now = new Date();
+	var duration = now.getTime() - birthDay.getTime();
+	var total= Math.floor(duration / (1000 * 60 * 60 * 24));
+	document.getElementById('showDays').innerHTML='now ever ' + total + ' days';
+</script>
+
+
+<div align="center">
+	<a href="http://www.amazingcounters.com"> <img border="0"  src="http://cc.amazingcounters.com/counter.php?i=3212960&c=9639193" alt="AmazingCounters.com"> 
+	</a> clicks
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8HdMboaKVDfKBOn5dI12QWiH-gzGzoHsz#<app_id>", "EsoeMbYLC0fheB5bhVAmfMQj#<app_key>");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+  
+
+</body>
+</html>
