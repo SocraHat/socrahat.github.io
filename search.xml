@@ -4,6 +4,14 @@
   
     
     <entry>
+      <title><![CDATA[Spring IoC容器高级特性]]></title>
+      <url>http://yoursite.com/2017/08/05/Spring-IoC%E5%AE%B9%E5%99%A8%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/</url>
+      <content type="html"></content>
+      
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[Spring-IoC依赖注入]]></title>
       <url>http://yoursite.com/2017/08/03/Spring-IoC%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/</url>
       <content type="html"><![CDATA[<h1 id="IoC依赖注入发生的时间"><a href="#IoC依赖注入发生的时间" class="headerlink" title="IoC依赖注入发生的时间"></a>IoC依赖注入发生的时间</h1><p>首先需要明确的是在IoC容器初始化之后，IoC容器已经开始管理Bean了，但是这时还不一定对管理的Bean进行了依赖注入</p>
