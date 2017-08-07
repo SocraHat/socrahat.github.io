@@ -97,7 +97,7 @@ JVM内存分配说到内存分配，还是得先">
 <meta property="og:description" content="=_=本来这部分是不想写的，后面想想还是算了，毕竟是最早开始研究又算是相对了解的地方，这次就顺便总结一下看书的心得吧
 JVM内存区域JVM提程序员管理了内存区域，免去了不少麻烦，但我们还是需要去了解的。这个内存区域分为了两大类五个区：方法区与Java堆、虚拟机栈与本地方法栈与程序计数器。具体的解释在很久之前研究String常量池的位置时已经有解释过了，不再赘述
 JVM内存分配说到内存分配，还是得先">
-<meta property="og:updated_time" content="2017-05-29T06:50:21.164Z">
+<meta property="og:updated_time" content="2017-08-07T01:56:09.143Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM内存分配与GC">
 <meta name="twitter:description" content="=_=本来这部分是不想写的，后面想想还是算了，毕竟是最早开始研究又算是相对了解的地方，这次就顺便总结一下看书的心得吧
@@ -320,8 +320,8 @@ JVM内存分配说到内存分配，还是得先">
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-05-29T14:50:21+08:00">
-                2017-05-29
+              <time title="更新于" itemprop="dateModified" datetime="2017-08-07T09:56:09+08:00">
+                2017-08-07
               </time>
             
           </span>
@@ -364,7 +364,7 @@ JVM内存分配说到内存分配，还是得先">
 
       
         <h1 id=""><a href="#" class="headerlink" title="=_="></a>=_=</h1><p>本来这部分是不想写的，后面想想还是算了，毕竟是最早开始研究又算是相对了解的地方，这次就顺便总结一下看书的心得吧</p>
-<h1 id="JVM内存区域"><a href="#JVM内存区域" class="headerlink" title="JVM内存区域"></a>JVM内存区域</h1><p>JVM提程序员管理了内存区域，免去了不少麻烦，但我们还是需要去了解的。这个内存区域分为了两大类五个区：方法区与Java堆、虚拟机栈与本地方法栈与程序计数器。具体的解释在很久之前研究<a href="http://zpcheng.me/2017/03/29/JVM-String%E5%B8%B8%E9%87%8F%E6%B1%A0%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0/" target="_blank" rel="external">String常量池的位置</a>时已经有解释过了，不再赘述</p>
+<h1 id="JVM内存区域"><a href="#JVM内存区域" class="headerlink" title="JVM内存区域"></a>JVM内存区域</h1><p>JVM提程序员管理了内存区域，免去了不少麻烦，但我们还是需要去了解的。这个内存区域分为了两大类五个区：方法区与Java堆、虚拟机栈与本地方法栈与程序计数器。具体的解释在很久之前研究<a href="http://zpcheng.me/2017/03/29/JVM%E4%B8%ADString%E5%B8%B8%E9%87%8F%E6%B1%A0%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0/" target="_blank" rel="external">String常量池的位置</a>时已经有解释过了，不再赘述</p>
 <h1 id="JVM内存分配"><a href="#JVM内存分配" class="headerlink" title="JVM内存分配"></a>JVM内存分配</h1><p>说到内存分配，还是得先了解一下JVM内存的<strong>分代管理</strong>，很久之前的一次面试有提到过这个分代机制，不过当时是懵逼的。</p>
 <h2 id="JVM的分代机制"><a href="#JVM的分代机制" class="headerlink" title="JVM的分代机制"></a>JVM的分代机制</h2><p>为了方便管理Java内存中的对象，JVM采用了分代管理的机制，即把整个内存区分为了<strong>年轻代、年老代和永久代</strong></p>
 <ul>
@@ -398,10 +398,10 @@ JVM内存分配说到内存分配，还是得先">
 <li>虚拟机栈（线程私有栈）中引用的对象</li>
 <li>方法区中类的静态属性引用的对象</li>
 <li>方法区中常量引用的对象</li>
-<li>本地方法栈中JNI引用的对象</li>
+<li>本地方法栈中JNI(Java Native Interface)引用的对象</li>
 </ul>
 <h3 id="OopMap"><a href="#OopMap" class="headerlink" title="OopMap"></a>OopMap</h3><p>这个地方也是面试时提到了，但是当时把它跟GC Roots的知识点记混了，尴尬，小哥很nice的说那我们不说这个了（尬笑</p>
-<p>HotSot在使用GC Roots的理念时，采用了新的实现方式，因为原来的方式一是任务量大而是GC时间长，因而使用OopMap数据结构来记录栈上不同位置上对象的情况，其本身不存在与栈中，但是保有栈中对象的使用信息。JVM通过查询OopMap就可以得知对象的存活情况</p>
+<p>HotSpot在使用GC Roots的理念时，采用了新的实现方式，因为原来的方式一是任务量大而是GC时间长，因而使用OopMap数据结构来记录栈上不同位置上对象的情况，其本身不存在与栈中，但是保有栈中对象的使用信息。JVM通过查询OopMap就可以得知对象的存活情况</p>
 <h2 id="GC使用的算法"><a href="#GC使用的算法" class="headerlink" title="GC使用的算法"></a>GC使用的算法</h2><p>简单说就三种：标记-清理、复制算法和标记-整理算法</p>
 <h2 id="GC的回收器"><a href="#GC的回收器" class="headerlink" title="GC的回收器"></a>GC的回收器</h2><p>年轻代：Serial、ParNew和Parallel Scavenge<br>年老代：Serial Old、Parallel Old和CMS<br>JDK1.8正式投入商用的G1</p>
 <h1 id="GC的种类"><a href="#GC的种类" class="headerlink" title="GC的种类"></a>GC的种类</h1><p>上面讲过的JVM内存分配机制只是泛泛而谈，算是一个引入，这里再结合内存分配机制与GC来看一下更为具体的内存分配机制</p>
@@ -409,7 +409,17 @@ JVM内存分配说到内存分配，还是得先">
 <li><strong>monitor GC</strong>：发生在新生代长的GC，（具体的GC过程日后再补</li>
 <li><strong>Full GC</strong>：发生在新生代和年老代中的GC，算是对整个活动内存的清理</li>
 </ul>
-<h2 id="发生Full-GC的条件"><a href="#发生Full-GC的条件" class="headerlink" title="发生Full GC的条件"></a>发生Full GC的条件</h2><h1 id="In-The-End"><a href="#In-The-End" class="headerlink" title="In The End"></a>In The End</h1><p>处理完这个，JVM的垃圾回收机制和内存分配机制就差不多了，本来这个是很久之前就应该写的，现在才补上，主要是觉得blog中JVM这个板块的东西有点少且有一点细节记混了，趁着端午放假，正好把JVM剩下的类加载和并发也都处理处理吧</p>
+<h2 id="发生Monitor-GC的条件"><a href="#发生Monitor-GC的条件" class="headerlink" title="发生Monitor GC的条件"></a>发生Monitor GC的条件</h2><p>年轻代的GC是Monitor GC，针对Eden区满的时候触发，有时Monitor GC会直接转成Full GC，且Full GC的耗时会是Monitor GC的10倍以上。至于为什么会转成Full GC，是因为在Monitor GC时，会将存活较久的对象复制进年老代，如果复制前检测到年老代中剩余的空间不足以接受这些对象，则会触发Full GC来进行整个年轻代和年老代的GC。</p>
+<h2 id="发生Full-GC的条件"><a href="#发生Full-GC的条件" class="headerlink" title="发生Full GC的条件"></a>发生Full GC的条件</h2><p>Full GC的触发条件较多：</p>
+<ul>
+<li>System.gc()的调用</li>
+<li>年老代空间不足</li>
+<li>永久代空间不足</li>
+<li>CMS收集器出现<code>promotion failed</code>和<code>concurrent mode failure</code>异常</li>
+<li>统计得到Monitor GC晋升到老年代的平均大小大于老年代剩余空间</li>
+<li>堆中分配很大的对象，剩余空间不足</li>
+</ul>
+<h1 id="In-The-End"><a href="#In-The-End" class="headerlink" title="In The End"></a>In The End</h1><p>处理完这个，JVM的垃圾回收机制和内存分配机制就差不多了，本来这个是很久之前就应该写的，现在才补上，主要是觉得blog中JVM这个板块的东西有点少且有一点细节记混了，趁着端午放假，正好把JVM剩下的类加载和并发也都处理处理吧</p>
 
       
     </div>
@@ -610,7 +620,7 @@ JVM内存分配说到内存分配，还是得先">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text">=_=</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM内存区域"><span class="nav-number">2.</span> <span class="nav-text">JVM内存区域</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM内存分配"><span class="nav-number">3.</span> <span class="nav-text">JVM内存分配</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM的分代机制"><span class="nav-number">3.1.</span> <span class="nav-text">JVM的分代机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GC"><span class="nav-number">4.</span> <span class="nav-text">GC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么时候开始GC"><span class="nav-number">4.1.</span> <span class="nav-text">什么时候开始GC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主动触发GC的方法"><span class="nav-number">4.1.1.</span> <span class="nav-text">主动触发GC的方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何判断对象“已死”"><span class="nav-number">4.2.</span> <span class="nav-text">如何判断对象“已死”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#两次标记与对象的复活"><span class="nav-number">4.2.1.</span> <span class="nav-text">两次标记与对象的复活</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可作为GC-Roots的对象"><span class="nav-number">4.2.2.</span> <span class="nav-text">可作为GC Roots的对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OopMap"><span class="nav-number">4.2.3.</span> <span class="nav-text">OopMap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC使用的算法"><span class="nav-number">4.3.</span> <span class="nav-text">GC使用的算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC的回收器"><span class="nav-number">4.4.</span> <span class="nav-text">GC的回收器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GC的种类"><span class="nav-number">5.</span> <span class="nav-text">GC的种类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#发生Full-GC的条件"><span class="nav-number">5.1.</span> <span class="nav-text">发生Full GC的条件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#In-The-End"><span class="nav-number">6.</span> <span class="nav-text">In The End</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text">=_=</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM内存区域"><span class="nav-number">2.</span> <span class="nav-text">JVM内存区域</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM内存分配"><span class="nav-number">3.</span> <span class="nav-text">JVM内存分配</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM的分代机制"><span class="nav-number">3.1.</span> <span class="nav-text">JVM的分代机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GC"><span class="nav-number">4.</span> <span class="nav-text">GC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么时候开始GC"><span class="nav-number">4.1.</span> <span class="nav-text">什么时候开始GC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主动触发GC的方法"><span class="nav-number">4.1.1.</span> <span class="nav-text">主动触发GC的方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何判断对象“已死”"><span class="nav-number">4.2.</span> <span class="nav-text">如何判断对象“已死”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#两次标记与对象的复活"><span class="nav-number">4.2.1.</span> <span class="nav-text">两次标记与对象的复活</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可作为GC-Roots的对象"><span class="nav-number">4.2.2.</span> <span class="nav-text">可作为GC Roots的对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OopMap"><span class="nav-number">4.2.3.</span> <span class="nav-text">OopMap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC使用的算法"><span class="nav-number">4.3.</span> <span class="nav-text">GC使用的算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC的回收器"><span class="nav-number">4.4.</span> <span class="nav-text">GC的回收器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GC的种类"><span class="nav-number">5.</span> <span class="nav-text">GC的种类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#发生Monitor-GC的条件"><span class="nav-number">5.1.</span> <span class="nav-text">发生Monitor GC的条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发生Full-GC的条件"><span class="nav-number">5.2.</span> <span class="nav-text">发生Full GC的条件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#In-The-End"><span class="nav-number">6.</span> <span class="nav-text">In The End</span></a></li></ol></div>
             
 
           </div>
