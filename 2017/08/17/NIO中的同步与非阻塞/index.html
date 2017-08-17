@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="life," />
+  <meta name="keywords" content="NIO," />
 
 
 
@@ -87,25 +87,18 @@
 
 
 
-<meta name="description" content="第一天的总结差不多先折腾到这里吧，大概已有的功能呢，有添加博客和归档的标签，以后还会完成自己的个人简历 Q^Q
-说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书：
-https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
-暂时的尝试先到此为止，明后天看看能不能再去抢个腾讯的服务器吧，fightt">
+<meta name="description" content="脑子烧的慌早上看到了一些Java序列化的应用，不知道怎么那个人扯到了NIO，然后我突然想起了SOA中的的RPC服务，这种远端提供服务时很有可能会用到序列化传输对象，然后又为了在分布式条件下具有高并发的性能，所以很有可能会用到NIO来传输数据。接着，我就开始回忆NIO的一些细节，突然间就不能想起来NIO提供同步还是非同步，阻塞还是非阻塞IO了。查资料查了一堆，概念定义解析看了不少，人是越来越懵逼了，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Final">
-<meta property="og:url" content="http://yoursite.com/2017/02/21/Final/index.html">
+<meta property="og:title" content="NIO中的同步与非阻塞">
+<meta property="og:url" content="http://yoursite.com/2017/08/17/NIO中的同步与非阻塞/index.html">
 <meta property="og:site_name" content="Socra">
-<meta property="og:description" content="第一天的总结差不多先折腾到这里吧，大概已有的功能呢，有添加博客和归档的标签，以后还会完成自己的个人简历 Q^Q
-说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书：
-https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
-暂时的尝试先到此为止，明后天看看能不能再去抢个腾讯的服务器吧，fightt">
-<meta property="og:updated_time" content="2017-02-27T15:35:46.812Z">
+<meta property="og:description" content="脑子烧的慌早上看到了一些Java序列化的应用，不知道怎么那个人扯到了NIO，然后我突然想起了SOA中的的RPC服务，这种远端提供服务时很有可能会用到序列化传输对象，然后又为了在分布式条件下具有高并发的性能，所以很有可能会用到NIO来传输数据。接着，我就开始回忆NIO的一些细节，突然间就不能想起来NIO提供同步还是非同步，阻塞还是非阻塞IO了。查资料查了一堆，概念定义解析看了不少，人是越来越懵逼了，">
+<meta property="og:image" content="http://yoursite.com/2017/08/17/NIO中的同步与非阻塞/4.png">
+<meta property="og:updated_time" content="2017-08-17T03:56:15.424Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Final">
-<meta name="twitter:description" content="第一天的总结差不多先折腾到这里吧，大概已有的功能呢，有添加博客和归档的标签，以后还会完成自己的个人简历 Q^Q
-说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书：
-https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
-暂时的尝试先到此为止，明后天看看能不能再去抢个腾讯的服务器吧，fightt">
+<meta name="twitter:title" content="NIO中的同步与非阻塞">
+<meta name="twitter:description" content="脑子烧的慌早上看到了一些Java序列化的应用，不知道怎么那个人扯到了NIO，然后我突然想起了SOA中的的RPC服务，这种远端提供服务时很有可能会用到序列化传输对象，然后又为了在分布式条件下具有高并发的性能，所以很有可能会用到NIO来传输数据。接着，我就开始回忆NIO的一些细节，突然间就不能想起来NIO提供同步还是非同步，阻塞还是非阻塞IO了。查资料查了一堆，概念定义解析看了不少，人是越来越懵逼了，">
+<meta name="twitter:image" content="http://yoursite.com/2017/08/17/NIO中的同步与非阻塞/4.png">
 
 
 
@@ -133,13 +126,13 @@ https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/02/21/Final/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/17/NIO中的同步与非阻塞/"/>
 
 
 
 
 
-  <title> Final | Socra </title>
+  <title> NIO中的同步与非阻塞 | Socra </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -268,7 +261,7 @@ https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/21/Final/">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/17/NIO中的同步与非阻塞/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="Socra">
@@ -292,7 +285,7 @@ https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
             
             
               
-                Final
+                NIO中的同步与非阻塞
               
             
           </h1>
@@ -307,8 +300,8 @@ https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-21T22:28:15+08:00">
-                2017-02-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-17T10:51:17+08:00">
+                2017-08-17
               </time>
             
 
@@ -323,8 +316,8 @@ https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
               
                 <span class="post-meta-item-text">更新于</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2017-02-27T23:35:46+08:00">
-                2017-02-27
+              <time title="更新于" itemprop="dateModified" datetime="2017-08-17T11:56:15+08:00">
+                2017-08-17
               </time>
             
           </span>
@@ -337,7 +330,7 @@ https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
 
           
           
-             <span id="/2017/02/21/Final/" class="leancloud_visitors" data-flag-title="Final">
+             <span id="/2017/08/17/NIO中的同步与非阻塞/" class="leancloud_visitors" data-flag-title="NIO中的同步与非阻塞">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -366,10 +359,33 @@ https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
       
 
       
-        <h1 id="第一天的总结"><a href="#第一天的总结" class="headerlink" title="第一天的总结"></a>第一天的总结</h1><p>差不多先折腾到这里吧，大概已有的功能呢，有添加博客和归档的标签，以后还会完成自己的个人简历 Q^Q</p>
-<p>说到了这里，这两天自己摸索着使用github来搭建自己的个人网站确实受益良多，贴出大腿的指导书：</p>
-<p><code>https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程</code></p>
-<p>暂时的尝试先到此为止，明后天看看能不能再去抢个腾讯的服务器吧，fightting！骚年</p>
+        <h1 id="脑子烧的慌"><a href="#脑子烧的慌" class="headerlink" title="脑子烧的慌"></a>脑子烧的慌</h1><p>早上看到了一些Java序列化的应用，不知道怎么那个人扯到了NIO，然后我突然想起了SOA中的的RPC服务，这种远端提供服务时很有可能会用到序列化传输对象，然后又为了在分布式条件下具有高并发的性能，所以很有可能会用到NIO来传输数据。<br>接着，我就开始回忆NIO的一些细节，突然间就不能想起来NIO提供同步还是非同步，阻塞还是非阻塞IO了。<br>查资料查了一堆，概念定义解析看了不少，人是越来越懵逼了，究竟这些概念是什么意思，怎么理解，怎么应用？看了好久，脑子感觉明显发热，好在后面看了知乎上一个人的解释，瞬间就是一个醍醐灌顶，一下子理顺了之前的思维。鉴于过程艰辛困苦，在这里特意总结一下。</p>
+<h1 id="NIO是同步非阻塞IO"><a href="#NIO是同步非阻塞IO" class="headerlink" title="NIO是同步非阻塞IO"></a>NIO是同步非阻塞IO</h1><p>NIO是同步非阻塞式IO<br>NIO是同步非阻塞式IO<br>NIO是同步非阻塞式IO<br>首先我要把这句话说三遍，因为之前我一度忘记了NIO的特点。但是我个人之前对与这个同步与非阻塞体现在哪里不是很理解。</p>
+<p>我们都知道，NIO是有三个基本的构件：<code>Selector</code>、<code>Channel</code>和<code>Buffer</code>。Channel向Selector中注册不同的兴趣事件，然后Selector会负责监听Channel中是否有注册的事件发生，如果有需要读写的操作，Channel又会使用Buffer来缓存数据，用于之后操作；Selector可以被多个Channel注册，这样一个主线程中的Selector就可以监视多个Channel（可能会位于多个线程）发生的事件。</p>
+<p>在NIIO基本概念的基础上，我们来看这些在IO中常见词的概念</p>
+<h2 id="同步与异步"><a href="#同步与异步" class="headerlink" title="同步与异步"></a>同步与异步</h2><p>站在程序的角度上，</p>
+<ul>
+<li>同步：用户程序在发起操作后，需要不断的轮询操作是否完成（或准备就绪），如果没有完成（就绪）导致程序“卡住”，无法继续向下运行；直到操作完成才<strong><code>通知</code></strong>程序继续</li>
+<li>异步：用户程序发起操作后，便不再关注操作的具体是否执行以及执行的内容；当操作完成之后，会自动回调或其它通知方式来<strong><code>通知</code></strong>程序</li>
+</ul>
+<h2 id="阻塞与非阻塞"><a href="#阻塞与非阻塞" class="headerlink" title="阻塞与非阻塞"></a>阻塞与非阻塞</h2><p>站在线程的角度上，</p>
+<ul>
+<li>阻塞：当主线程发起一个操作时，具体执行时该线程就一直等，直到等到实际的操作完成之后，<strong><code>线程</code></strong>才会继续</li>
+<li>非阻塞：当一个主线程发起操作后，具体执行的方法会分出独立的<strong><code>线程</code></strong>去执行这个操作，主线程是继续向下运行的，而不是傻傻的等待</li>
+</ul>
+<h2 id="再来看同步与非阻塞"><a href="#再来看同步与非阻塞" class="headerlink" title="再来看同步与非阻塞"></a>再来看同步与非阻塞</h2><p>看完了上面的概念后，可以注意到的是，同步与非阻塞关注的点不同，<code>同步与异步是说消息的通知机制，而阻塞与非阻塞说的是线程的状态</code></p>
+<h2 id="回过头来看NIO的同步与非阻塞"><a href="#回过头来看NIO的同步与非阻塞" class="headerlink" title="回过头来看NIO的同步与非阻塞"></a>回过头来看NIO的同步与非阻塞</h2><p>首先我们要先明确一点，Java最底层的IO操作是同步的，但是NIO是一个<strong>经过包装的IO操作</strong>，是在selector机制实现的事件驱动包装下，<strong>对外提供同步非阻塞的功能</strong>。</p>
+<p>具体体现在，Selector的select()方法会轮询Channel中的事件是否就绪（这是同步），在主线程中的Selector可以监听多个Channel注册的事件，如果有事件发生自然会分配Channel去处理，这样主线程并不会阻塞（这是非阻塞）</p>
+<h1 id="MyCat中的NIO应用"><a href="#MyCat中的NIO应用" class="headerlink" title="MyCat中的NIO应用"></a>MyCat中的NIO应用</h1><p>MyCat的通信模型中，是有使用到NIO的，对应了Reactor模式的通信机制<br><img src="/2017/08/17/NIO中的同步与非阻塞/4.png" alt="4"></p>
+<ul>
+<li>NIOAcceptor负责轮询是否有连接事件，如果有就将连接放到队列中交给NIOReactor负责，NIOAcceptor继续轮询接下来是否有连接（这是<strong>基于Reactor事件驱动的编程模型提供了异步操作</strong>）</li>
+<li>后端NIOConnector也会负责后端连接事件，同样把连接放到队列中交给NIOReactor处理</li>
+<li>NIOReactor会分出独立处理读写事件的RW线程来完成具体的读或者写</li>
+<li>读写后会将数据交给专门处理业务的工作线程去通过Handler的方法进行下一步的处理</li>
+</ul>
+<p>其实上面提到了MyCat的通信模块与线程模块，具体的线程模块会在以后分析</p>
+<h1 id="我说"><a href="#我说" class="headerlink" title="我说"></a>我说</h1><p>首先是一种混沌之后的豁然开朗，随后而来的是一种劫后余生的幸运。之前确实是被绕晕了，像是之前的Java中的编码问题一样。被绕晕过的人都会懂，脑海中是各式各样的概念，杂七杂八的混杂在一起，理不出思绪，甚至是原来已经具有的理解也被忘记或者颠覆。我很清楚这样下去很有可能在耐心耗尽之时匆匆得出一个错误的结论，这对个体知识体系的建立是灾难级别的打击。不过回过头来也只能说这是对于基本概念理解的问题，今天我解决了，写下了这篇自己的总结，希望可以给别人提供一点点微小的帮助。</p>
+<p>知乎链接：<a href="https://www.zhihu.com/question/27991975" target="_blank" rel="external">Java NIO不是同步非阻塞IO吗，怎么还会….</a></p>
 
       
     </div>
@@ -393,7 +409,7 @@ https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
       
         <div class="post-tags">
           
-            <a href="/tags/life/" rel="tag"># life</a>
+            <a href="/tags/NIO/" rel="tag"># NIO</a>
           
         </div>
       
@@ -406,8 +422,8 @@ https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/21/fuck/" rel="next" title="f__k? this day">
-                <i class="fa fa-chevron-left"></i> f__k? this day
+              <a href="/2017/08/16/MyCat通信模块/" rel="next" title="MyCat通信模块">
+                <i class="fa fa-chevron-left"></i> MyCat通信模块
               </a>
             
           </div>
@@ -415,10 +431,6 @@ https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/26/hexo生成博文插入图片/" rel="prev" title="hexo生成博文插入图片">
-                hexo生成博文插入图片 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -570,7 +582,7 @@ https://volc1605.github.io/2016/10/03/Hexo之NexT主题搭建博客详细过程
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第一天的总结"><span class="nav-number">1.</span> <span class="nav-text">第一天的总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#脑子烧的慌"><span class="nav-number">1.</span> <span class="nav-text">脑子烧的慌</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO是同步非阻塞IO"><span class="nav-number">2.</span> <span class="nav-text">NIO是同步非阻塞IO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#同步与异步"><span class="nav-number">2.1.</span> <span class="nav-text">同步与异步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阻塞与非阻塞"><span class="nav-number">2.2.</span> <span class="nav-text">阻塞与非阻塞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#再来看同步与非阻塞"><span class="nav-number">2.3.</span> <span class="nav-text">再来看同步与非阻塞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回过头来看NIO的同步与非阻塞"><span class="nav-number">2.4.</span> <span class="nav-text">回过头来看NIO的同步与非阻塞</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MyCat中的NIO应用"><span class="nav-number">3.</span> <span class="nav-text">MyCat中的NIO应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#我说"><span class="nav-number">4.</span> <span class="nav-text">我说</span></a></li></ol></div>
             
 
           </div>
