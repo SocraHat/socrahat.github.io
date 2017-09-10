@@ -1,0 +1,930 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MySQL," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="MySQL事务的概念事务是指在一个或多个SQL语句操作的过程中，最后的结果要么全部成功要么全部失败，将这样一系列操作看作一个操作的基本操作单元。整个操作单元中不可分割，只要有一个操作失败，则全部操作都会回滚。具备ACID特性，不再说明。
+事务的可串行化如前所述，事务是将多个操作看成一个整体操作，事务的可串行化解决的就是多个事务并发访问操作的顺序对数据一致性没有影响。当存在多个事务访问操作同一个数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="揭秘MySQL事务与锁的联系">
+<meta property="og:url" content="http://yoursite.com/2017/09/08/揭秘MySQL事务与锁的联系/index.html">
+<meta property="og:site_name" content="Socra">
+<meta property="og:description" content="MySQL事务的概念事务是指在一个或多个SQL语句操作的过程中，最后的结果要么全部成功要么全部失败，将这样一系列操作看作一个操作的基本操作单元。整个操作单元中不可分割，只要有一个操作失败，则全部操作都会回滚。具备ACID特性，不再说明。
+事务的可串行化如前所述，事务是将多个操作看成一个整体操作，事务的可串行化解决的就是多个事务并发访问操作的顺序对数据一致性没有影响。当存在多个事务访问操作同一个数据">
+<meta property="og:updated_time" content="2017-09-10T14:13:10.559Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="揭秘MySQL事务与锁的联系">
+<meta name="twitter:description" content="MySQL事务的概念事务是指在一个或多个SQL语句操作的过程中，最后的结果要么全部成功要么全部失败，将这样一系列操作看作一个操作的基本操作单元。整个操作单元中不可分割，只要有一个操作失败，则全部操作都会回滚。具备ACID特性，不再说明。
+事务的可串行化如前所述，事务是将多个操作看成一个整体操作，事务的可串行化解决的就是多个事务并发访问操作的顺序对数据一致性没有影响。当存在多个事务访问操作同一个数据">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/08/揭秘MySQL事务与锁的联系/"/>
+
+
+
+
+
+  <title> 揭秘MySQL事务与锁的联系 | Socra </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Socra</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/08/揭秘MySQL事务与锁的联系/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Socra">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/coffee.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Socra">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Socra" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                揭秘MySQL事务与锁的联系
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-08T09:50:56+08:00">
+                2017-09-08
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2017-09-10T22:13:10+08:00">
+                2017-09-10
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/09/08/揭秘MySQL事务与锁的联系/" class="leancloud_visitors" data-flag-title="揭秘MySQL事务与锁的联系">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="MySQL事务的概念"><a href="#MySQL事务的概念" class="headerlink" title="MySQL事务的概念"></a>MySQL事务的概念</h1><p>事务是指在一个或多个SQL语句操作的过程中，最后的结果要么全部成功要么全部失败，将这样一系列操作看作一个操作的基本操作单元。整个操作单元中不可分割，只要有一个操作失败，则全部操作都会回滚。具备ACID特性，不再说明。</p>
+<h2 id="事务的可串行化"><a href="#事务的可串行化" class="headerlink" title="事务的可串行化"></a>事务的可串行化</h2><p>如前所述，事务是将多个操作看成一个整体操作，事务的可串行化解决的就是多个事务并发访问操作的顺序对数据一致性没有影响。当存在多个事务访问操作同一个数据时，如果可以通过一种合适的顺序调度事务的执行，既满足了访问数据的正确性又满足了整体数据的一致性，则称为事务的可串行化调度。<br>可串行化的概念作用于保证并发的事务调度方式既能满足数据一致性需求，又能提高并发事务的执行效率。（突然想起了线程安全的概念</p>
+<h1 id="事务中的锁机制"><a href="#事务中的锁机制" class="headerlink" title="事务中的锁机制"></a>事务中的锁机制</h1><p>事务的隔离性的保证是建立在锁的基础上的（MVCC也可以保证，后面细说）。在事务中最常见的是<code>读锁（S锁/共享锁）</code>和<code>写锁（X锁/排他锁）</code>，事务一般遵守两段式协议，即一个事务分为加锁和解锁两个阶段，加锁阶段不会解锁，解锁阶段不会加锁；</p>
+<p>其实单单的拿出来谈事务的锁机制比较干燥，如果是放在MySQL中再来谈锁机制，其实还会有不同存储引擎的锁机制，这里我们先引入几个和存储引擎相关的锁：</p>
+<ul>
+<li>行级锁：锁的粒度是一行记录，开销大，加锁慢，会出现死锁；锁的粒度是最小的，发生锁冲突的概率最小，并发度最高</li>
+<li>表级锁：锁的粒度是一张表，开销小，加锁块，不会出现死锁，锁的粒度是最大的，发生锁重读的概率最高，并发度最低</li>
+<li>页面锁：开销和加锁时间介于行锁和表锁之间；会出现死锁，粒度一般，并发度一般</li>
+</ul>
+<p>我们要确定事务的加锁情况是需要有前提条件的，如<strong>系统的隔离级别，搜索的条件是否是索引，以及索引是否唯一</strong>等，具体的可以参考：<a href="http://www.cnblogs.com/zhaoyl/p/4121010.html" target="_blank" rel="external">mysql事务和锁InnoDB</a>的SQL加锁实现分析部分，讲解的很好，不敢再班门弄斧。</p>
+<h1 id="MySQL中常用的存储引擎"><a href="#MySQL中常用的存储引擎" class="headerlink" title="MySQL中常用的存储引擎"></a>MySQL中常用的存储引擎</h1><p>MySQL中默认的存储引擎是<code>MyISAM</code>，其次使用的最多的是<code>InnoDB</code>，还有<code>MEMORY</code>、<code>MERGE</code>、<code>ARCHIVE</code>。后面三个存储引擎使用的较前两个少，这是因为他们之间的特性决定的。</p>
+<ul>
+<li>MyISAM：MySQL的默认存储引擎，不支持事务，也没有行级锁和外键，默认就是使用表锁。在执行Insert和Update操作时（写操作），会锁定整张表。但MyISAM引擎保存了表的行数，但进行诸如<code>Select count(*)</code>操作时，MyISAM可以直接读取已经保存的值而不需要扫描全表；执行Insert语句较快。当应用进行的读操作远多与写操作，并不需要支持事务时，MyISAM是首选。</li>
+<li>InnoDB：该引擎提供对数据库的ACID<strong>事务的支持和行级锁、表级锁以及外键支持</strong>。所以在分布式场景下MySQL的存储引擎大都使用InnoDB。其设计的本意就是为了处理大容量数据的数据库系统，InnoDB在运行时会在内容建立缓冲池，用于缓冲数据和索引。但由于没有保存表中数据的行数，所以执行诸如<code>Select count(*)</code>语句时会需要扫描全表；InnoDB也支持表锁，当查询的字段是索引时，会使用行锁，但若不是索引，那么还是会锁表同时进行全表扫描；执行Update语句较快。但由于粒度较小，并发场景下效率更高。InnoDB还支持事务处理和故障恢复。</li>
+<li>MEMORY：该引擎的出现就是为了提供更快的速度，所以是基于系统内存实现的存储引擎，所有的数据都是存储在内存中，因而会有数据不可恢复的风险。支持B+树索引和散列索引。</li>
+</ul>
+<p>综上所述加上一些实际的应用场景统计，优先选择使用MyISAM引擎更优。MyISAM和InnoDB使用索引的数据结构都是B+树，前者是非聚簇索引后者是聚簇索引。</p>
+<h1 id="MySQL如何设置事务隔离级别和使用锁"><a href="#MySQL如何设置事务隔离级别和使用锁" class="headerlink" title="MySQL如何设置事务隔离级别和使用锁"></a>MySQL如何设置事务隔离级别和使用锁</h1><p>在这个部分我们可能会来学习一下操作MySQL事务隔离级别和使用锁的SQL语句。</p>
+<h2 id="显式使用事务"><a href="#显式使用事务" class="headerlink" title="显式使用事务"></a>显式使用事务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">START TRANSACTION;/BEGIN;</div><div class="line">...</div><div class="line">// CURD操作</div><div class="line">...</div><div class="line">SAVEPOINT &apos;name&apos;;</div><div class="line">...</div><div class="line">COMMIT;</div><div class="line">...</div><div class="line">ROLLBACK;</div><div class="line">ROLLBACK TO SAVEPOINT &apos;name&apos;;</div></pre></td></tr></table></figure>
+<h2 id="事务隔离级别的设置"><a href="#事务隔离级别的设置" class="headerlink" title="事务隔离级别的设置"></a>事务隔离级别的设置</h2><p>首先得保证是InnoDB存储引擎</p>
+<ul>
+<li>修改my.ini文件，加上<code>transaction-isolation = REPEATABLE-READ</code>，可选参数有<code>READ-UNCOMMITTED, READ-COMMITTED, REPEATABLE-READ, SERIALIZABLE</code></li>
+<li>执行SQL：<code>set session transaction isolation level read uncommitted;</code>，同样可选择上述参数</li>
+</ul>
+<h2 id="使用锁"><a href="#使用锁" class="headerlink" title="使用锁"></a>使用锁</h2><p>显式的使用锁</p>
+<ul>
+<li>表锁：<code>LOCK TABLES &lt;tableName&gt;,&lt;tableName&gt;...</code>、<code>UNLOCK TABLES &lt;tableName&gt;...</code></li>
+<li>行锁：在InnoDB中使用行锁是通过索引上的索引项来实现的，只有通过索引条件去查找数据才会使用行锁，否则就是表锁</li>
+</ul>
+<h1 id="事务隔离级别的实现"><a href="#事务隔离级别的实现" class="headerlink" title="事务隔离级别的实现"></a>事务隔离级别的实现</h1><p>我们要有对知识的探讨钻研精神，只知道事务的隔离级别在我看来至少是还不够的，现在再把目光放到它们的实现原理上来。</p>
+<p>首先再回顾一下MySQL事务隔离级别：读不提交、读提交（RC）、可重复读（RR）、序列化。它们的区别不再赘述。</p>
+<h2 id="MySQL默认的事务隔离级别"><a href="#MySQL默认的事务隔离级别" class="headerlink" title="MySQL默认的事务隔离级别"></a>MySQL默认的事务隔离级别</h2><p>MySQL默认的事务隔离级别是<code>RR（Repeatable Read）</code>，按照我们理解的，可重复读RR只能解决不可重复读的问题（一个事务的两次读取数据不一致），还是会有幻读的可能发生，但是MySQL中有特殊的机制保证在RR级别不会出现幻读。</p>
+<h2 id="MySQL中MVCC机制"><a href="#MySQL中MVCC机制" class="headerlink" title="MySQL中MVCC机制"></a>MySQL中MVCC机制</h2><p>MVCC全称（Multi-Version Concurrency Control），在MVCC中读操作可以分为两种：快照读和当前读。在隔离级别为序列化时，MySQL会取消快照读，所有的读操作也会加读锁</p>
+<ul>
+<li>快照读：简单的Select操作，不加锁（也会有例外）</li>
+<li>当前读：特殊的读操作，Insert、Update、Delete操作，需要加锁</li>
+</ul>
+<p>回过头来看MVCC机制，锁机制可以控制并发操作，但是其系统开销大，而MVCC可以在大多数情况下代替行锁，降低了系统开销。MVCC主要是针对RR级别做的，我们主要来看看InnoDB中的MVCC。</p>
+<p>在这种情况下，每行记录还会保存了两个不同的时间点在两个隐藏的列中，第一列保存的是行的创建时间，第二行保存的是行的删除时间（未删除是undefined）；这里存储的并不是实际的时间，而是事务的ID（系统的版本号），每开启一个事务，系统的版本号就会自动加1。然后我们来看看不同操作时MVCC机制的体现：</p>
+<ul>
+<li><code>Insert</code>：InnoDB在MVCC机制中，会在创建时间隐藏列更新为当前的事务ID，删除时间列是undefined</li>
+<li><code>Select</code>：MVCC中<strong>只会返回创建时间小于或等于当前事务ID且删除时间要么是undefined要么大于当前事务ID的记录</strong>，两个条件都满足的记录才是正确的</li>
+<li><code>Delete</code>：MVCC会在删除时间列更新当前事务ID，然后真正删除是由MySQL后台运行的独立线程去定时清理的</li>
+<li><code>Update</code>：MVCC中的Update被拆分成了Insert和Delete操作，显示插入一个更新后的记录（主键可能重复），然后标记原始记录，等待其被删除</li>
+</ul>
+<h3 id="MVCC机制中主键冲突怎么办？"><a href="#MVCC机制中主键冲突怎么办？" class="headerlink" title="MVCC机制中主键冲突怎么办？"></a>MVCC机制中主键冲突怎么办？</h3><p>在上面的解释中，Update会被拆分成Insert和Delete两个操作，那么势必会同时出现拥有同一个主键的两条记录，这显然违背了我们之前“主键是唯一的”的认知。<br>其实在MVCC机制下，这条记录虽然主键相同，但是两条记录的创建时间和删除时间是不同的，Select操作时肯定会略过那条已经过期的数据，更何况，<strong>这条已经被标记删除的记录马上就会被MySQL后台运行的独立线程清理</strong>，所以仍然可以对外呈现主键唯一的样子。</p>
+<h2 id="MySQL如何保证RR隔离级别不出现幻读？"><a href="#MySQL如何保证RR隔离级别不出现幻读？" class="headerlink" title="MySQL如何保证RR隔离级别不出现幻读？"></a>MySQL如何保证RR隔离级别不出现幻读？</h2><p>其实上面很多内容讲述了MVCC机制，应该已经不难猜到MySQL就是使用了MVCC机制来保证了RR隔离级别却仍然不会出现幻读。<br>MVCC保证了Select操作时选取的记录的创建时间不大于当前事务的ID且删除时间大于当前事务的ID记录，当幻读的条件出现时，它的创建时间一定是大于当前事务的ID的，这并不会出现在最后的结果中，因此保证了RR隔离级别不会出现幻读现象。</p>
+<p>其实还有一个GAP锁的概念，它是在记录之间的空隙进行加锁，防止访问的数据之间再加入新的数据记录，以达到不会出现幻读现象。这个GAP锁也是RR隔离级别在锁机制层面上保证不会出现幻读的关键，这里作为扩展提一下。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>主要是回顾了学习了事务相关的种种概念和知识点，感觉还是很有收获的，很多不懂的地方现在也解释的通了。贴上参考学习的链接：</p>
+<ul>
+<li><a href="http://blog.csdn.net/jiesa/article/details/51317164" target="_blank" rel="external">数据库事务隔离级别– 脏读、幻读、不可重复读（清晰解释）</a></li>
+<li><a href="http://www.cnblogs.com/zhaoyl/p/4121010.html" target="_blank" rel="external">mysql事务和锁InnoDB</a></li>
+<li><a href="http://www.cnblogs.com/xiaohaillong/p/6079551.html" target="_blank" rel="external">mysql的常用引擎</a></li>
+<li><a href="http://www.jb51.net/article/55849.htm" target="_blank" rel="external">MySQL存储引擎总结</a></li>
+<li><a href="http://blog.csdn.net/xifeijian/article/details/20316775" target="_blank" rel="external">MySQL存储引擎－－MyISAM与InnoDB区别</a></li>
+<li><a href="http://www.cnblogs.com/chenpingzhao/p/5065316.html" target="_blank" rel="external">关于innodb中MVCC的一些理解</a></li>
+<li><a href="http://blog.csdn.net/whoamiyang/article/details/51901888" target="_blank" rel="external">轻松理解MYSQL MVCC 实现机制</a></li>
+<li><a href="http://blog.chinaunix.net/uid-20726500-id-5749804.html" target="_blank" rel="external">初步理解MySQL的gap锁</a></li>
+<li><a href="http://blog.csdn.net/yangwenxue_admin/article/details/61916140" target="_blank" rel="external">MySQL设置事物隔离级别</a></li>
+<li><a href="http://www.cnblogs.com/ymy124/p/3718439.html" target="_blank" rel="external">mysql事务处理用法与实例详解</a></li>
+<li><a href="http://www.cnblogs.com/chenqionghe/p/4845693.html" target="_blank" rel="external">MySQL中的锁（表锁、行锁）</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/21/常见持久化框架和连接池的横向对比/" rel="next" title="常见持久化框架和连接池的横向对比">
+                <i class="fa fa-chevron-left"></i> 常见持久化框架和连接池的横向对比
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          ﻿
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/coffee.jpg"
+               alt="Socra" />
+          <p class="site-author-name" itemprop="name">Socra</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/socrahat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhuo-peng-cheng-85/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-zhihu"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-link"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/sugar_rainbow" title="My CSDN" target="_blank">My CSDN</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL事务的概念"><span class="nav-number">1.</span> <span class="nav-text">MySQL事务的概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#事务的可串行化"><span class="nav-number">1.1.</span> <span class="nav-text">事务的可串行化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#事务中的锁机制"><span class="nav-number">2.</span> <span class="nav-text">事务中的锁机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL中常用的存储引擎"><span class="nav-number">3.</span> <span class="nav-text">MySQL中常用的存储引擎</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL如何设置事务隔离级别和使用锁"><span class="nav-number">4.</span> <span class="nav-text">MySQL如何设置事务隔离级别和使用锁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#显式使用事务"><span class="nav-number">4.1.</span> <span class="nav-text">显式使用事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务隔离级别的设置"><span class="nav-number">4.2.</span> <span class="nav-text">事务隔离级别的设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用锁"><span class="nav-number">4.3.</span> <span class="nav-text">使用锁</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#事务隔离级别的实现"><span class="nav-number">5.</span> <span class="nav-text">事务隔离级别的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL默认的事务隔离级别"><span class="nav-number">5.1.</span> <span class="nav-text">MySQL默认的事务隔离级别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL中MVCC机制"><span class="nav-number">5.2.</span> <span class="nav-text">MySQL中MVCC机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVCC机制中主键冲突怎么办？"><span class="nav-number">5.2.1.</span> <span class="nav-text">MVCC机制中主键冲突怎么办？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL如何保证RR隔离级别不出现幻读？"><span class="nav-number">5.3.</span> <span class="nav-text">MySQL如何保证RR隔离级别不出现幻读？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Socra</span>
+</div>
+
+
+<div class="powered-by">
+  爱你呦
+</div>
+
+<div class="theme-info">
+  QvQ
+<span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+<span id="showDays"></span>
+</div>
+
+<script>
+	var birthDay = new Date('2/21/2017');
+	var now = new Date();
+	var duration = now.getTime() - birthDay.getTime();
+	var total= Math.floor(duration / (1000 * 60 * 60 * 24));
+	document.getElementById('showDays').innerHTML='now ever ' + total + ' days';
+</script>
+
+
+<div align="center">
+	<a href="http://www.amazingcounters.com"> <img border="0"  src="http://cc.amazingcounters.com/counter.php?i=3212960&c=9639193" alt="AmazingCounters.com"> 
+	</a> clicks
+</div>
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("8HdMboaKVDfKBOn5dI12QWiH-gzGzoHsz#<app_id>", "EsoeMbYLC0fheB5bhVAmfMQj#<app_key>");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+  
+
+</body>
+</html>
